@@ -1,0 +1,41 @@
+{
+  "name": "zooshboilerplate",
+  "version": "1.0.0",
+  "description": "zooshboilerplate Starter for Zoosh fullstack projects",
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "start:backend": "npm run start --workspace=backend",
+    "start:frontend": "npm run start --workspace=frontend",
+    "android": "npm run android --workspace=frontend",
+    "ios": "npm run ios --workspace=frontend",
+    "lint": "npm run lint --workspaces",
+    "lint:fix": "npm run lint:fix --workspaces",
+    "lint-staged": "lint-staged -d",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/zooshltd/boilerplate.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://zooshltd.atlassian.net/jira/software/c/projects/INT/boards/10"
+  },
+  "homepage": "https://bitbucket.org/zooshltd/boilerplate#readme",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "5.30.7",
+    "@typescript-eslint/parser": "5.30.7",
+    "eslint": "8.20.0",
+    "eslint-config-airbnb-typescript-prettier": "5.0.0",
+    "eslint-import-resolver-typescript": "3.2.7",
+    "eslint-plugin-import": "2.26.0",
+    "husky": "8.0.1",
+    "lint-staged": "13.0.3",
+    "prettier": "2.7.1",
+    "typescript": "4.7.4"
+  }
+}
