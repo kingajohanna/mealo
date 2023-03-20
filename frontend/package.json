@@ -10,9 +10,18 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "@react-navigation/material-bottom-tabs": "^6.2.15",
+    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/stack": "^6.3.16",
+    "mobx": "^6.6.2",
+    "mobx-persist-store": "^1.1.2",
+    "mobx-react-lite": "^3.4.0",
     "react": "18.2.0",
     "react-native": "0.71.4",
-    "react-native-share-menu": "^6.0.0"
+    "react-native-paper": "^5.4.1",
+    "react-native-share-menu": "^6.0.0",
+    "react-native-svg": "^13.8.0",
+    "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.3",

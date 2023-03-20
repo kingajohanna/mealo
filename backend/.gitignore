@@ -34,3 +34,6 @@ npm-debug.log
 
 .env
 
+cert.pem
+csr.pem
+key.pem

@@ -14,17 +14,17 @@ const hashCode = function (s: string) {
     .toString();
 };
 
-router.put("/add", function (req: Request, res: Response) {
-  axios
-    .post(process.env.SCRAPER_URL as string, {
-      url: req.body.url,
-    })
-    .then(async function (response) {
-      try {
-        const id = hashCode(req.body.url);
-        const recipe = await Recipe.find({ id });
+router.put("/add", async function (req: Request, res: Response) {
+  const id = hashCode(req.body.url);
+  const recipe = await Recipe.find({ id });
 
-        if (!recipe.length) {
+  if (!recipe.length) {
+    axios
+      .post(process.env.SCRAPER_URL as string, {
+        url: req.body.url,
+      })
+      .then(async function (response) {
+        try {
           const rec = new Recipe({
             id: id,
             ...response.data,
@@ -32,16 +32,16 @@ router.put("/add", function (req: Request, res: Response) {
 
           await rec.save();
           res.status(201).send(HTTPResponse[201]);
-        } else res.status(200).send(HTTPResponse[200]);
-      } catch (error) {
+        } catch (error) {
+          console.log(error);
+          res.status(500).send(HTTPResponse[500]);
+        }
+      })
+      .catch(function (error) {
         console.log(error);
         res.status(500).send(HTTPResponse[500]);
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.status(500).send(HTTPResponse[500]);
-    });
+      });
+  } else res.status(200).send(HTTPResponse[200]);
 });
 
 module.exports = router;
