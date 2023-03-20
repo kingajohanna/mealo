@@ -1,8 +1,13 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
 import configparser
-import routes
 import logging
+from fastapi.encoders import jsonable_encoder
+import sys, os
+sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'receptek_scraper')))
+from recipe_scrapers import scrape_me
+from models.models import URL
+import utils.utils as utils
 
 config = configparser.ConfigParser()
 config.read('./config.ini')
@@ -12,8 +17,11 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-app.include_router(routes.router)
+@app.post('/')
+async def create_recipe(req: Request,  url: URL):
+    doc_parsed = await scrape_me(url.url)
+    print(doc_parsed)
+    recipe_model = jsonable_encoder(utils.convert_scraper_to_model(doc_parsed))
+    print(recipe_model)
 
-@app.get('/')
-async def hello():
-    return JSONResponse(status_code=status.HTTP_200_OK, content="hello")
+    return JSONResponse(status_code=status.HTTP_200_OK, content=recipe_model)
