@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>454226409378-2lpgl2munagbd2397mnalbakcn80eocg.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.454226409378-2lpgl2munagbd2397mnalbakcn80eocg</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>454226409378-226ul71opi4ovk5t0ukgfo8purevvbei.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB6JvUtuMr0p0wAAktqQ7rj6B5aTCvUA8Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>454226409378</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mealo</string>
+	<key>PROJECT_ID</key>
+	<string>mealo-mao</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mealo-mao.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:454226409378:ios:712dc1cbf0e730758024fb</string>
+</dict>
+</plist>

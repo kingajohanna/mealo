@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "454226409378",
+    "project_id": "mealo-mao",
+    "storage_bucket": "mealo-mao.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454226409378:android:19fe4e536d22a1c58024fb",
+        "android_client_info": {
+          "package_name": "com.mealo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454226409378-16gbreab6i04ckjbmf0bvduqrtdml814.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "454226409378-226ul71opi4ovk5t0ukgfo8purevvbei.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo",
+            "certificate_hash": "4b0aca68ac3b5ee8a6fecb68e83f8737fb40cc8d"
+          }
+        },
+        {
+          "client_id": "454226409378-hvf6au7tec961t6glia37f1pgqqn4hj8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo",
+            "certificate_hash": "3feb1e9e69a6b0e6b0489e76eafb5f48f159a433"
+          }
+        },
+        {
+          "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454226409378-2lpgl2munagbd2397mnalbakcn80eocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mealo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454226409378:android:39078a858cebfa6e8024fb",
+        "android_client_info": {
+          "package_name": "hu.mealo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454226409378-99r79cm2d9lbq6orqfgi7b47i2hvjp1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hu.mealo",
+            "certificate_hash": "4b0aca68ac3b5ee8a6fecb68e83f8737fb40cc8d"
+          }
+        },
+        {
+          "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454226409378-2lpgl2munagbd2397mnalbakcn80eocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mealo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
