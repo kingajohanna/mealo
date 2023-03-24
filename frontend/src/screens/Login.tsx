@@ -7,7 +7,8 @@ import SocialLoginScreen from './auth/SocialLoginScreen';
 import en from '../locales/en';
 import {Colors} from '../theme/colors';
 import {WEB_CLIENT_ID, IOS_CLIENT_ID} from '@env';
-import {firebaseEmail, firebasePassword} from '../contants/regex';
+import {firebaseEmail, firebasePassword} from '../utils/regex';
+import {addUser} from '../contants/backend';
 
 export const Login = () => {
   const {userStore} = useStore();
@@ -34,12 +35,15 @@ export const Login = () => {
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const user = await auth().signInWithCredential(googleCredential);
-      console.log(user);
+
+      if (user.additionalUserInfo?.isNewUser) addUser();
 
       userStore.setIsLoggedIn(true);
 
       return;
     } catch (error: any) {
+      console.log(error);
+
       // The user canceled the sign in request
       if (error.code === '-5') return;
       // else
@@ -67,6 +71,7 @@ export const Login = () => {
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
+      addUser();
       userStore.setIsLoggedIn(true);
 
       return;

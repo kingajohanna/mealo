@@ -1,11 +1,3 @@
-const path = require('path');
-
-const extraNodeModules = {
-  modules: path.resolve(path.join(__dirname, '../node_modules')),
-};
-
-const nodeModulesPaths = [path.resolve(path.join(__dirname, './node_modules'))];
-
 module.exports = {
   transformer: {
     getTransformOptions: async () => ({
@@ -15,9 +7,4 @@ module.exports = {
       },
     }),
   },
-  resolver: {
-    extraNodeModules,
-    nodeModulesPaths,
-  },
-  nodeModulesPaths,
 };

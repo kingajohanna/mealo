@@ -110,21 +110,21 @@ export default StyleSheet.create<Style>({
     marginTop: ScreenHeight * 0.1,
   },
   rightTopAssetContainer: {
-    top: -32,
-    right: -24,
+    top: -150,
+    right: -150,
     position: 'absolute',
   },
   rightTopAssetImageStyle: {
-    width: ScreenWidth * 0.55,
-    height: ScreenWidth * 0.55,
+    width: ScreenWidth,
+    height: ScreenWidth * 0.9,
   },
   leftBottomAssetContainer: {
-    left: -45,
-    bottom: -200,
+    left: -100,
+    bottom: -230,
     position: 'absolute',
   },
   leftBottomAssetImageStyle: {
-    width: ScreenWidth * 0.7,
-    height: ScreenWidth * 0.7,
+    width: ScreenWidth,
+    height: ScreenWidth * 0.9,
   },
 });

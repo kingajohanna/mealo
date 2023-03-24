@@ -6,12 +6,42 @@ async function main() {
   await mongoose.connect(process.env.DB_URL as string);
 }
 
+export interface IRecipe {
+  id: any;
+  host: string;
+  canonical_url: string;
+  title: string;
+  category: string;
+  speed: string;
+  totalTime: string;
+  cookTime: string;
+  prepTime: string;
+  yields: string;
+  image: string;
+  nutrients: any[];
+  language: string;
+  ingredients: any[];
+  instuctions: any[];
+  ratings: string;
+  author: string;
+  cuisine: string;
+  description: string;
+  reviews: any[];
+  siteName: string;
+}
+
 const recipeScheme = new mongoose.Schema({
   id: {
     type: String,
     required: true,
     default: new mongoose.Types.ObjectId(),
     index: { unique: true },
+  },
+  uid: {
+    type: String,
+    required: true,
+    default: new mongoose.Types.ObjectId(),
+    index: { unique: false },
   },
   host: { type: String, default: null },
   canonical_url: { type: String, default: null },
@@ -36,3 +66,17 @@ const recipeScheme = new mongoose.Schema({
 });
 
 export const Recipe = mongoose.model("Recipe", recipeScheme, "recipes");
+
+const userScheme = new mongoose.Schema({
+  id: {
+    type: String,
+    required: true,
+    default: new mongoose.Types.ObjectId(),
+    index: { unique: true },
+  },
+  email: { type: String, default: null },
+  recipes: { type: Array, default: null },
+  favorites: { type: Array, default: null },
+});
+
+export const User = mongoose.model("User", userScheme, "users");

@@ -4,6 +4,7 @@ export const Colors = {
   grey: 'AFBCBD',
   teal: '#168389',
   verdigris: '#00ABB3',
+  vibrant: '#0fbfb4',
   green: '#209e75',
   text: '#01161E',
   gainsboro: '#EEEEEE',

@@ -3,9 +3,10 @@ import {AuthNavigator} from './AuthNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 import {firebase} from '@react-native-firebase/auth';
 import React, {useEffect, useState} from 'react';
+import {AppNavigator} from './AppNavigator';
 
 export const RootNavigation = () => {
-  const {userStore} = useStore();
+  const {userStore, recipeStore} = useStore();
 
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -22,9 +23,15 @@ export const RootNavigation = () => {
     else userStore.setIsLoggedIn(false);
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (loggedIn) {
+      recipeStore.setRecipes();
+    }
+  }, [loggedIn]);
+
   return (
     <NavigationContainer>
-      <AuthNavigator />
+      {userStore.isLoggedIn ? <AuthNavigator /> : <AppNavigator />}
     </NavigationContainer>
   );
 };
