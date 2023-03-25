@@ -44,7 +44,7 @@ export const AppNavigator = () => {
           name={Tabs.RECIPEFAVNAVIGATOR}
           component={RecipeNavigator}
           options={{
-            tabBarLabel: Tabs.RECIPES,
+            tabBarLabel: Tabs.FAVOURITES,
             tabBarIcon: ({color}) => (
               <Icon name="heart-outline" color={color} size={26} />
             ),

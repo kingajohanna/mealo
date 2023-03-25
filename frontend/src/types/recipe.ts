@@ -21,6 +21,7 @@ export type Recipe = {
   _id?: string;
   is_favorite?: boolean;
   speed?: string;
+  [key: string]: string | undefined | boolean | string[];
 };
 
 export const testRecipe: Recipe = {
