@@ -94,9 +94,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.mealo"
+    namespace "com.mealo.mao"
     defaultConfig {
-        applicationId "com.mealo"
+        applicationId "com.mealo.mao"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

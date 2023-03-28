@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>454226409378-2lpgl2munagbd2397mnalbakcn80eocg.apps.googleusercontent.com</string>
+	<string>454226409378-jirlp254k6pqatu8rtnoqck8n7mp6svp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.454226409378-2lpgl2munagbd2397mnalbakcn80eocg</string>
+	<string>com.googleusercontent.apps.454226409378-jirlp254k6pqatu8rtnoqck8n7mp6svp</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>454226409378-226ul71opi4ovk5t0ukgfo8purevvbei.apps.googleusercontent.com</string>
+	<string>454226409378-16gbreab6i04ckjbmf0bvduqrtdml814.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB6JvUtuMr0p0wAAktqQ7rj6B5aTCvUA8Q</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.mealo</string>
+	<string>com.mealo.mao</string>
 	<key>PROJECT_ID</key>
 	<string>mealo-mao</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:454226409378:ios:712dc1cbf0e730758024fb</string>
+	<string>1:454226409378:ios:6e7e938256170d4b8024fb</string>
 </dict>
 </plist>

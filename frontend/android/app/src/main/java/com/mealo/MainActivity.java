@@ -1,4 +1,4 @@
-package com.mealo;
+package com.mealo.mao;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

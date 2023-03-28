@@ -67,6 +67,42 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:454226409378:android:b49c58f294a9cf6e8024fb",
+        "android_client_info": {
+          "package_name": "com.mealo.mao"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454226409378-2lpgl2munagbd2397mnalbakcn80eocg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mealo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:454226409378:android:39078a858cebfa6e8024fb",
         "android_client_info": {
           "package_name": "hu.mealo"

@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-dialog/lib/Button.js b/node_modules/react-native-dialog/lib/Button.js
+index 984ade2..a4b7ea8 100644
+--- a/node_modules/react-native-dialog/lib/Button.js
++++ b/node_modules/react-native-dialog/lib/Button.js
+@@ -27,6 +27,7 @@ const buildStyles = (isDark) => StyleSheet.create({
+             flexGrow: 1,
+             flexShrink: 1,
+             height: 46,
++            width: '50%',
+             justifyContent: "center",
+             alignItems: "center",
+         },

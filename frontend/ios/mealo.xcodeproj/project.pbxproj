@@ -21,6 +21,7 @@
 		291CAD9A29C234FA009E83D9 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 291CAD9029C234F9009E83D9 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		291CADA029C2357D009E83D9 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291CAD9F29C2357D009E83D9 /* ShareViewController.swift */; };
 		298D315E29CC6A28006B1CD4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 298D315D29CC6A28006B1CD4 /* GoogleService-Info.plist */; };
+		29C0357129D2443000E0A2BD /* ReactShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0357029D2443000E0A2BD /* ReactShareViewController.swift */; };
 		727E5E9F750FC32D761946E7 /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54CFD5191C601BBD247620D9 /* libPods-ShareExtension.a */; };
 		7699B88040F8A987B510C191 /* libPods-mealo-mealoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-mealo-mealoTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -94,6 +95,7 @@
 		29981B0529CCE3D9008EE687 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
 		29981B0629CCE3D9008EE687 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		29981B0729CCE3D9008EE687 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		29C0357029D2443000E0A2BD /* ReactShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReactShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ReactShareViewController.swift"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-mealo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mealo.debug.xcconfig"; path = "Target Support Files/Pods-mealo/Pods-mealo.debug.xcconfig"; sourceTree = "<group>"; };
 		54CFD5191C601BBD247620D9 /* libPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5709B34CF0A7D63546082F79 /* Pods-mealo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mealo.release.xcconfig"; path = "Target Support Files/Pods-mealo/Pods-mealo.release.xcconfig"; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 		291CAD9129C234FA009E83D9 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				29C0357029D2443000E0A2BD /* ReactShareViewController.swift */,
 				291CADA229C23646009E83D9 /* ShareExtension.entitlements */,
 				291CAD9F29C2357D009E83D9 /* ShareViewController.swift */,
 				291CAD9429C234FA009E83D9 /* MainInterface.storyboard */,
@@ -322,6 +325,7 @@
 				291CAD8D29C234F9009E83D9 /* Frameworks */,
 				291CAD8E29C234F9009E83D9 /* Resources */,
 				8B1CF0927C1DBD72903797B8 /* [CP] Copy Pods Resources */,
+				29C0357229D2450600E0A2BD /* Bundle React Native code and images */,
 			);
 			buildRules = (
 			);
@@ -440,6 +444,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-mealo/Pods-mealo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		29C0357229D2450600E0A2BD /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\nexport ENTRY_FILE=index.share.js\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2C1F352F900F18636704EC54 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -631,6 +653,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29C0357129D2443000E0A2BD /* ReactShareViewController.swift in Sources */,
 				291CADA029C2357D009E83D9 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -737,7 +760,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mealo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao;
 				PRODUCT_NAME = mealo;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -767,7 +790,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mealo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao;
 				PRODUCT_NAME = mealo;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -805,7 +828,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -847,7 +870,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;

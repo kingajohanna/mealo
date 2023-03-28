@@ -11,13 +11,13 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="mealo"/>
-        <data android:scheme="mealo-share"/>
+        <data android:scheme="com.mealo.mao"/>
+        <data android:scheme="com.mealo.mao"/>
       </intent-filter>
       <intent-filter>
-        <action android:name="android.intent.action.SEND" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <data android:mimeType="text/plain" />
-        <!-- Any other mime types you want to support -->
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="text/plain"/>
       </intent-filter>
     </activity>
   </application>

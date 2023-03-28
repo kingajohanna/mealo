@@ -12,37 +12,35 @@ router.put(
   async function (req: Request, res: Response) {
     const { uid } = res.locals;
     const id = hashCode(req.body.url + uid);
-    const recipe = await Recipe.findOne({ id });
     const user = await User.findOne({ id: uid });
 
     if (!user) return res.status(500).send(HTTPResponse[500]);
 
-    if (!recipe) {
-      axios
-        .post(process.env.SCRAPER_URL as string, {
-          url: req.body.url,
-        })
-        .then(async function (response) {
-          try {
-            const rec = new Recipe({
-              id: id,
-              uid: uid,
-              ...response.data,
-            });
-
-            await rec.save();
-          } catch (error) {
-            console.log(error);
-            return res.status(500).send(HTTPResponse[500]);
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          return res.status(500).send(HTTPResponse[500]);
-        });
-    }
     if (user.recipes.includes(id))
       return res.status(200).send(HTTPResponse[200]);
+
+    await axios
+      .post(process.env.SCRAPER_URL as string, {
+        url: req.body.url,
+      })
+      .then(async function (response) {
+        try {
+          const rec = new Recipe({
+            id: id,
+            uid: uid,
+            ...response.data,
+          });
+
+          await rec.save();
+        } catch (error) {
+          console.log(error);
+          return res.status(500).send(HTTPResponse[500]);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        return res.status(500).send(HTTPResponse[500]);
+      });
 
     user.recipes.push(id);
     await user.save();
@@ -64,6 +62,21 @@ router.get(
     } catch (error) {
       return res.status(500).send(HTTPResponse[500]);
     }
+  }
+);
+
+router.post(
+  "/edit/:recipeId/:field",
+  authenticateToken,
+  async function (req: Request, res: Response) {
+    const { recipeId, field } = req.params;
+    const recipe = await Recipe.findOne({ recipeId });
+
+    if (!recipe) {
+      return res.status(500).send(HTTPResponse[500]);
+    }
+
+    return res.status(201).send(HTTPResponse[201]);
   }
 );
 

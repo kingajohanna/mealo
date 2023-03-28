@@ -56,7 +56,7 @@ const recipeScheme = new mongoose.Schema({
   nutrients: { type: Array, default: null },
   language: { type: String, default: null },
   ingredients: { type: Array, default: null },
-  instuctions: { type: Array, default: null },
+  instructions: { type: Array, default: null },
   ratings: { type: String, default: null },
   author: { type: String, default: null },
   cuisine: { type: String, default: null },
