@@ -12,7 +12,7 @@ def convert_scraper_to_model(scraper: Any) -> models.RecipeModel:
     for k, v in scraper_methods.items():
         try:
             scraper_dict[k] = v()
-        except NotImplementedError:
+        except Exception:
             scraper_dict[k] = None
     scraper_dict = fill_recipe_speed(scraper_dict)
     return models.RecipeModel.parse_obj(scraper_dict)

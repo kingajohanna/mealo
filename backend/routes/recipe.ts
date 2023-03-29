@@ -19,32 +19,39 @@ router.put(
     if (user.recipes.includes(id))
       return res.status(200).send(HTTPResponse[200]);
 
-    await axios
-      .post(process.env.SCRAPER_URL as string, {
-        url: req.body.url,
-      })
-      .then(async function (response) {
-        try {
-          const rec = new Recipe({
-            id: id,
-            uid: uid,
-            ...response.data,
-          });
+    try {
+      const response = await axios
+        .post(process.env.SCRAPER_URL as string, {
+          url: req.body.url,
+        })
+        .then(async function (response) {
+          if (response) {
+            const rec = new Recipe({
+              id: id,
+              uid: uid,
+              ...response.data,
+            });
 
-          await rec.save();
-        } catch (error) {
+            await rec.save();
+            return true;
+          } else false;
+        })
+        .catch(function (error) {
           console.log(error);
-          return res.status(500).send(HTTPResponse[500]);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        return res.status(500).send(HTTPResponse[500]);
-      });
+          return false;
+        });
 
-    user.recipes.push(id);
-    await user.save();
-    return res.status(201).send(HTTPResponse[201]);
+      if (response) {
+        user.recipes.push(id);
+        await user.save();
+        return res.status(201).send(HTTPResponse[201]);
+      } else {
+        return res.status(500).send(HTTPResponse[500]);
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(HTTPResponse[500]);
+    }
   }
 );
 
@@ -66,17 +73,16 @@ router.get(
 );
 
 router.post(
-  "/edit/:recipeId/:field",
+  "/edit/:recipeId",
   authenticateToken,
   async function (req: Request, res: Response) {
-    const { recipeId, field } = req.params;
-    const recipe = await Recipe.findOne({ recipeId });
+    const { recipeId } = req.params;
 
-    if (!recipe) {
-      return res.status(500).send(HTTPResponse[500]);
-    }
+    const body = req.body;
 
-    return res.status(201).send(HTTPResponse[201]);
+    await Recipe.findOneAndUpdate({ id: recipeId }, body);
+
+    return res.status(200).send(HTTPResponse[200]);
   }
 );
 

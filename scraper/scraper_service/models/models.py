@@ -40,7 +40,7 @@ class RecipeModel(BaseModel):
     prepTime: Optional[str]
     yields: Optional[str]
     image: Optional[str]
-    nutrients: Optional[str]
+    nutrients: Optional[dict[str, str]]
     language: Optional[str]
     ingredients: list[str] = Field(...)
     instructions: list[str] = Field(...)
