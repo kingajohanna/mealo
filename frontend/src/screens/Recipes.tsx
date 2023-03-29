@@ -19,6 +19,7 @@ import {FAB} from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
+import {Colors} from '../theme/colors';
 
 export enum Time {
   fast = 'fast',
@@ -52,54 +53,56 @@ export const Recipes = observer(() => {
     navigation.navigate(Tabs.RECIPE, {recipe});
 
   useEffect(() => {
-    if (
-      category === all &&
-      cuisine === all &&
-      text === '' &&
-      time === undefined
-    )
-      return setRecipes(recipeStore.recipes);
+    if (recipeStore.recipes.length) {
+      if (
+        category === all &&
+        cuisine === all &&
+        text === '' &&
+        time === undefined
+      )
+        return setRecipes(recipeStore.recipes);
 
-    const keys: string[] = [];
-    const values: string[] = [];
+      const keys: string[] = [];
+      const values: string[] = [];
 
-    if (category !== all) {
-      keys.push('category');
-      values.push(category);
-    }
-
-    if (cuisine !== all) {
-      keys.push('cuisine');
-      values.push(cuisine);
-    }
-
-    if (text) {
-      keys.push('title');
-      values.push(text);
-    }
-
-    if (time) {
-      keys.push('speed');
-      values.push(time);
-    }
-
-    const filter = (recipe: Recipe) => {
-      for (let i = 0; i < keys.length; i++) {
-        const value = recipe[keys[i]];
-        if (
-          typeof value === 'string' &&
-          value.toLowerCase().includes(values[i].toLowerCase())
-        ) {
-          continue;
-        }
-        return false;
+      if (category !== all) {
+        keys.push('category');
+        values.push(category);
       }
-      return true;
-    };
 
-    const filteredRecipes = recipeStore.recipes.filter(filter);
+      if (cuisine !== all) {
+        keys.push('cuisine');
+        values.push(cuisine);
+      }
 
-    return setRecipes(filteredRecipes);
+      if (text) {
+        keys.push('title');
+        values.push(text);
+      }
+
+      if (time) {
+        keys.push('speed');
+        values.push(time);
+      }
+
+      const filter = (recipe: Recipe) => {
+        for (let i = 0; i < keys.length; i++) {
+          const value = recipe[keys[i]];
+          if (
+            typeof value === 'string' &&
+            value.toLowerCase().includes(values[i].toLowerCase())
+          ) {
+            continue;
+          }
+          return false;
+        }
+        return true;
+      };
+
+      const filteredRecipes = recipeStore.recipes.filter(filter);
+
+      return setRecipes(filteredRecipes);
+    }
   }, [text, category, cuisine, time, recipeStore.recipes]);
 
   const renderItem = (object: ListRenderItemInfo<Recipe>) => {
@@ -126,6 +129,7 @@ export const Recipes = observer(() => {
       </View>
       <FAB
         icon="magnify"
+        color={Colors.textLight}
         style={styles.fab}
         onPress={() => refRBSheet.current!.open()}
       />

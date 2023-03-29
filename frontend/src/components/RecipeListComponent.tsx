@@ -33,7 +33,12 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
     }
   };
 
-  const renderRightAction = (text, dragX) => {
+  const renderRightAction = (
+    text: string,
+    dragX: {
+      interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
+    },
+  ) => {
     const trans = dragX.interpolate({
       inputRange: [0, 0, 100, 104],
       outputRange: [0, 0, 0, 0],
@@ -53,7 +58,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
           {
             text: 'Delete',
             onPress: () => {
-              recipeStore.removeRecipe(recipe._id!);
+              //recipeStore.removeRecipe(recipe._id!);
             },
           },
           {
@@ -79,7 +84,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
           onPress={() => {
             deleteHandler();
           }}>
-          <MaterialIcons name="delete" color={Colors.white} size={32} />
+          <MaterialIcons name="delete" color={Colors.textLight} size={32} />
         </Pressable>
         <Pressable
           style={{...styles.swipeableButton}}
@@ -87,16 +92,18 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
             favHandler();
           }}>
           {recipe.is_favorite ? (
-            <Icon name="heart" color={Colors.teal} size={32} />
+            <Icon name="heart" color={Colors.pine} size={32} />
           ) : (
-            <Icon name="heart-outline" color={Colors.teal} size={32} />
+            <Icon name="heart-outline" color={Colors.pine} size={32} />
           )}
         </Pressable>
       </Animated.View>
     );
   };
 
-  const renderRightActions = progress => (
+  const renderRightActions = (progress: {
+    interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
+  }) => (
     <View
       style={{
         width: 150,
@@ -137,7 +144,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
 const styles = StyleSheet.create({
   background: {
-    width: '100%',
+    width: '98%',
     height: 180,
     alignSelf: 'center',
     padding: 8,
@@ -158,14 +165,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    color: Colors.white,
+    color: Colors.textLight,
     fontWeight: 'bold',
     zIndex: 1,
     paddingBottom: 3,
   },
   text: {
     fontSize: 14,
-    color: Colors.white,
+    color: Colors.textLight,
   },
   rightAction: {
     alignItems: 'center',

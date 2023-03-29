@@ -9,7 +9,8 @@ import {androidBottomPadding} from '../utils/androidHelper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Recipe} from '../types/recipe';
-import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -34,19 +35,20 @@ function RecipeNavigator() {
 
 export const AppNavigator = () => {
   return (
-    <SafeAreaProvider style={{backgroundColor: Colors.background}}>
+    <SafeAreaProvider style={{backgroundColor: Colors.beige}}>
       <Tab.Navigator
-        activeColor={Colors.verdigris}
-        inactiveColor={Colors.teal}
+        activeColor={Colors.beige}
+        inactiveColor={Colors.beige}
         initialRouteName={Tabs.RECIPENAVIGATOR}
-        barStyle={styles.tabBar}>
+        barStyle={styles.tabBar}
+        shifting>
         <Tab.Screen
           name={Tabs.RECIPEFAVNAVIGATOR}
           component={RecipeNavigator}
           options={{
             tabBarLabel: Tabs.FAVOURITES,
             tabBarIcon: ({color}) => (
-              <Icon name="heart-outline" color={color} size={26} />
+              <IonIcon name="heart" color={color} size={28} />
             ),
           }}
         />
@@ -56,7 +58,7 @@ export const AppNavigator = () => {
           options={{
             tabBarLabel: Tabs.RECIPES,
             tabBarIcon: ({color}) => (
-              <SimpleLineIcons name="notebook" color={color} size={24} />
+              <MaterialIcon name="book" color={color} size={26} />
             ),
           }}
         />
@@ -66,7 +68,7 @@ export const AppNavigator = () => {
           options={{
             tabBarLabel: Tabs.SETTINGS,
             tabBarIcon: ({color}) => (
-              <SimpleLineIcons name="settings" color={color} size={24} />
+              <IonIcon name="ios-settings" color={color} size={26} />
             ),
           }}
         />
@@ -79,10 +81,10 @@ const styles = StyleSheet.create({
   tabBar: {
     borderWidth: 0.5,
     borderBottomWidth: 1,
-    backgroundColor: Colors.gainsboro,
+    backgroundColor: Colors.pine,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    borderColor: 'transparent',
+    borderColor: Colors.pine,
     overflow: 'hidden',
     paddingBottom: androidBottomPadding,
   },

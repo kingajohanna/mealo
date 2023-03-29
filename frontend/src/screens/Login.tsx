@@ -123,7 +123,7 @@ export const Login = () => {
       rightTopAssetImageSource={require('../assets/images/ramen.png')}
       leftBottomAssetImageSource={require('../assets/images/chef.png')}
       googleSpinnerVisibility={isLoginButtonSpinner}
-      googleSpinnerColor={Colors.verdigris}
+      googleSpinnerColor={Colors.textLight}
       enableGoogleLogin
       onGoogleLoginPress={() => {
         onGoogleButtonPress();

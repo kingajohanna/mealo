@@ -40,6 +40,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   const {recipeStore} = useStore();
   const {categories, cuisines} = recipeStore;
 
+  const getColor = (rule: boolean) => {
+    return rule ? Colors.pine : Colors.green;
+  };
+
   return (
     <RBSheet
       ref={refRBSheet}
@@ -54,11 +58,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           backgroundColor: '#000',
         },
         container: {
+          borderColor: Colors.salmon,
+          borderTopWidth: 3,
           borderTopLeftRadius: 15,
           borderTopRightRadius: 15,
           padding: 20,
           paddingBottom: 5,
           flex: 1,
+          backgroundColor: Colors.beige,
         },
       }}>
       <TextInput
@@ -67,8 +74,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           padding: 10,
           borderRadius: 10,
           marginHorizontal: 8,
-          borderColor: Colors.teal,
+          borderColor: Colors.pine,
+          backgroundColor: Colors.beige,
         }}
+        placeholderTextColor={Colors.textDark}
         onChangeText={onChangeText}
         value={text}
         placeholder="Search recipes"
@@ -83,12 +92,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         }}>
         <MaterialCommunityIcons
           name="speedometer-slow"
-          color={time === Time.fast ? Colors.gainsboro : Colors.teal}
+          color={getColor(time === Time.fast)}
           size={50}
           style={{
             ...{
-              backgroundColor:
-                time === Time.fast ? Colors.teal : Colors.gainsboro,
+              backgroundColor: getColor(time !== Time.fast),
             },
             ...styles.icon,
           }}
@@ -98,12 +106,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         />
         <MaterialCommunityIcons
           name="speedometer-medium"
-          color={time === Time.moderate ? Colors.gainsboro : Colors.teal}
+          color={getColor(time === Time.moderate)}
           size={50}
           style={{
             ...{
-              backgroundColor:
-                time === Time.moderate ? Colors.teal : Colors.gainsboro,
+              backgroundColor: getColor(time !== Time.moderate),
             },
             ...styles.icon,
           }}
@@ -115,12 +122,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         />
         <MaterialCommunityIcons
           name="speedometer"
-          color={time === Time.slow ? Colors.gainsboro : Colors.teal}
+          color={getColor(time === Time.slow)}
           size={50}
           style={{
             ...{
-              backgroundColor:
-                time === Time.slow ? Colors.teal : Colors.gainsboro,
+              backgroundColor: getColor(time !== Time.slow),
             },
             ...styles.icon,
           }}
@@ -159,13 +165,13 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         }}>
         <Button
           style={styles.button}
-          textColor={Colors.gainsboro}
+          textColor={Colors.textLight}
           onPress={reset}>
           Reset
         </Button>
         <Button
           style={styles.button}
-          textColor={Colors.gainsboro}
+          textColor={Colors.textLight}
           onPress={search}>
           Search
         </Button>
@@ -179,13 +185,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     marginHorizontal: 6,
-    borderColor: Colors.teal,
+    borderColor: Colors.pine,
     overflow: 'hidden',
   },
   button: {
     borderWidth: 1,
     borderRadius: 10,
-    width: 120,
-    backgroundColor: Colors.teal,
+    width: '47%',
+    backgroundColor: Colors.pine,
   },
 });
