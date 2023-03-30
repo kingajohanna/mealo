@@ -12,6 +12,8 @@ import {Recipe} from '../types/recipe';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {RecipeDetails} from '../screens/RecipeDetails';
+import {Favourites} from '../screens/Favourites';
+import {Settings} from '../screens/Settings';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -39,6 +41,23 @@ function RecipeNavigator() {
   );
 }
 
+function RecipeFavNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name={Tabs.FAVOURITES}
+        component={Favourites}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Tabs.RECIPE}
+        component={RecipeDetails}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
+
 export const AppNavigator = () => {
   return (
     <SafeAreaProvider style={{backgroundColor: Colors.beige}}>
@@ -50,7 +69,7 @@ export const AppNavigator = () => {
         shifting>
         <Tab.Screen
           name={Tabs.RECIPEFAVNAVIGATOR}
-          component={RecipeNavigator}
+          component={RecipeFavNavigator}
           options={{
             tabBarLabel: Tabs.FAVOURITES,
             tabBarIcon: ({color}) => (
@@ -70,7 +89,7 @@ export const AppNavigator = () => {
         />
         <Tab.Screen
           name={Tabs.SETTINGS}
-          component={RecipeNavigator}
+          component={Settings}
           options={{
             tabBarLabel: Tabs.SETTINGS,
             tabBarIcon: ({color}) => (

@@ -88,4 +88,25 @@ router.post(
   }
 );
 
+router.post(
+  "/favorite/add/:recipeId",
+  authenticateToken,
+  async function (req: Request, res: Response) {
+    const { uid } = res.locals;
+    const { recipeId } = req.params;
+
+    const user = await User.findOne({ id: uid });
+    await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: true });
+
+    if (user) {
+      user.favorites.push(recipeId);
+      await user.save();
+
+      return res.status(200).send(HTTPResponse[200]);
+    }
+
+    return res.status(500).send(HTTPResponse[500]);
+  }
+);
+
 module.exports = router;

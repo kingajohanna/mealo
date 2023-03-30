@@ -63,6 +63,7 @@ const recipeScheme = new mongoose.Schema({
   description: { type: String, default: null },
   reviews: { type: Array, default: null },
   siteName: { type: String, default: null },
+  is_favorite: { type: Boolean, default: null },
 });
 
 export const Recipe = mongoose.model("Recipe", recipeScheme, "recipes");

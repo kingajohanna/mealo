@@ -211,7 +211,7 @@ export default class SocialLoginScreen extends React.PureComponent<
   renderClassicLoginButton = () => {
     const {
       loginText = "Let's cook!",
-      loginButtonBackgroundColor = Colors.green,
+      loginButtonBackgroundColor = Colors.aqua,
       loginButtonShadowColor = '#58a13f',
       loginButtonSpinnerVisibility,
       spinnerSize,

@@ -3,7 +3,12 @@ import {makeAutoObservable, runInAction} from 'mobx';
 import {Recipe, testRecipe} from '../types/recipe';
 import {makePersistable} from 'mobx-persist-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {addRecipe, getRecipes, setRecipe} from '../contants/backend';
+import {
+  addFavRecipe,
+  addRecipe,
+  getRecipes,
+  setRecipe,
+} from '../contants/backend';
 
 export const all = 'All';
 export default class RecipeStore {
@@ -39,8 +44,17 @@ export default class RecipeStore {
     });
   }
 
+  async setFavourites() {
+    const favs = this.recipes.filter(recipe => recipe.is_favorite === true);
+
+    runInAction(() => {
+      this.favourites = favs;
+    });
+  }
+
   async refresh() {
     await this.setRecipes();
+    await this.setFavourites();
   }
 
   async addRecipe(url: string) {
@@ -63,7 +77,7 @@ export default class RecipeStore {
   }
 
   async addFav(recipeID: string) {
-    await addRecipe(recipeID);
+    await addFavRecipe(recipeID);
     this.refresh();
   }
 }

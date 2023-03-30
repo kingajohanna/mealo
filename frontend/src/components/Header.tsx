@@ -37,13 +37,15 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     borderColor: 'transparent',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     flexDirection: 'row',
   },
   text: {
+    flex: 1,
+    textAlign: 'center',
     fontSize: 24,
     fontWeight: '500',
     color: Colors.beige,
-    paddingHorizontal: '5%',
+    alignSelf: 'center',
   },
 });
