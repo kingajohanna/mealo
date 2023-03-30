@@ -1,7 +1,7 @@
 import {Recipes} from '../screens/Recipes';
 import {Colors} from '../theme/colors';
 import {Tabs} from './tabs';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import * as React from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -11,6 +11,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Recipe} from '../types/recipe';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import {RecipeDetails} from '../screens/RecipeDetails';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -27,6 +28,11 @@ function RecipeNavigator() {
       <Stack.Screen
         name={Tabs.RECIPES}
         component={Recipes}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name={Tabs.RECIPE}
+        component={RecipeDetails}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -79,11 +85,12 @@ export const AppNavigator = () => {
 
 const styles = StyleSheet.create({
   tabBar: {
+    position: 'absolute',
     borderWidth: 0.5,
     borderBottomWidth: 1,
     backgroundColor: Colors.pine,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     borderColor: Colors.pine,
     overflow: 'hidden',
     paddingBottom: androidBottomPadding,

@@ -20,6 +20,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
+import {Header} from '../components/Header';
 
 export enum Time {
   fast = 'fast',
@@ -48,9 +49,6 @@ export const Recipes = observer(() => {
     setTime(undefined);
     setRecipes(recipeStore.recipes);
   };
-
-  const accessPage = (recipe: Recipe) =>
-    navigation.navigate(Tabs.RECIPE, {recipe});
 
   useEffect(() => {
     if (recipeStore.recipes.length) {
@@ -105,9 +103,25 @@ export const Recipes = observer(() => {
     }
   }, [text, category, cuisine, time, recipeStore.recipes]);
 
-  const renderItem = (object: ListRenderItemInfo<Recipe>) => {
-    const {item} = object;
-    return <RecipeListComponent recipe={item} />;
+  const accessPage = (recipe: Recipe) =>
+    navigation.navigate(Tabs.RECIPE, {recipe});
+
+  const renderItem = (item: Recipe, index: number) => {
+    if (index === recipes.length - 1)
+      return (
+        <View style={{paddingBottom: 30}}>
+          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
+        </View>
+      );
+    if (index === 0)
+      return (
+        <View style={{paddingTop: 25}}>
+          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
+        </View>
+      );
+    return (
+      <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
+    );
   };
 
   const onRefresh = async () => {
@@ -117,45 +131,50 @@ export const Recipes = observer(() => {
   };
 
   return (
-    <ScreenBackground title={Tabs.RECIPES}>
-      <View style={{width: '100%', flex: 1}}>
-        <FlatList
-          data={recipes}
-          renderItem={renderItem}
-          keyExtractor={item => item._id!}
-          refreshing={refreshing}
-          onRefresh={() => onRefresh()}
+    <>
+      <ScreenBackground>
+        <Header title={Tabs.RECIPES} />
+        <View style={{width: '100%', flex: 1}}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={recipes}
+            renderItem={({item, index}) => renderItem(item, index)}
+            keyExtractor={item => item.id!}
+            refreshing={refreshing}
+            onRefresh={() => onRefresh()}
+          />
+        </View>
+
+        <SearchModal
+          refRBSheet={refRBSheet}
+          onChangeText={setText}
+          text={text}
+          time={time}
+          setTime={setTime}
+          category={category}
+          setCategory={setCategory}
+          cuisine={cuisine}
+          setCuisine={setCuisine}
+          reset={reset}
+          search={() => refRBSheet.current!.close()}
         />
-      </View>
+      </ScreenBackground>
       <FAB
         icon="magnify"
         color={Colors.textLight}
         style={styles.fab}
         onPress={() => refRBSheet.current!.open()}
       />
-      <SearchModal
-        refRBSheet={refRBSheet}
-        onChangeText={setText}
-        text={text}
-        time={time}
-        setTime={setTime}
-        category={category}
-        setCategory={setCategory}
-        cuisine={cuisine}
-        setCuisine={setCuisine}
-        reset={reset}
-        search={() => refRBSheet.current!.close()}
-      />
-    </ScreenBackground>
+    </>
   );
 });
 
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    margin: 16,
+    margin: 8,
     right: 0,
-    top: 0,
+    top: 75,
     zIndex: 1,
     borderRadius: 30,
   },

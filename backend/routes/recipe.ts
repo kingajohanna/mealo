@@ -80,9 +80,11 @@ router.post(
 
     const body = req.body;
 
-    await Recipe.findOneAndUpdate({ id: recipeId }, body);
+    const recipe = await Recipe.findOneAndUpdate({ id: recipeId }, body, {
+      new: true,
+    });
 
-    return res.status(200).send(HTTPResponse[200]);
+    return res.status(200).json(recipe);
   }
 );
 

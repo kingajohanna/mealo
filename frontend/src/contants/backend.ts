@@ -9,6 +9,8 @@ export const getRecipeURL = baseUrl + 'recipe/get';
 
 export const addUserURL = baseUrl + 'user/add';
 
+export const setRecipeURL = baseUrl + 'recipe/edit/';
+
 export const addRecipe = async (url: string) => {
   try {
     const token = await auth().currentUser?.getIdToken(true);
@@ -24,7 +26,7 @@ export const addRecipe = async (url: string) => {
         url: url,
       }),
     });
-    console.log('addrecipe', response);
+    console.log(addRecipeURL + response.status);
 
     return response;
   } catch (error) {
@@ -44,13 +46,32 @@ export const getRecipes = async () => {
         authorization: token!,
       },
     });
-    const data = (await response.json()) as Recipe[];
-    console.log('getrecipe', data);
+    console.log(getRecipeURL + response.status);
 
-    return data;
+    return (await response.json()) as Recipe[];
   } catch (error) {
     console.log(error);
   }
+};
+
+export const setRecipe = async (recipeID: string, body: any) => {
+  const token = await auth().currentUser?.getIdToken(true);
+
+  const url = setRecipeURL + recipeID;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token!,
+    },
+    body: JSON.stringify(body),
+  });
+
+  console.log(url + response.status);
+
+  return (await response.json()) as Recipe;
 };
 
 export const addUser = async () => {
@@ -64,7 +85,7 @@ export const addUser = async () => {
       authorization: token!,
     },
   });
-  console.log('adduser', response);
+  console.log(addUserURL + response.status);
 
   return response;
 };

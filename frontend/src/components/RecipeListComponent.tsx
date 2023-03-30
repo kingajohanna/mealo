@@ -46,7 +46,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
     const favHandler = () => {
       close();
-      recipeStore.addFav(recipe._id!);
+      recipeStore.addFav(recipe.id!);
     };
 
     const deleteHandler = () => {
@@ -144,7 +144,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
 const styles = StyleSheet.create({
   background: {
-    width: '98%',
+    width: '100%',
     height: 180,
     alignSelf: 'center',
     padding: 8,

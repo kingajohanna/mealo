@@ -7,5 +7,6 @@ export const baseTheme = {
     ...DefaultTheme.colors,
     primaryContainer: Colors.salmon,
     secondaryContainer: 'transparent',
+    backgroundColor: Colors.beige,
   },
 };
