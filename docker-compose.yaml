@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  scraper-service:
+    build:
+      context: ./scraper
+      dockerfile: ./Dockerfile
+    ports:
+      - 3001:3001
+
+  backend-service:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - mongonet
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/mealo
+    networks:
+      - mongonet
+
+networks:
+  mongonet:
+
+volumes:
+  mongodata:

@@ -11,11 +11,13 @@ import {RecipeStackParamList} from '../navigation/AppNavigator';
 import {Tabs} from '../navigation/tabs';
 import {useStore} from '../stores';
 import {Recipe} from '../types/recipe';
+import LottieView from 'lottie-react-native';
 
 export const Favourites = observer(() => {
   const {recipeStore} = useStore();
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
   const [refreshing, setRefreshing] = useState(false);
+  const [favorites] = useState(recipeStore.favourites!);
 
   const accessPage = (recipe: Recipe) =>
     navigation.navigate(Tabs.RECIPE, {recipe});
@@ -48,13 +50,21 @@ export const Favourites = observer(() => {
     <ScreenBackground>
       <Header title={Tabs.FAVOURITES} />
       <View style={{width: '100%', flex: 1}}>
-        <FlatList
-          data={recipeStore.favourites}
-          renderItem={({item, index}) => renderItem(item, index)}
-          keyExtractor={item => item.id!}
-          refreshing={refreshing}
-          onRefresh={() => onRefresh()}
-        />
+        {refreshing ? (
+          <LottieView
+            source={require('../assets/anim/loading.json')}
+            autoPlay
+            loop
+          />
+        ) : (
+          <FlatList
+            data={favorites!}
+            renderItem={({item, index}) => renderItem(item, index)}
+            keyExtractor={item => item.id!}
+            refreshing={refreshing}
+            onRefresh={() => onRefresh()}
+          />
+        )}
       </View>
     </ScreenBackground>
   );

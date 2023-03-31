@@ -1,12 +1,6 @@
 import {observer} from 'mobx-react-lite';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  ListRenderItemInfo,
-} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import {ScreenBackground} from '../components/Background';
 import {RecipeListComponent} from '../components/RecipeListComponent';
 import {Tabs} from '../navigation/tabs';
@@ -21,6 +15,7 @@ import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
+import LottieView from 'lottie-react-native';
 
 export enum Time {
   fast = 'fast',
@@ -34,7 +29,7 @@ export const Recipes = observer(() => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [recipes, setRecipes] = useState(recipeStore.recipes);
+  const [recipes, setRecipes] = useState(recipeStore.recipes!);
   const [text, setText] = useState('');
   const [category, setCategory] = useState(all);
   const [cuisine, setCuisine] = useState(all);
@@ -135,14 +130,22 @@ export const Recipes = observer(() => {
       <ScreenBackground>
         <Header title={Tabs.RECIPES} />
         <View style={{width: '100%', flex: 1}}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={recipes}
-            renderItem={({item, index}) => renderItem(item, index)}
-            keyExtractor={item => item.id!}
-            refreshing={refreshing}
-            onRefresh={() => onRefresh()}
-          />
+          {refreshing ? (
+            <LottieView
+              source={require('../assets/anim/loading.json')}
+              autoPlay
+              loop
+            />
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={recipes}
+              renderItem={({item, index}) => renderItem(item, index)}
+              keyExtractor={item => item.id!}
+              refreshing={refreshing}
+              onRefresh={() => onRefresh()}
+            />
+          )}
         </View>
 
         <SearchModal
