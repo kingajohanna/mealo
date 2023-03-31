@@ -21,3 +21,15 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.15'
     }
 }
+
+allprojects {
+    afterEvaluate {
+        if (getPlugins().hasPlugin('android') ||
+            getPlugins().hasPlugin('android-library')) {
+            configure(android.lintOptions) {
+                abortOnError false
+                checkReleaseBuilds false
+            }
+        }
+    }
+}

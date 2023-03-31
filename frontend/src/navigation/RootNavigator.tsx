@@ -8,6 +8,7 @@ import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
 import {addRecipe} from '../contants/backend';
+import RNBootSplash from 'react-native-bootsplash';
 
 export const RootNavigation = () => {
   const {userStore, recipeStore} = useStore();
@@ -78,7 +79,7 @@ export const RootNavigation = () => {
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={() => RNBootSplash.hide()}>
       {loggedIn ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );

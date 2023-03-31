@@ -51,7 +51,7 @@ export const Recipes = observer(() => {
   };
 
   useEffect(() => {
-    if (recipeStore.recipes.length) {
+    if (recipeStore.recipes?.length) {
       if (
         category === all &&
         cuisine === all &&
@@ -97,7 +97,7 @@ export const Recipes = observer(() => {
         return true;
       };
 
-      const filteredRecipes = recipeStore.recipes.filter(filter);
+      const filteredRecipes = recipeStore.recipes?.filter(filter);
 
       return setRecipes(filteredRecipes);
     }
@@ -107,15 +107,15 @@ export const Recipes = observer(() => {
     navigation.navigate(Tabs.RECIPE, {recipe});
 
   const renderItem = (item: Recipe, index: number) => {
-    if (index === recipes.length - 1)
-      return (
-        <View style={{paddingBottom: 30}}>
-          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
-        </View>
-      );
     if (index === 0)
       return (
         <View style={{paddingTop: 25}}>
+          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
+        </View>
+      );
+    if (index === recipes?.length - 1)
+      return (
+        <View style={{paddingBottom: 30}}>
           <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
         </View>
       );

@@ -21,7 +21,7 @@ export const Favourites = observer(() => {
     navigation.navigate(Tabs.RECIPE, {recipe});
 
   const renderItem = (item: Recipe, index: number) => {
-    if (index === recipeStore.favourites.length - 1)
+    if (index === recipeStore.favourites?.length - 1)
       return (
         <View style={{paddingBottom: 30}}>
           <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />

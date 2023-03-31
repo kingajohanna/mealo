@@ -1,6 +1,6 @@
 import {makeAutoObservable, runInAction} from 'mobx';
 
-import {Recipe, testRecipe} from '../types/recipe';
+import {Recipe} from '../types/recipe';
 import {makePersistable} from 'mobx-persist-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -45,7 +45,7 @@ export default class RecipeStore {
   }
 
   async setFavourites() {
-    const favs = this.recipes.filter(recipe => recipe.is_favorite === true);
+    const favs = this.recipes?.filter(recipe => recipe.is_favorite === true);
 
     runInAction(() => {
       this.favourites = favs;

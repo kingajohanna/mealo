@@ -3,6 +3,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <RNShareMenu/ShareMenuManager.h>
 #import <Firebase.h>
+#import "RNBootSplash.h"
 
 @implementation AppDelegate
 
@@ -13,6 +14,7 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
   [FIRApp configure];
+  [RNBootSplash initWithStoryboard:@"BootSplash" rootView:self.window.rootViewController.view];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

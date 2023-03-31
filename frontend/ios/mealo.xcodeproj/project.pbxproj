@@ -20,6 +20,7 @@
 		291CAD9629C234FA009E83D9 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 291CAD9429C234FA009E83D9 /* MainInterface.storyboard */; };
 		291CAD9A29C234FA009E83D9 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 291CAD9029C234F9009E83D9 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		291CADA029C2357D009E83D9 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291CAD9F29C2357D009E83D9 /* ShareViewController.swift */; };
+		2979C9AB29D5ED6300683E53 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2979C9AA29D5ED6300683E53 /* BootSplash.storyboard */; };
 		298D315E29CC6A28006B1CD4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 298D315D29CC6A28006B1CD4 /* GoogleService-Info.plist */; };
 		29C0357129D2443000E0A2BD /* ReactShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0357029D2443000E0A2BD /* ReactShareViewController.swift */; };
 		727E5E9F750FC32D761946E7 /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54CFD5191C601BBD247620D9 /* libPods-ShareExtension.a */; };
@@ -78,6 +79,7 @@
 		291CAD9F29C2357D009E83D9 /* ShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ShareViewController.swift; path = "../../node_modules/react-native-share-menu/ios/ShareViewController.swift"; sourceTree = "<group>"; };
 		291CADA129C235E1009E83D9 /* mealo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = mealo.entitlements; path = mealo/mealo.entitlements; sourceTree = "<group>"; };
 		291CADA229C23646009E83D9 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
+		2979C9AA29D5ED6300683E53 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = mealo/BootSplash.storyboard; sourceTree = "<group>"; };
 		298D315D29CC6A28006B1CD4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		29981AF829CCE3D9008EE687 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		29981AF929CCE3D9008EE687 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			children = (
 				291CADA129C235E1009E83D9 /* mealo.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				2979C9AA29D5ED6300683E53 /* BootSplash.storyboard */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -393,6 +396,7 @@
 				290588F329CCF4240055268A /* Fontisto.ttf in Resources */,
 				290588F429CCF4240055268A /* MaterialCommunityIcons.ttf in Resources */,
 				290588F529CCF4240055268A /* Ionicons.ttf in Resources */,
+				2979C9AB29D5ED6300683E53 /* BootSplash.storyboard in Resources */,
 				290588F629CCF4240055268A /* SimpleLineIcons.ttf in Resources */,
 				290588F729CCF4240055268A /* MaterialIcons.ttf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
