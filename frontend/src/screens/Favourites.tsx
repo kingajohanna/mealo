@@ -12,6 +12,7 @@ import {Tabs} from '../navigation/tabs';
 import {useStore} from '../stores';
 import {Recipe} from '../types/recipe';
 import LottieView from 'lottie-react-native';
+import {RecipeList} from '../components/RecipeList';
 
 export const Favourites = observer(() => {
   const {recipeStore} = useStore();
@@ -23,15 +24,15 @@ export const Favourites = observer(() => {
     navigation.navigate(Tabs.RECIPE, {recipe});
 
   const renderItem = (item: Recipe, index: number) => {
-    if (index === recipeStore.favourites?.length - 1)
-      return (
-        <View style={{paddingBottom: 30}}>
-          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
-        </View>
-      );
     if (index === 0)
       return (
         <View style={{paddingTop: 25}}>
+          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
+        </View>
+      );
+    if (index === recipeStore.favourites?.length - 1)
+      return (
+        <View style={{paddingBottom: 30}}>
           <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
         </View>
       );
@@ -57,12 +58,11 @@ export const Favourites = observer(() => {
             loop
           />
         ) : (
-          <FlatList
-            data={favorites!}
-            renderItem={({item, index}) => renderItem(item, index)}
-            keyExtractor={item => item.id!}
+          <RecipeList
+            data={favorites}
             refreshing={refreshing}
-            onRefresh={() => onRefresh()}
+            onRefresh={onRefresh}
+            onPress={accessPage}
           />
         )}
       </View>

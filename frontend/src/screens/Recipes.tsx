@@ -16,6 +16,7 @@ import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
 import LottieView from 'lottie-react-native';
+import {RecipeList} from '../components/RecipeList';
 
 export enum Time {
   fast = 'fast',
@@ -101,24 +102,6 @@ export const Recipes = observer(() => {
   const accessPage = (recipe: Recipe) =>
     navigation.navigate(Tabs.RECIPE, {recipe});
 
-  const renderItem = (item: Recipe, index: number) => {
-    if (index === 0)
-      return (
-        <View style={{paddingTop: 25}}>
-          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
-        </View>
-      );
-    if (index === recipes?.length - 1)
-      return (
-        <View style={{paddingBottom: 30}}>
-          <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
-        </View>
-      );
-    return (
-      <RecipeListComponent recipe={item} onPress={() => accessPage(item)} />
-    );
-  };
-
   const onRefresh = async () => {
     setRefreshing(true);
     await recipeStore.refresh();
@@ -137,13 +120,11 @@ export const Recipes = observer(() => {
               loop
             />
           ) : (
-            <FlatList
-              showsVerticalScrollIndicator={false}
+            <RecipeList
               data={recipes}
-              renderItem={({item, index}) => renderItem(item, index)}
-              keyExtractor={item => item.id!}
               refreshing={refreshing}
-              onRefresh={() => onRefresh()}
+              onRefresh={onRefresh}
+              onPress={accessPage}
             />
           )}
         </View>

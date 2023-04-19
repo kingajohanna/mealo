@@ -29,6 +29,7 @@ export const testRecipe: Recipe = {
   totalTime: '120 min',
   ingredients: ['alma', 'körte', 'bab', '4 bab'],
   instructions: ['főzd meg', 'edd meg'],
+  is_favorite: true,
   image:
     'https://images.everydayhealth.com/images/diet-nutrition/34da4c4e-82c3-47d7-953d-121945eada1e00-giveitup-unhealthyfood.jpg',
 };
