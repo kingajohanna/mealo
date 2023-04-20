@@ -9,7 +9,7 @@ import {useStore} from '../stores';
 import en from '../locales/en';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Header} from '../components/Header';
-import {deleteUser} from '../contants/backend';
+import {deleteUser} from '../api/backend';
 
 export const Settings = () => {
   const {userStore} = useStore();

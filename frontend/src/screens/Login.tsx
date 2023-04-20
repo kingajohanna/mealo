@@ -8,7 +8,7 @@ import en from '../locales/en';
 import {Colors} from '../theme/colors';
 import {WEB_CLIENT_ID, IOS_CLIENT_ID} from '@env';
 import {firebaseEmail, firebasePassword} from '../utils/regex';
-import {addUser} from '../contants/backend';
+import {addUser} from '../api/backend';
 
 export const Login = () => {
   const {userStore} = useStore();

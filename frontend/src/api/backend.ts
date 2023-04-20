@@ -1,7 +1,8 @@
 import auth from '@react-native-firebase/auth';
 import {Recipe} from '../types/recipe';
+import {BACKEND_URL} from '@env';
 
-const baseUrl = 'http://127.0.0.1:3000/';
+const baseUrl = `http://${BACKEND_URL}:3000/`;
 
 export const addRecipeURL = baseUrl + 'recipe/add';
 

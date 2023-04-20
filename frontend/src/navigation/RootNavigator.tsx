@@ -7,7 +7,7 @@ import {AppNavigator} from './AppNavigator';
 import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
-import {addRecipe} from '../contants/backend';
+import {addRecipe} from '../api/backend';
 import RNBootSplash from 'react-native-bootsplash';
 
 export const RootNavigation = () => {

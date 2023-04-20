@@ -3,12 +3,7 @@ import {makeAutoObservable, runInAction} from 'mobx';
 import {Recipe} from '../types/recipe';
 import {makePersistable} from 'mobx-persist-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  addFavRecipe,
-  addRecipe,
-  getRecipes,
-  setRecipe,
-} from '../contants/backend';
+import {addFavRecipe, addRecipe, getRecipes, setRecipe} from '../api/backend';
 
 export const all = 'All';
 export default class RecipeStore {
