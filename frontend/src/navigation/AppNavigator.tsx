@@ -63,7 +63,7 @@ export const AppNavigator = () => {
     <SafeAreaProvider style={{backgroundColor: Colors.beige}}>
       <Tab.Navigator
         activeColor={Colors.beige}
-        inactiveColor={Colors.beige}
+        inactiveColor={Colors.beigeOp}
         initialRouteName={Tabs.RECIPENAVIGATOR}
         barStyle={styles.tabBar}
         shifting>
