@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 services:
   scraper-service:
     build:
@@ -6,6 +6,8 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - 3001:3001
+    networks:
+      - scrapernet
 
   backend-service:
     build:
@@ -15,6 +17,9 @@ services:
       - 3000:3000
     networks:
       - mongonet
+      - scrapernet
+    depends_on:
+      - mongo
 
   mongo:
     image: mongo:4.4.18
@@ -28,6 +33,7 @@ services:
 
 networks:
   mongonet:
+  scrapernet:
 
 volumes:
   mongodata:
