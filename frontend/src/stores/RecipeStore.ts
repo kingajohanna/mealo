@@ -3,7 +3,13 @@ import {makeAutoObservable, runInAction} from 'mobx';
 import {Recipe} from '../types/recipe';
 import {makePersistable} from 'mobx-persist-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {addFavRecipe, addRecipe, getRecipes, setRecipe} from '../api/backend';
+import {
+  editFavRecipe,
+  addRecipe,
+  deleteRecipe,
+  getRecipes,
+  setRecipe,
+} from '../api/backend';
 
 export const all = 'All';
 export default class RecipeStore {
@@ -54,7 +60,12 @@ export default class RecipeStore {
 
   async addRecipe(url: string) {
     await addRecipe(url);
-    this.refresh();
+    await this.refresh();
+  }
+
+  async removeRecipe(recipeID: string) {
+    await deleteRecipe(recipeID);
+    await this.refresh();
   }
 
   removeRecipes() {
@@ -67,12 +78,12 @@ export default class RecipeStore {
 
   async editRecipe(recipeID: string, body: any) {
     const modifiedRecipe = await setRecipe(recipeID, body);
-    this.refresh();
+    await this.refresh();
     return modifiedRecipe;
   }
 
-  async addFav(recipeID: string) {
-    await addFavRecipe(recipeID);
-    this.refresh();
+  async editFav(recipeID: string) {
+    await editFavRecipe(recipeID);
+    return await this.refresh();
   }
 }

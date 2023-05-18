@@ -46,7 +46,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
     const favHandler = () => {
       close();
-      recipeStore.addFav(recipe.id!);
+      recipeStore.editFav(recipe.id!);
     };
 
     const deleteHandler = () => {
@@ -58,7 +58,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
           {
             text: 'Delete',
             onPress: () => {
-              //recipeStore.removeRecipe(recipe._id!);
+              recipeStore.removeRecipe(recipe.id!);
             },
           },
           {

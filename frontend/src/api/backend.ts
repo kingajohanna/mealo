@@ -8,7 +8,7 @@ export const addRecipeURL = baseUrl + 'recipe/add';
 
 export const getRecipeURL = baseUrl + 'recipe/get';
 
-export const addFavRecipeURL = baseUrl + 'recipe/favorite/add/';
+export const addFavRecipeURL = baseUrl + 'recipe/favorite/';
 
 export const addUserURL = baseUrl + 'user/add';
 
@@ -39,7 +39,7 @@ export const addRecipe = async (url: string) => {
   }
 };
 
-export const addFavRecipe = async (recipeID: string) => {
+export const editFavRecipe = async (recipeID: string) => {
   const token = await auth().currentUser?.getIdToken(true);
 
   const url = addFavRecipeURL + recipeID + '/';
@@ -90,6 +90,25 @@ export const setRecipe = async (recipeID: string, body: any) => {
       authorization: token!,
     },
     body: JSON.stringify(body),
+  });
+
+  console.log(url + response.status);
+
+  return (await response.json()) as Recipe;
+};
+
+export const deleteRecipe = async (recipeID: string) => {
+  const token = await auth().currentUser?.getIdToken(true);
+
+  const url = setRecipeURL + recipeID;
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authorization: token!,
+    },
   });
 
   console.log(url + response.status);

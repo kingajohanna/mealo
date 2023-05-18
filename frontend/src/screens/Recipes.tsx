@@ -28,8 +28,6 @@ export const Recipes = observer(() => {
   const {recipeStore} = useStore();
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
-  const [refreshing, setRefreshing] = useState(false);
-
   const [recipes, setRecipes] = useState(recipeStore.recipes!);
   const [text, setText] = useState('');
   const [category, setCategory] = useState(all);
@@ -103,9 +101,7 @@ export const Recipes = observer(() => {
     navigation.navigate(Tabs.RECIPE, {recipe});
 
   const onRefresh = async () => {
-    setRefreshing(true);
     await recipeStore.refresh();
-    setRefreshing(false);
   };
 
   return (
@@ -113,20 +109,11 @@ export const Recipes = observer(() => {
       <ScreenBackground>
         <Header title={Tabs.RECIPES} />
         <View style={{width: '100%', flex: 1}}>
-          {refreshing ? (
-            <LottieView
-              source={require('../assets/anim/loading.json')}
-              autoPlay
-              loop
-            />
-          ) : (
-            <RecipeList
-              data={recipes}
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              onPress={accessPage}
-            />
-          )}
+          <RecipeList
+            data={recipes}
+            onRefresh={onRefresh}
+            onPress={accessPage}
+          />
         </View>
 
         <SearchModal

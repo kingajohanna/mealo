@@ -88,15 +88,31 @@ router.post(
   }
 );
 
+router.delete(
+  "/edit/:recipeId",
+  authenticateToken,
+  async function (req: Request, res: Response) {
+    const { recipeId } = req.params;
+
+    await Recipe.findOneAndDelete({ id: recipeId });
+
+    return res.status(200).send("deleted");
+  }
+);
+
 router.post(
-  "/favorite/add/:recipeId",
+  "/favorite/:recipeId",
   authenticateToken,
   async function (req: Request, res: Response) {
     const { uid } = res.locals;
     const { recipeId } = req.params;
 
     const user = await User.findOne({ id: uid });
-    await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: true });
+    const recipe = await Recipe.findOne({ id: recipeId });
+
+    if (recipe?.is_favorite)
+      await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: false });
+    else await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: true });
 
     if (user) {
       user.favorites.push(recipeId);
