@@ -21,7 +21,6 @@ export function authenticateToken(
     })
     .catch((error: any) => {
       console.log(error);
-
       return res.status(401).send("Token expired");
     });
 }

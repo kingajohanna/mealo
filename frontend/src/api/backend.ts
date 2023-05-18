@@ -4,17 +4,19 @@ import {BACKEND_URL} from '@env';
 
 const baseUrl = `http://${BACKEND_URL}:3000/`;
 
-export const addRecipeURL = baseUrl + 'recipe/add';
+const addRecipeURL = baseUrl + 'recipe/add';
 
-export const getRecipeURL = baseUrl + 'recipe/get';
+const getRecipeURL = baseUrl + 'recipe/get';
 
-export const addFavRecipeURL = baseUrl + 'recipe/favorite/';
+const addFavRecipeURL = baseUrl + 'recipe/favorite/';
 
-export const addUserURL = baseUrl + 'user/add';
+const addUserURL = baseUrl + 'user/add';
 
-export const deleteUserURL = baseUrl + 'user/delete';
+const deleteUserURL = baseUrl + 'user/delete';
 
-export const setRecipeURL = baseUrl + 'recipe/edit/';
+const setRecipeURL = baseUrl + 'recipe/edit/';
+
+const deleteRecipeURL = baseUrl + 'recipe/delete/';
 
 export const addRecipe = async (url: string) => {
   try {
@@ -100,7 +102,7 @@ export const setRecipe = async (recipeID: string, body: any) => {
 export const deleteRecipe = async (recipeID: string) => {
   const token = await auth().currentUser?.getIdToken(true);
 
-  const url = setRecipeURL + recipeID;
+  const url = deleteRecipeURL + recipeID;
 
   const response = await fetch(url, {
     method: 'DELETE',

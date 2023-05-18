@@ -18,7 +18,7 @@ const firebaseConfig = {
 dotenv.config();
 export const firebaseApp = initializeApp(firebaseConfig);
 
-const app: Express = express();
+export const app: Express = express();
 
 /*
 const { CERT, KEY } = process.env;
@@ -34,8 +34,8 @@ app.listen(PORT, HOST, () => {
   console.log(`Running on http://${HOST}:${PORT}`);
 });
 
-var userRouter = require("./routes/user");
-var recipeRouter = require("./routes/recipe");
+var userRouter = require("./src/routes/user");
+var recipeRouter = require("./src/routes/recipe");
 
 app.use(logger("dev"));
 app.use(express.json());
