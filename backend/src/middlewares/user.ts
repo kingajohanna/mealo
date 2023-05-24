@@ -17,10 +17,9 @@ export async function addUser(req: Request, res: Response, next: NextFunction) {
       await rec.save();
       res.status(201).send(HTTPResponse[201]);
     } catch (error) {
-      console.log(error);
       res.status(500).send(HTTPResponse[500]);
     }
-  else res.status(201).send(HTTPResponse[200]);
+  else res.status(200).send(HTTPResponse[200]);
 }
 
 export async function deleteUser(
@@ -35,7 +34,6 @@ export async function deleteUser(
 
     return res.status(200).send(HTTPResponse[200]);
   } catch (error) {
-    console.log(error);
     res.status(500).send(HTTPResponse[500]);
   }
 }

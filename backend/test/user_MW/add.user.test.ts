@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server-core";
-import { User } from "../src/models/User";
-import { addUser } from "../src/middlewares/user"; // Import the middleware function
-import { HTTPResponse } from "../src/const/HttpRespone";
+import { User } from "../../src/models/User";
+import { addUser } from "../../src/middlewares/user";
+import { HTTPResponse } from "../../src/const/HttpRespone";
 
 let mongoServer: MongoMemoryServer;
 let mongoUri: string;
 
-describe("addUser middleware", () => {
+describe("addUser", () => {
   let req: Request;
   let res: Response;
   let next: NextFunction;
@@ -26,12 +26,10 @@ describe("addUser middleware", () => {
   });
 
   beforeEach(async () => {
-    // Clear the User collection before each test
     await User.deleteMany({});
   });
 
   beforeEach(() => {
-    // Initialize request, response, and next function mocks
     req = {} as Request;
     res = {
       locals: {
@@ -58,21 +56,18 @@ describe("addUser middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("should send a 201 response if user with given UID already exists", async () => {
-    User.prototype.save = jest.fn();
-
-    // Create a user with the same UID before running the test
-    await User.create({
+  it("should send a 200 response when user with given UID already exists", async () => {
+    const mockUser = {
       id: "123456789",
-      email: "existing@example.com",
-    });
+      email: "test@example.com",
+    };
+    User.find = jest.fn().mockResolvedValue([mockUser]);
 
     await addUser(req, res, next);
 
     expect(User.find).toHaveBeenCalledWith({ id: "123456789" });
-    expect(User.prototype.save).toHaveBeenCalledTimes(1);
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.send).toHaveBeenLastCalledWith(HTTPResponse[201]);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith(HTTPResponse[200]);
     expect(next).not.toHaveBeenCalled();
   });
 

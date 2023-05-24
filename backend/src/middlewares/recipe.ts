@@ -14,41 +14,35 @@ export async function addRecipe(
   const id = hashCode(req.body.url + uid);
   const user = await User.findOne({ id: uid });
 
-  if (!user) return res.status(500).send(HTTPResponse[500]);
+  if (!user) {
+    return res.status(500).send(HTTPResponse[500]);
+  }
 
-  if (user.recipes.includes(id)) return res.status(200).send(HTTPResponse[200]);
+  if (user.recipes.includes(id)) {
+    return res.status(200).send(HTTPResponse[200]);
+  }
 
   try {
-    const response = await axios
-      .post(process.env.SCRAPER_URL as string, {
-        url: req.body.url,
-      })
-      .then(async function (response) {
-        if (response) {
-          const rec = new Recipe({
-            id: id,
-            uid: uid,
-            ...response.data,
-          });
-
-          await rec.save();
-          return true;
-        } else false;
-      })
-      .catch(function (error) {
-        console.log(error);
-        return false;
-      });
+    const response = await axios.post(process.env.SCRAPER_URL as string, {
+      url: req.body.url,
+    });
 
     if (response) {
+      const rec = new Recipe({
+        id: id,
+        uid: uid,
+        ...response.data,
+      });
+
+      await rec.save();
+
       user.recipes.push(id);
       await user.save();
       return res.status(201).send(HTTPResponse[201]);
     } else {
-      return res.status(500).send(HTTPResponse[500]);
+      throw new Error();
     }
   } catch (error) {
-    console.log(error);
     return res.status(500).send(HTTPResponse[500]);
   }
 }
@@ -60,13 +54,12 @@ export async function getRecipe(
 ) {
   try {
     const { uid } = res.locals;
-    const user = await User.findOne({ id: uid });
 
-    const recipes: any = await Recipe.find({ uid: user?.id }).lean();
+    const recipes = await Recipe.find({ uid }).lean();
 
-    return res.json(recipes).status(200);
+    res.status(200).json(recipes);
   } catch (error) {
-    return res.status(500).send(HTTPResponse[500]);
+    res.status(500).send(HTTPResponse[500]);
   }
 }
 
@@ -75,15 +68,19 @@ export async function editRecipe(
   res: Response,
   next: NextFunction
 ) {
-  const { recipeId } = req.params;
+  try {
+    const { recipeId } = req.params;
 
-  const body = req.body;
+    const body = req.body;
 
-  const recipe = await Recipe.findOneAndUpdate({ id: recipeId }, body, {
-    new: true,
-  });
+    const recipe = await Recipe.findOneAndUpdate({ id: recipeId }, body, {
+      new: true,
+    });
 
-  return res.status(200).json(recipe);
+    return res.status(200).json(recipe);
+  } catch (error) {
+    return res.status(500).send(HTTPResponse[500]);
+  }
 }
 
 export async function deleteRecipe(
@@ -91,11 +88,15 @@ export async function deleteRecipe(
   res: Response,
   next: NextFunction
 ) {
-  const { recipeId } = req.params;
+  try {
+    const { recipeId } = req.params;
 
-  await Recipe.findOneAndDelete({ id: recipeId });
+    await Recipe.findOneAndDelete({ id: recipeId });
 
-  return res.status(200).send("deleted");
+    return res.status(200).send("deleted");
+  } catch (error) {
+    return res.status(500).send(HTTPResponse[500]);
+  }
 }
 
 export async function favoriteRecipe(
@@ -103,22 +104,32 @@ export async function favoriteRecipe(
   res: Response,
   next: NextFunction
 ) {
-  const { uid } = res.locals;
-  const { recipeId } = req.params;
+  try {
+    const { uid } = res.locals;
+    const { recipeId } = req.params;
 
-  const user = await User.findOne({ id: uid });
-  const recipe = await Recipe.findOne({ id: recipeId });
+    const user = await User.findOne({ id: uid });
+    const recipe = await Recipe.findOne({ id: recipeId });
 
-  if (recipe?.is_favorite)
-    await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: false });
-  else await Recipe.findOneAndUpdate({ id: recipeId }, { is_favorite: true });
+    if (user && recipe) {
+      recipe.is_favorite
+        ? await Recipe.findOneAndUpdate(
+            { id: recipeId },
+            { is_favorite: false }
+          )
+        : await Recipe.findOneAndUpdate(
+            { id: recipeId },
+            { is_favorite: true }
+          );
 
-  if (user) {
-    user.favorites.push(recipeId);
-    await user.save();
+      user.favorites.push(recipeId);
+      await user.save();
 
-    return res.status(200).send(HTTPResponse[200]);
+      return res.status(200).send(HTTPResponse[200]);
+    }
+
+    return res.status(500).send(HTTPResponse[500]);
+  } catch (error) {
+    return res.status(500).send(HTTPResponse[500]);
   }
-
-  return res.status(500).send(HTTPResponse[500]);
 }
