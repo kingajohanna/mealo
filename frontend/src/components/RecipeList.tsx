@@ -3,6 +3,7 @@ import {Recipe} from '../types/recipe';
 import {Animated, Easing, FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
+import {observer} from 'mobx-react-lite';
 
 interface Props {
   data: Recipe[];
@@ -73,20 +74,41 @@ export const RecipeList: FC<Props> = props => {
     );
   };
 
+  if (props.data.length)
+    return (
+      <>
+        <LottieView
+          style={{
+            height: refreshingHeight,
+            position: 'absolute',
+            top: 5,
+            left: 0,
+            right: 0,
+          }}
+          ref={lottieViewRef}
+          source={require('../assets/anim/loading.json')}
+          loop
+        />
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={props.data}
+          renderItem={({item, index}) => renderItem(item, index)}
+          keyExtractor={item => item.id!}
+          onScroll={onScroll}
+          onResponderRelease={onRelease}
+          ListHeaderComponent={
+            <Animated.View
+              style={{
+                paddingTop: extraPaddingTop,
+              }}
+            />
+          }
+        />
+      </>
+    );
+
   return (
     <>
-      <LottieView
-        style={{
-          height: refreshingHeight,
-          position: 'absolute',
-          top: 5,
-          left: 0,
-          right: 0,
-        }}
-        ref={lottieViewRef}
-        source={require('../assets/anim/loading.json')}
-        loop
-      />
       <FlatList
         showsVerticalScrollIndicator={false}
         data={props.data}

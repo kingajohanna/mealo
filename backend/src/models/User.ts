@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
-const userScheme = new mongoose.Schema({
+export interface IUser {
+  id: any;
+  email: string;
+  recipes: any[];
+  favorites: any[];
+}
+
+const userSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
@@ -12,4 +19,4 @@ const userScheme = new mongoose.Schema({
   favorites: { type: Array, default: null },
 });
 
-export const User = mongoose.model("User", userScheme, "users");
+export const User = mongoose.model<IUser>("User", userSchema, "users");

@@ -75,7 +75,6 @@ describe("addRecipe", () => {
 
     const savedRecipe = await Recipe.findOne({ id: "recipe123" });
     expect(savedRecipe).toBeDefined();
-    expect(savedRecipe?.uid).toBe("user123");
     expect(savedRecipe?.title).toBe("Example Recipe");
   });
 

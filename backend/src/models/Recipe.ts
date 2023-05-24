@@ -22,9 +22,10 @@ export interface IRecipe {
   description: string;
   reviews: any[];
   siteName: string;
+  is_favorite: boolean;
 }
 
-const recipeScheme = new mongoose.Schema({
+const recipeSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
@@ -60,4 +61,8 @@ const recipeScheme = new mongoose.Schema({
   is_favorite: { type: Boolean, default: null },
 });
 
-export const Recipe = mongoose.model("Recipe", recipeScheme, "recipes");
+export const Recipe = mongoose.model<IRecipe>(
+  "Recipe",
+  recipeSchema,
+  "recipes"
+);

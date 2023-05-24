@@ -2,7 +2,7 @@ import auth from '@react-native-firebase/auth';
 import {Recipe} from '../types/recipe';
 import {BACKEND_URL} from '@env';
 
-const baseUrl = `http://${BACKEND_URL}:3000/`;
+const baseUrl = `http://127.0.0.1:3000/`;
 
 const addRecipeURL = baseUrl + 'recipe/add';
 
@@ -115,7 +115,7 @@ export const deleteRecipe = async (recipeID: string) => {
 
   console.log(url + response.status);
 
-  return (await response.json()) as Recipe;
+  return;
 };
 
 export const addUser = async () => {

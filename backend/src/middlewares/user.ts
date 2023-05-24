@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTPResponse } from "../const/HttpRespone";
-import { User } from "../models/User";
 import { Recipe } from "../models/Recipe";
+import { User } from "../models/User";
 
 export async function addUser(req: Request, res: Response, next: NextFunction) {
   const { email, uid } = res.locals;

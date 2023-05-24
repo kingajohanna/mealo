@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { HTTPResponse } from "../const/HttpRespone";
 import { hashCode } from "../utils/hash";
 import axios from "axios";
-import { User } from "../models/User";
 import { Recipe } from "../models/Recipe";
+import { User } from "../models/User";
 
 export async function addRecipe(
   req: Request,
@@ -37,7 +37,9 @@ export async function addRecipe(
       await rec.save();
 
       user.recipes.push(id);
+
       await user.save();
+
       return res.status(201).send(HTTPResponse[201]);
     } else {
       throw new Error();
@@ -89,7 +91,17 @@ export async function deleteRecipe(
   next: NextFunction
 ) {
   try {
+    const { uid } = res.locals;
     const { recipeId } = req.params;
+
+    const user = await User.findOne({ id: uid });
+
+    if (!user) {
+      return res.status(404).json(HTTPResponse[404]);
+    }
+
+    user.recipes = user.recipes.filter((recipeId) => recipeId !== recipeId);
+    await user.save();
 
     await Recipe.findOneAndDelete({ id: recipeId });
 
