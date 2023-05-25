@@ -4,6 +4,7 @@ import logger from "morgan";
 import path from "path";
 import * as dotenv from "dotenv";
 import { initializeApp } from "firebase-admin/app";
+import mongoose from "mongoose";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M",
@@ -30,9 +31,14 @@ const originalKey = KEY?.replace(/\\n/g, "\n");
 const PORT = parseInt(process.env.PORT || "", 10);
 const HOST = process.env.HOST as string;
 
-app.listen(PORT, HOST, () => {
-  console.log(`Running on http://${HOST}:${PORT}`);
-});
+mongoose
+  .connect(process.env.DB_URL as string)
+  .then(() => {
+    app.listen(PORT, HOST, () => {
+      console.log(`Running on http://${HOST}:${PORT}`);
+    });
+  })
+  .catch((err) => {});
 
 var userRouter = require("./src/routes/user");
 var recipeRouter = require("./src/routes/recipe");
