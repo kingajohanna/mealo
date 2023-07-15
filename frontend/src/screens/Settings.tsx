@@ -16,7 +16,7 @@ export const Settings = () => {
 
   const onSignout = () => {
     try {
-      Alert.alert('Logout', `Click OK to logout!`, [
+      Alert.alert('Logout', 'Click OK to logout!', [
         {
           text: 'Cancel',
           onPress: () => {},
@@ -39,7 +39,7 @@ export const Settings = () => {
     try {
       Alert.alert(
         'Delete',
-        `Are you sure you want to delete your whole account?`,
+        'Are you sure you want to delete your whole account?',
         [
           {
             text: 'Delete',

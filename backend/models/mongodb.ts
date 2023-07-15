@@ -8,7 +8,8 @@ async function main() {
 }
 
 export interface IRecipe {
-  id: any;
+  id: number;
+  uid: number;
   host: string;
   canonical_url: string;
   title: string;

@@ -59,8 +59,9 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
   );
 
   useEffect(() => {
-    if (instructions[instructions.length - 3]?.includes('Ha tetszett'))
+    if (instructions[instructions.length - 3]?.includes('Ha tetszett')) {
       setInstructions(instructions.slice(0, instructions.length - 3));
+    }
   });
 
   const openEditModal = (type: EditModalTypes | undefined) => {
@@ -274,7 +275,8 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
                   {item}
                 </Text>
               </View>
-            )}></FlatList>
+            )}
+          />
           <Dots
             length={instructions.length}
             active={activeDot}

@@ -3,7 +3,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {observer} from 'mobx-react-lite';
 import * as React from 'react';
 import {useState} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {View} from 'react-native';
 import {ScreenBackground} from '../components/Background';
 import {Header} from '../components/Header';
 import {RecipeListComponent} from '../components/RecipeListComponent';

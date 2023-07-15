@@ -24,8 +24,11 @@ export const RootNavigation = () => {
   });
 
   useEffect(() => {
-    if (loggedIn) userStore.setIsLoggedIn(true);
-    else userStore.setIsLoggedIn(false);
+    if (loggedIn) {
+      userStore.setIsLoggedIn(true);
+    } else {
+      userStore.setIsLoggedIn(false);
+    }
   }, [loggedIn]);
 
   useEffect(() => {
@@ -43,9 +46,9 @@ export const RootNavigation = () => {
 
     const url = Array.isArray(data) ? data[0] : data;
 
-    if (url.match(urlCheck) && Platform.OS === 'ios')
+    if (url.match(urlCheck) && Platform.OS === 'ios') {
       recipeStore.addRecipe(url);
-    else {
+    } else {
       Alert.alert(
         'Add recipe',
         'Do you want to add this recipe to your collection?',

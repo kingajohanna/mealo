@@ -32,10 +32,12 @@ export default class RecipeStore {
     const categories: string[] = [all];
     const cuisines: string[] = [all];
     recipes?.map(recipe => {
-      if (recipe.category && !categories.includes(recipe.category))
+      if (recipe.category && !categories.includes(recipe.category)) {
         categories.push(recipe.category);
-      if (recipe.cuisine && !cuisines.includes(recipe.cuisine))
+      }
+      if (recipe.cuisine && !cuisines.includes(recipe.cuisine)) {
         cuisines.push(recipe.cuisine);
+      }
     });
 
     runInAction(() => {

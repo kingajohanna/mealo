@@ -30,9 +30,16 @@ const originalKey = KEY?.replace(/\\n/g, "\n");
 const PORT = parseInt(process.env.PORT || "", 10);
 const HOST = process.env.HOST as string;
 
-app.listen(PORT, HOST, () => {
-  console.log(`Running on http://${HOST}:${PORT}`);
-});
+mongoose
+  .connect(process.env.DB_URL as string)
+  .then(() => {
+    app.listen(PORT, HOST, () => {
+      console.log(`Running on http://${HOST}:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 var userRouter = require("./routes/user");
 var recipeRouter = require("./routes/recipe");

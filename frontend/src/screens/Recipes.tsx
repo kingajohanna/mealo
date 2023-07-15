@@ -1,8 +1,7 @@
 import {observer} from 'mobx-react-lite';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import {ScreenBackground} from '../components/Background';
-import {RecipeListComponent} from '../components/RecipeListComponent';
 import {Tabs} from '../navigation/tabs';
 import {useStore} from '../stores';
 import {useNavigation} from '@react-navigation/core';
@@ -15,7 +14,6 @@ import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
-import LottieView from 'lottie-react-native';
 import {RecipeList} from '../components/RecipeList';
 
 export enum Time {
@@ -51,8 +49,9 @@ export const Recipes = observer(() => {
         cuisine === all &&
         text === '' &&
         time === undefined
-      )
+      ) {
         return setRecipes(recipeStore.recipes);
+      }
 
       const keys: string[] = [];
       const values: string[] = [];
