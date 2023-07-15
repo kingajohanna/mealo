@@ -4,6 +4,7 @@ import logger from "morgan";
 import path from "path";
 import * as dotenv from "dotenv";
 import { initializeApp } from "firebase-admin/app";
+import mongoose from "mongoose";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M",
@@ -18,7 +19,7 @@ const firebaseConfig = {
 dotenv.config();
 export const firebaseApp = initializeApp(firebaseConfig);
 
-const app: Express = express();
+export const app: Express = express();
 
 /*
 const { CERT, KEY } = process.env;
@@ -41,8 +42,8 @@ mongoose
     console.log(err);
   });
 
-var userRouter = require("./routes/user");
-var recipeRouter = require("./routes/recipe");
+var userRouter = require("./src/routes/user");
+var recipeRouter = require("./src/routes/recipe");
 
 app.use(logger("dev"));
 app.use(express.json());

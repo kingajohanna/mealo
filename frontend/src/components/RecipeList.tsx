@@ -3,6 +3,7 @@ import {Recipe} from '../types/recipe';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
+import {observer} from 'mobx-react-lite';
 
 interface Props {
   data: Recipe[];
