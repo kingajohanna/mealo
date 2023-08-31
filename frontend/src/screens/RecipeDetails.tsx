@@ -112,6 +112,15 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
     return;
   };
 
+  const MenuItem = ({onPress, title}: {onPress: () => void; title: string}) => (
+    <Menu.Item onPress={onPress} style={styles.menu} title={title} />
+  );
+
+  const setOpenMenuAndEdit = (type: EditModalTypes) => {
+    setOpenMenu(false);
+    openEditModal(type);
+  };
+
   const renderMenu = (
     <Menu
       contentStyle={styles.menu}
@@ -128,36 +137,28 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
           onPress={() => setOpenMenu(!openMenu)}
         />
       }>
-      <Menu.Item
+      <MenuItem
         onPress={() => {
-          setOpenMenu(false);
-          openEditModal(EditModalTypes.title);
+          setOpenMenuAndEdit(EditModalTypes.title);
         }}
-        style={styles.menu}
         title="Edit title"
       />
-      <Menu.Item
+      <MenuItem
         onPress={() => {
-          setOpenMenu(false);
-          openEditModal(EditModalTypes.category);
+          setOpenMenuAndEdit(EditModalTypes.category);
         }}
-        style={styles.menu}
         title="Edit category"
       />
-      <Menu.Item
+      <MenuItem
         onPress={() => {
-          setOpenMenu(false);
-          openEditModal(EditModalTypes.time);
+          setOpenMenuAndEdit(EditModalTypes.time);
         }}
-        style={styles.menu}
         title="Edit total time"
       />
-      <Menu.Item
+      <MenuItem
         onPress={() => {
-          setOpenMenu(false);
-          openEditModal(EditModalTypes.cuisine);
+          setOpenMenuAndEdit(EditModalTypes.cuisine);
         }}
-        style={styles.menu}
         title="Edit cuisine"
       />
     </Menu>
@@ -172,74 +173,61 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
     />
   );
 
+  const renderImage = () => {
+    return (
+      <View>
+        <FastImage
+          style={{height: 250}}
+          source={{
+            uri: image,
+            priority: FastImage.priority.normal,
+          }}
+        />
+        <View style={styles.imageOverlay} />
+        <View style={styles.textOverlay}>
+          <View style={styles.timerIconStyle}>
+            {totalTime && (
+              <View style={styles.timerRow}>
+                <MaterialCommunityIcons
+                  name="timer-outline"
+                  color={Colors.textLight}
+                  size={28}
+                />
+
+                <Text style={styles.timerText}>{totalTime} min</Text>
+              </View>
+            )}
+            {yields && (
+              <View style={styles.timerRow}>
+                <Image
+                  style={{width: 30, height: 30}}
+                  source={require('../assets/images/yields.png')}
+                />
+                <Text style={styles.timerText}>{yields}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <ScreenBackground>
       <Header title={recipe.title} menu={renderMenu} back={renderBack} />
-      <ScrollView style={{width: '100%'}} showsVerticalScrollIndicator={false}>
-        <View>
-          <FastImage
-            style={{height: 250}}
-            source={{
-              uri: image,
-              priority: FastImage.priority.normal,
-            }}
-          />
-          <View style={styles.imageOverlay} />
-          <View style={styles.textOverlay}>
-            <View style={styles.timerIconStyle}>
-              {totalTime && (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingBottom: 4,
-                  }}>
-                  <MaterialCommunityIcons
-                    name="timer-outline"
-                    color={Colors.textLight}
-                    size={28}
-                  />
-
-                  <Text
-                    style={{
-                      color: Colors.textLight,
-                      paddingLeft: 10,
-                      fontSize: 18,
-                    }}>
-                    {totalTime} min
-                  </Text>
-                </View>
-              )}
-              {yields && (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    style={{width: 30, height: 30}}
-                    source={require('../assets/images/yields.png')}
-                  />
-
-                  <Text
-                    style={{
-                      color: Colors.textLight,
-                      paddingLeft: 10,
-                      fontSize: 18,
-                    }}>
-                    {yields}
-                  </Text>
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
-
-        <View style={{padding: 10, paddingBottom: 40}}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
+        {renderImage()}
+        <View style={styles.contentContainer}>
           <List.Accordion
             theme={{colors: {background: 'transparent', text: Colors.pine}}}
-            style={{backgroundColor: 'transparent'}}
+            style={styles.listAccordion}
             title="Ingredients"
             id="1"
             expanded={openIngredients}
             onPress={() => setOpenIngredients(!openIngredients)}
-            titleStyle={{color: Colors.pine, fontSize: 18}}>
+            titleStyle={styles.listAccordionTitle}>
             <View style={styles.ingredientsContainer}>
               {ingredients.map((ingredient, index) => {
                 return (
@@ -262,16 +250,8 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
             renderItem={({item, index}) => (
               <View
                 key={'instruction' + index}
-                style={{
-                  backgroundColor: Colors.beige,
-                  width: width - 20,
-                  borderRadius: 10,
-                  padding: 10,
-                  paddingLeft: 0,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={[styles.text]} key={'instruction' + index}>
+                style={[styles.instructionContainer, {width: width - 20}]}>
+                <Text style={styles.text} key={'instruction' + index}>
                   {item}
                 </Text>
               </View>
@@ -349,6 +329,16 @@ const styles = StyleSheet.create({
     bottom: 10,
     alignItems: 'flex-start',
   },
+  timerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 4,
+  },
+  timerText: {
+    color: Colors.textLight,
+    paddingLeft: 10,
+    fontSize: 18,
+  },
   ingredientsContainer: {
     backgroundColor: Colors.beige,
     borderRadius: 10,
@@ -361,5 +351,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'transparent',
+  },
+  scrollView: {
+    width: '100%',
+  },
+  contentContainer: {
+    padding: 10,
+    paddingBottom: 40,
+  },
+  listAccordion: {
+    backgroundColor: 'transparent',
+  },
+  listAccordionTitle: {
+    color: Colors.pine,
+    fontSize: 18,
+  },
+  instructionContainer: {
+    backgroundColor: Colors.beige,
+    borderRadius: 10,
+    padding: 10,
+    paddingLeft: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -15,8 +15,8 @@ export const all = 'All';
 export default class RecipeStore {
   recipes: Recipe[] = [];
   favourites: Recipe[] = [];
-  categories: string[] = [all, 'ebéd', 'vacsi'];
-  cuisines: string[] = [all, 'kínai', 'olasz'];
+  categories: string[] = [all];
+  cuisines: string[] = [all];
 
   constructor() {
     makeAutoObservable(this, {}, {autoBind: true});
@@ -28,10 +28,10 @@ export default class RecipeStore {
   }
 
   async setRecipes() {
-    const recipes = await getRecipes();
+    const recipes = (await getRecipes()) || [];
     const categories: string[] = [all];
     const cuisines: string[] = [all];
-    recipes?.map(recipe => {
+    recipes.forEach(recipe => {
       if (recipe.category && !categories.includes(recipe.category)) {
         categories.push(recipe.category);
       }
@@ -41,7 +41,7 @@ export default class RecipeStore {
     });
 
     runInAction(() => {
-      this.recipes = recipes!;
+      this.recipes = recipes;
       this.categories = categories;
       this.cuisines = cuisines;
     });

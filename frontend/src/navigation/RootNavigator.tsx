@@ -9,26 +9,22 @@ import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
 import {addRecipe} from '../api/backend';
 import RNBootSplash from 'react-native-bootsplash';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
 
 export const RootNavigation = () => {
   const {userStore, recipeStore} = useStore();
-
   const [loggedIn, setLoggedIn] = useState(false);
 
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
+  GoogleSignin.configure({
+    webClientId: WEB_CLIENT_ID,
+    iosClientId: IOS_CLIENT_ID,
   });
 
+  firebase.auth().onAuthStateChanged(user => setLoggedIn(!!user));
+
   useEffect(() => {
-    if (loggedIn) {
-      userStore.setIsLoggedIn(true);
-    } else {
-      userStore.setIsLoggedIn(false);
-    }
+    userStore.setIsLoggedIn(loggedIn);
   }, [loggedIn]);
 
   useEffect(() => {
@@ -36,6 +32,14 @@ export const RootNavigation = () => {
       recipeStore.setRecipes();
     }
   }, [loggedIn]);
+
+  useEffect(() => {
+    ShareMenu.getInitialShare(handleShare);
+    const listener = ShareMenu.addNewShareListener(handleShare);
+    return () => {
+      listener.remove();
+    };
+  }, []);
 
   const handleShare: ShareCallback = useCallback((share?: ShareData) => {
     if (!share) {
@@ -67,18 +71,6 @@ export const RootNavigation = () => {
         ],
       );
     }
-  }, []);
-
-  useEffect(() => {
-    ShareMenu.getInitialShare(handleShare);
-  }, []);
-
-  useEffect(() => {
-    const listener = ShareMenu.addNewShareListener(handleShare);
-
-    return () => {
-      listener.remove();
-    };
   }, []);
 
   return (

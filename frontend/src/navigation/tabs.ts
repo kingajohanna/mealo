@@ -6,3 +6,7 @@ export enum Tabs {
   RECIPENAVIGATOR = 'RecipeNavigator',
   RECIPEFAVNAVIGATOR = 'RecipeFavNavigator',
 }
+
+export enum AuthTabs {
+  LOGIN = 'Login',
+}

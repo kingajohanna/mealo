@@ -1,13 +1,5 @@
 import React, {useRef} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  PressableProps,
-  Pressable,
-  Animated,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, Text, Pressable, Animated, Alert} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,7 +10,8 @@ import {Recipe} from '../types/recipe';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
-} & PressableProps;
+  onPress: () => void;
+};
 
 export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   recipe,
@@ -33,12 +26,9 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
     }
   };
 
-  const renderRightAction = (
-    text: string,
-    dragX: {
-      interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
-    },
-  ) => {
+  const renderRightAction = (dragX: {
+    interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
+  }) => {
     const trans = dragX.interpolate({
       inputRange: [0, 0, 100, 104],
       outputRange: [0, 0, 0, 0],
@@ -81,21 +71,15 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
         }}>
         <Pressable
           style={{...styles.swipeableButton, backgroundColor: Colors.red}}
-          onPress={() => {
-            deleteHandler();
-          }}>
+          onPress={deleteHandler}>
           <MaterialIcons name="delete" color={Colors.textLight} size={32} />
         </Pressable>
-        <Pressable
-          style={{...styles.swipeableButton}}
-          onPress={() => {
-            favHandler();
-          }}>
-          {recipe.is_favorite ? (
-            <Icon name="heart" color={Colors.pine} size={32} />
-          ) : (
-            <Icon name="heart-outline" color={Colors.pine} size={32} />
-          )}
+        <Pressable style={styles.swipeableButton} onPress={favHandler}>
+          <Icon
+            name={recipe.is_favorite ? 'heart' : 'heart-outline'}
+            color={Colors.pine}
+            size={32}
+          />
         </Pressable>
       </Animated.View>
     );
@@ -104,12 +88,8 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   const renderRightActions = (progress: {
     interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
   }) => (
-    <View
-      style={{
-        width: 150,
-        flexDirection: 'row',
-      }}>
-      {renderRightAction('More', progress)}
+    <View style={styles.rightActionsContainer}>
+      {renderRightAction(progress)}
     </View>
   );
 
@@ -123,7 +103,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
             priority: FastImage.priority.normal,
           }}>
           <View style={styles.overlay} />
-          <View style={{padding: 15, paddingLeft: 30}}>
+          <View style={styles.infoContainer}>
             <Text style={styles.title}>{recipe.title}</Text>
             {recipe.yields && <Text style={styles.text}>{recipe.yields}</Text>}
             {recipe.totalTime && (
@@ -163,6 +143,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
+  infoContainer: {
+    padding: 15,
+    paddingLeft: 30,
+  },
   title: {
     fontSize: 18,
     color: Colors.textLight,
@@ -174,10 +158,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textLight,
   },
-  rightAction: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
+  rightActionsContainer: {
+    width: 150,
+    flexDirection: 'row',
   },
   swipeableButton: {
     alignItems: 'center',

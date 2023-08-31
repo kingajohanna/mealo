@@ -9,6 +9,8 @@ import {Time} from '../screens/Recipes';
 import {Button} from 'react-native-paper';
 import {observer} from 'mobx-react-lite';
 
+const {height} = Dimensions.get('window');
+
 interface SearchModalProps {
   refRBSheet: React.MutableRefObject<RBSheet>;
   onChangeText: React.Dispatch<React.SetStateAction<string>>;
@@ -22,8 +24,6 @@ interface SearchModalProps {
   reset: () => void;
   search: () => void;
 }
-
-const {height} = Dimensions.get('window');
 
 export const SearchModal: React.FC<SearchModalProps> = observer(
   ({
@@ -46,6 +46,36 @@ export const SearchModal: React.FC<SearchModalProps> = observer(
       return rule ? Colors.pine : Colors.green;
     };
 
+    const renderTimeIcon = (timeType: Time) => {
+      const isActive = time === timeType;
+      const backgroundColor = isActive ? Colors.pine : Colors.green;
+
+      const getIconName = (timeType: Time) => {
+        switch (timeType) {
+          case Time.fast:
+            return 'speedometer';
+          case Time.moderate:
+            return 'speedometer-medium';
+          default:
+            return 'speedometer-slow';
+        }
+      };
+
+      console.log(getIconName(timeType));
+
+      return (
+        <MaterialCommunityIcons
+          name={getIconName(timeType)}
+          color={getColor(isActive)}
+          size={50}
+          style={{...styles.icon, backgroundColor}}
+          onPress={() => {
+            setTime(isActive ? undefined : timeType);
+          }}
+        />
+      );
+    };
+
     return (
       <RBSheet
         ref={refRBSheet}
@@ -53,118 +83,45 @@ export const SearchModal: React.FC<SearchModalProps> = observer(
         closeOnPressMask={true}
         height={height * 0.7}
         customStyles={{
-          wrapper: {
-            backgroundColor: 'rgba(0,0,0,0.5)',
-          },
-          draggableIcon: {
-            backgroundColor: '#000',
-          },
-          container: {
-            borderColor: Colors.salmon,
-            borderTopWidth: 3,
-            borderTopLeftRadius: 15,
-            borderTopRightRadius: 15,
-            padding: 20,
-            paddingBottom: 5,
-            flex: 1,
-            backgroundColor: Colors.beige,
-          },
+          wrapper: styles.wrapper,
+          draggableIcon: styles.draggableIcon,
+          container: styles.container,
         }}>
         <TextInput
-          style={{
-            borderWidth: 1,
-            padding: 10,
-            borderRadius: 10,
-            marginHorizontal: 8,
-            borderColor: Colors.pine,
-            backgroundColor: Colors.beige,
-          }}
+          style={styles.titleText}
           placeholderTextColor={Colors.textDark}
           onChangeText={onChangeText}
           value={text}
           placeholder="Search recipes"
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            height: 50,
-            alignItems: 'center',
-            alignSelf: 'center',
-            marginTop: 20,
-          }}>
-          <MaterialCommunityIcons
-            name="speedometer-slow"
-            color={getColor(time === Time.fast)}
-            size={50}
-            style={{
-              ...{
-                backgroundColor: getColor(time !== Time.fast),
-              },
-              ...styles.icon,
-            }}
-            onPress={() => {
-              time === Time.fast ? setTime(undefined) : setTime(Time.fast);
-            }}
-          />
-          <MaterialCommunityIcons
-            name="speedometer-medium"
-            color={getColor(time === Time.moderate)}
-            size={50}
-            style={{
-              ...{
-                backgroundColor: getColor(time !== Time.moderate),
-              },
-              ...styles.icon,
-            }}
-            onPress={() => {
-              time === Time.moderate
-                ? setTime(undefined)
-                : setTime(Time.moderate);
-            }}
-          />
-          <MaterialCommunityIcons
-            name="speedometer"
-            color={getColor(time === Time.slow)}
-            size={50}
-            style={{
-              ...{
-                backgroundColor: getColor(time !== Time.slow),
-              },
-              ...styles.icon,
-            }}
-            onPress={() => {
-              time === Time.slow ? setTime(undefined) : setTime(Time.slow);
-            }}
-          />
+        <View style={styles.timeContainer}>
+          {renderTimeIcon(Time.fast)}
+          {renderTimeIcon(Time.moderate)}
+          {renderTimeIcon(Time.slow)}
         </View>
-        <View style={{flexDirection: 'row'}}>
+        <View style={styles.rowContainer}>
           {categories && (
             <Picker
-              style={{width: '50%'}}
+              style={styles.halfWidth}
               selectedValue={category}
               onValueChange={itemValue => setCategory(itemValue)}>
               {categories.map((cat, index) => (
-                <Picker.Item label={cat} value={cat} key={'category' + index} />
+                <Picker.Item label={cat} value={cat} key={`category${index}`} />
               ))}
             </Picker>
           )}
           {cuisines && (
             <Picker
-              style={{width: '50%'}}
+              style={styles.halfWidth}
               selectedValue={cuisine}
               onValueChange={itemValue => setCuisine(itemValue)}>
               {cuisines.map((cui, index) => (
-                <Picker.Item label={cui} value={cui} key={'cuisine' + index} />
+                <Picker.Item label={cui} value={cui} key={`cuisine${index}`} />
               ))}
             </Picker>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginHorizontal: 8,
-          }}>
+        <View style={styles.buttonContainer}>
           <Button
             style={styles.button}
             textColor={Colors.textLight}
@@ -196,5 +153,47 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '47%',
     backgroundColor: Colors.pine,
+  },
+  wrapper: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  draggableIcon: {
+    backgroundColor: '#000',
+  },
+  container: {
+    borderColor: Colors.salmon,
+    borderTopWidth: 3,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    padding: 20,
+    paddingBottom: 5,
+    flex: 1,
+    backgroundColor: Colors.beige,
+  },
+  titleText: {
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 8,
+    borderColor: Colors.pine,
+    backgroundColor: Colors.beige,
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    height: 50,
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  halfWidth: {
+    width: '50%',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 8,
+  },
+  rowContainer: {
+    flexDirection: 'row',
   },
 });

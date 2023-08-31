@@ -10,7 +10,7 @@ interface ITextFieldProps extends TextInputProps {
   textFieldStyle?: any;
 }
 
-const TextField = (props: ITextFieldProps) => {
+export const AuthTextField = (props: ITextFieldProps) => {
   const {width = '85%', textFieldStyle} = props;
   return (
     <TextInput
@@ -20,5 +20,3 @@ const TextField = (props: ITextFieldProps) => {
     />
   );
 };
-
-export default TextField;
