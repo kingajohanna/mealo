@@ -2,150 +2,81 @@ import auth from '@react-native-firebase/auth';
 import {Recipe} from '../types/recipe';
 import {BACKEND_URL} from '@env';
 
-const baseUrl = `http://127.0.0.1:3000/`;
+const baseUrl = `http://${BACKEND_URL}:3000/`;
 
-const addRecipeURL = baseUrl + 'recipe/add';
+const endpoints = {
+  addRecipe: 'recipe/add',
+  getRecipe: 'recipe/get',
+  addFavRecipe: 'recipe/favorite/',
+  addUser: 'user/add',
+  deleteUser: 'user/delete',
+  setRecipe: 'recipe/edit/',
+  deleteRecipe: 'recipe/delete/',
+};
 
-const getRecipeURL = baseUrl + 'recipe/get';
-
-const addFavRecipeURL = baseUrl + 'recipe/favorite/';
-
-const addUserURL = baseUrl + 'user/add';
-
-const deleteUserURL = baseUrl + 'user/delete';
-
-const setRecipeURL = baseUrl + 'recipe/edit/';
-
-const deleteRecipeURL = baseUrl + 'recipe/delete/';
-
-export const addRecipe = async (url: string) => {
+const fetchWithAuthorization = async (
+  url: string,
+  method: string,
+  body?: any,
+  responseIsJson = false,
+) => {
   try {
     const token = await auth().currentUser?.getIdToken(true);
 
-    const response = await fetch(addRecipeURL, {
-      method: 'PUT',
+    const response = await fetch(baseUrl + url, {
+      method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         authorization: token!,
       },
-      body: JSON.stringify({
-        url: url,
-      }),
+      body: body ? JSON.stringify(body) : undefined,
     });
-    console.log(addRecipeURL + response.status);
 
+    if (responseIsJson) return await response.json();
     return response;
   } catch (error) {
     console.log(error);
   }
 };
 
+export const addRecipe = async (url: string) => {
+  return await fetchWithAuthorization(endpoints.addRecipe, 'PUT', {url});
+};
+
 export const editFavRecipe = async (recipeID: string) => {
-  const token = await auth().currentUser?.getIdToken(true);
-
-  const url = addFavRecipeURL + recipeID + '/';
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: token!,
-    },
-  });
-  console.log('addfav', response);
-
-  return response;
+  return await fetchWithAuthorization(
+    endpoints.addFavRecipe + recipeID + '/',
+    'POST',
+  );
 };
 
 export const getRecipes = async () => {
-  try {
-    const token = await auth().currentUser?.getIdToken();
-
-    const response = await fetch(getRecipeURL, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        authorization: token!,
-      },
-    });
-    console.log(getRecipeURL + response.status);
-
-    return (await response.json()) as Recipe[];
-  } catch (error) {
-    console.log(error);
-  }
+  return (await fetchWithAuthorization(
+    endpoints.getRecipe,
+    'GET',
+    undefined,
+    true,
+  )) as Recipe[];
 };
 
 export const setRecipe = async (recipeID: string, body: any) => {
-  const token = await auth().currentUser?.getIdToken(true);
-
-  const url = setRecipeURL + recipeID;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: token!,
-    },
-    body: JSON.stringify(body),
-  });
-
-  console.log(url + response.status);
-
-  return (await response.json()) as Recipe;
+  return (await fetchWithAuthorization(
+    endpoints.setRecipe + recipeID,
+    'POST',
+    body,
+    true,
+  )) as Recipe;
 };
 
 export const deleteRecipe = async (recipeID: string) => {
-  const token = await auth().currentUser?.getIdToken(true);
-
-  const url = deleteRecipeURL + recipeID;
-
-  const response = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: token!,
-    },
-  });
-
-  console.log(url + response.status);
-
-  return;
+  await fetchWithAuthorization(endpoints.deleteRecipe + recipeID, 'DELETE');
 };
 
 export const addUser = async () => {
-  const token = await auth().currentUser?.getIdToken(true);
-
-  const response = await fetch(addUserURL, {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: token!,
-    },
-  });
-  console.log(addUserURL + response.status);
-
-  return response;
+  return await fetchWithAuthorization(endpoints.addUser, 'PUT');
 };
 
 export const deleteUser = async () => {
-  const token = await auth().currentUser?.getIdToken(true);
-
-  const response = await fetch(deleteUserURL, {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: token!,
-    },
-  });
-  console.log(deleteUserURL + response.status);
-
-  return response;
+  return await fetchWithAuthorization(endpoints.deleteUser, 'DELETE');
 };

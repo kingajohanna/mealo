@@ -3,7 +3,6 @@ import {Recipe} from '../types/recipe';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
-import {observer} from 'mobx-react-lite';
 
 interface Props {
   data: Recipe[];
@@ -17,28 +16,16 @@ export const RecipeList: FC<Props> = props => {
   const lottieViewRef = useRef<LottieView>(null);
 
   const renderItem = (item: Recipe, index: number) => {
-    if (index === 0) {
-      return (
-        <View style={{paddingTop: 25}}>
-          <RecipeListComponent
-            recipe={item}
-            onPress={() => props.onPress(item)}
-          />
-        </View>
-      );
-    }
-    if (index === props.data.length - 1) {
-      return (
-        <View style={{paddingBottom: 30}}>
-          <RecipeListComponent
-            recipe={item}
-            onPress={() => props.onPress(item)}
-          />
-        </View>
-      );
-    }
+    const paddingTop = index === 0 ? 25 : 0;
+    const paddingBottom = index === props.data.length - 1 ? 30 : 0;
+
     return (
-      <RecipeListComponent recipe={item} onPress={() => props.onPress(item)} />
+      <View style={{paddingTop, paddingBottom}}>
+        <RecipeListComponent
+          recipe={item}
+          onPress={() => props.onPress(item)}
+        />
+      </View>
     );
   };
 

@@ -1,10 +1,9 @@
 import {Recipes} from '../screens/Recipes';
 import {Colors} from '../theme/colors';
 import {Tabs} from './tabs';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import * as React from 'react';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {androidBottomPadding} from '../utils/androidHelper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -60,7 +59,7 @@ function RecipeFavNavigator() {
 
 export const AppNavigator = () => {
   return (
-    <SafeAreaProvider style={{backgroundColor: Colors.beige}}>
+    <SafeAreaProvider style={styles.container}>
       <Tab.Navigator
         activeColor={Colors.beige}
         inactiveColor={Colors.beigeOp}
@@ -102,6 +101,9 @@ export const AppNavigator = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.beige,
+  },
   tabBar: {
     position: 'absolute',
     borderWidth: 0.5,

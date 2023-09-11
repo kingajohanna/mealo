@@ -77,17 +77,13 @@ export const Recipes = observer(() => {
       }
 
       const filter = (recipe: Recipe) => {
-        for (let i = 0; i < keys.length; i++) {
-          const value = recipe[keys[i]];
-          if (
+        return keys.every((key, i) => {
+          const value = recipe[key];
+          return (
             typeof value === 'string' &&
             value.toLowerCase().includes(values[i].toLowerCase())
-          ) {
-            continue;
-          }
-          return false;
-        }
-        return true;
+          );
+        });
       };
 
       const filteredRecipes = recipeStore.recipes?.filter(filter);
@@ -107,7 +103,7 @@ export const Recipes = observer(() => {
     <>
       <ScreenBackground>
         <Header title={Tabs.RECIPES} />
-        <View style={{width: '100%', flex: 1}}>
+        <View style={styles.contentContainer}>
           <RecipeList
             data={recipes}
             onRefresh={onRefresh}
@@ -155,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   contentContainer: {
+    width: '100%',
     flex: 1,
-    alignItems: 'center',
   },
 });

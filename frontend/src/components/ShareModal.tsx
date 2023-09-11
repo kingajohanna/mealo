@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import {View} from 'react-native';
 
 import {ShareMenuReactView} from 'react-native-share-menu';
 import Dialog from 'react-native-dialog';
-
-const height = Dimensions.get('window').height;
 
 const Share = () => {
   const [sharedData, setSharedData] = useState('');
@@ -38,35 +36,5 @@ const Share = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: height / 3,
-    width: '100%',
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  destructive: {
-    color: 'red',
-  },
-  send: {
-    color: 'blue',
-  },
-  sending: {
-    color: 'grey',
-  },
-  image: {
-    width: '100%',
-    height: 200,
-  },
-  buttonGroup: {
-    alignItems: 'center',
-  },
-});
 
 export default Share;
