@@ -2,7 +2,6 @@
   "name": "mealo-backend",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "nodemon app.ts",
     "test": "jest --coverage",
