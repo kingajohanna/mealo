@@ -61,8 +61,6 @@ export const SearchModal: React.FC<SearchModalProps> = observer(
         }
       };
 
-      console.log(getIconName(timeType));
-
       return (
         <MaterialCommunityIcons
           name={getIconName(timeType)}

@@ -33,8 +33,6 @@ const fetchWithAuthorization = async (
       body: body ? JSON.stringify(body) : undefined,
     });
 
-    console.log(baseUrl + url + ' ' + response.status);
-
     if (responseIsJson) return await response.json();
     return response;
   } catch (error) {
