@@ -38,7 +38,9 @@ mongoose
       console.log(`Running on http://${HOST}:${PORT}`);
     });
   })
-  .catch((err) => {});
+  .catch((err) => {
+    console.log(err);
+  });
 
 var userRouter = require("./src/routes/user");
 var recipeRouter = require("./src/routes/recipe");

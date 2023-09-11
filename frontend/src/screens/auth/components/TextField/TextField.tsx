@@ -1,9 +1,9 @@
-import * as React from "react";
-import { TextInput, TextInputProps } from "react-native";
+import * as React from 'react';
+import {TextInput, TextInputProps} from 'react-native';
 /**
  * ? Local Imports
  */
-import { _textInputStyle } from "./TextField.style";
+import {_textInputStyle} from './TextField.style';
 
 interface ITextFieldProps extends TextInputProps {
   width?: number | string;
@@ -11,7 +11,7 @@ interface ITextFieldProps extends TextInputProps {
 }
 
 const TextField = (props: ITextFieldProps) => {
-  const { width = "85%", textFieldStyle } = props;
+  const {width = '85%', textFieldStyle} = props;
   return (
     <TextInput
       placeholderTextColor="#ccc"

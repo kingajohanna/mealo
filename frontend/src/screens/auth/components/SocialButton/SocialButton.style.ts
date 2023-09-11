@@ -1,4 +1,4 @@
-import { ViewStyle, TextStyle, StyleSheet } from "react-native";
+import {ViewStyle, TextStyle, StyleSheet} from 'react-native';
 
 interface Style {
   buttonTextStyle: TextStyle;
@@ -22,9 +22,9 @@ export const _container = (
   width,
   height,
   backgroundColor,
-  marginLeft: "auto",
-  alignItems: "center",
-  justifyContent: "center",
+  marginLeft: 'auto',
+  alignItems: 'center',
+  justifyContent: 'center',
   borderTopLeftRadius: 16,
   borderBottomLeftRadius: 16,
 });
@@ -32,6 +32,6 @@ export const _container = (
 export default StyleSheet.create<Style>({
   buttonTextStyle: {
     fontSize: 28,
-    color: "#fdfdfd",
+    color: '#fdfdfd',
   },
 });

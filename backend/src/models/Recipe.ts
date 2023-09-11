@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 
 export interface IRecipe {
-  id: any;
+  id: number;
+  uid: number;
   host: string;
   canonical_url: string;
   title: string;

@@ -7,9 +7,7 @@ import {baseTheme} from './theme/paperTheme';
 export default function App() {
   return (
     <PaperProvider theme={baseTheme}>
-      <SafeAreaProvider>
-        <RootNavigation />
-      </SafeAreaProvider>
+      <RootNavigation />
     </PaperProvider>
   );
 }

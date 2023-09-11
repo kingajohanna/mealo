@@ -33,6 +33,7 @@ npm-debug.log
 .DS_Store
 
 .env
+.docker.env
 
 cert.pem
 csr.pem

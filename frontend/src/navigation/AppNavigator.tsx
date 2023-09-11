@@ -65,8 +65,7 @@ export const AppNavigator = () => {
         activeColor={Colors.beige}
         inactiveColor={Colors.beigeOp}
         initialRouteName={Tabs.RECIPENAVIGATOR}
-        barStyle={styles.tabBar}
-        shifting>
+        barStyle={styles.tabBar}>
         <Tab.Screen
           name={Tabs.RECIPEFAVNAVIGATOR}
           component={RecipeFavNavigator}

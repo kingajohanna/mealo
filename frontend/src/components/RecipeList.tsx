@@ -1,6 +1,6 @@
-import {FC, useEffect, useRef, useState} from 'react';
+import {FC, useRef, useState} from 'react';
 import {Recipe} from '../types/recipe';
-import {Animated, Easing, FlatList, RefreshControl, View} from 'react-native';
+import {FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
 import {observer} from 'mobx-react-lite';
@@ -12,46 +12,12 @@ interface Props {
 }
 
 export const RecipeList: FC<Props> = props => {
-  const [offsetY, setOffsetY] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [extraPaddingTop] = useState(new Animated.Value(0));
-  const refreshingHeight = 150;
+  const refreshingHeight = 130;
   const lottieViewRef = useRef<LottieView>(null);
 
-  useEffect(() => {
-    if (isRefreshing) {
-      Animated.timing(extraPaddingTop, {
-        toValue: refreshingHeight,
-        duration: 0,
-        useNativeDriver: false,
-      }).start();
-      lottieViewRef.current?.play();
-    } else {
-      Animated.timing(extraPaddingTop, {
-        toValue: 0,
-        duration: 400,
-        easing: Easing.elastic(1.3),
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [isRefreshing]);
-
-  function onScroll(event: {nativeEvent: any}) {
-    const {nativeEvent} = event;
-    const {contentOffset} = nativeEvent;
-    const {y} = contentOffset;
-    setOffsetY(y);
-  }
-
-  function onRelease() {
-    if (offsetY <= -refreshingHeight - 20 && !isRefreshing) {
-      setIsRefreshing(true);
-      props.onRefresh().then(() => setIsRefreshing(false));
-    }
-  }
-
   const renderItem = (item: Recipe, index: number) => {
-    if (index === 0)
+    if (index === 0) {
       return (
         <View style={{paddingTop: 25}}>
           <RecipeListComponent
@@ -60,7 +26,8 @@ export const RecipeList: FC<Props> = props => {
           />
         </View>
       );
-    if (index === props.data.length - 1)
+    }
+    if (index === props.data.length - 1) {
       return (
         <View style={{paddingBottom: 30}}>
           <RecipeListComponent
@@ -69,58 +36,47 @@ export const RecipeList: FC<Props> = props => {
           />
         </View>
       );
+    }
     return (
       <RecipeListComponent recipe={item} onPress={() => props.onPress(item)} />
     );
   };
 
-  if (props.data.length)
-    return (
-      <>
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await props.onRefresh();
+    setIsRefreshing(false);
+  };
+
+  return (
+    <>
+      {isRefreshing ? (
         <LottieView
           style={{
             height: refreshingHeight,
             position: 'absolute',
-            top: 5,
+            top: 0,
             left: 0,
             right: 0,
           }}
           ref={lottieViewRef}
           source={require('../assets/anim/loading.json')}
           loop
+          autoPlay
         />
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={props.data}
-          renderItem={({item, index}) => renderItem(item, index)}
-          keyExtractor={item => item.id!}
-          onScroll={onScroll}
-          onResponderRelease={onRelease}
-          ListHeaderComponent={
-            <Animated.View
-              style={{
-                paddingTop: extraPaddingTop,
-              }}
-            />
-          }
-        />
-      </>
-    );
-
-  return (
-    <>
+      ) : null}
       <FlatList
-        showsVerticalScrollIndicator={false}
         data={props.data}
         renderItem={({item, index}) => renderItem(item, index)}
         keyExtractor={item => item.id!}
-        onScroll={onScroll}
-        onResponderRelease={onRelease}
-        ListHeaderComponent={
-          <Animated.View
-            style={{
-              paddingTop: extraPaddingTop,
-            }}
+        refreshControl={
+          <RefreshControl
+            onLayout={e => console.log(e.nativeEvent)}
+            tintColor="transparent"
+            colors={['transparent']}
+            style={{backgroundColor: 'transparent'}}
+            refreshing={isRefreshing}
+            onRefresh={() => onRefresh()}
           />
         }
       />

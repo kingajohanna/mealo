@@ -36,7 +36,9 @@ export const Login = () => {
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const user = await auth().signInWithCredential(googleCredential);
 
-      if (user.additionalUserInfo?.isNewUser) addUser();
+      if (user.additionalUserInfo?.isNewUser) {
+        addUser();
+      }
 
       userStore.setIsLoggedIn(true);
 
@@ -45,7 +47,9 @@ export const Login = () => {
       console.log(error);
 
       // The user canceled the sign in request
-      if (error.code === '-5') return;
+      if (error.code === '-5') {
+        return;
+      }
       // else
       return Alert.alert(en.auth.error.title, en.auth.error.text);
     } finally {
