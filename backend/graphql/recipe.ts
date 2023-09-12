@@ -1,8 +1,8 @@
 import axios from "axios";
-import { HTTPResponse } from "../src/const/HttpRespone";
 import { Recipe } from "../src/models/Recipe";
 import { User } from "../src/models/User";
 import { hashCode } from "../src/utils/hash";
+import { ContextType } from "./types";
 
 // The GraphQL schema
 export const recipeType = `
@@ -57,28 +57,34 @@ export const recipeType = `
     }
 
     type Query {
-        getRecipes(uid: String!): [Recipe]
+        getRecipes: [Recipe]
     }
 
     type Mutation {
-        addRecipe(uid: String!, url: String!): Recipe
+        addRecipe( url: String!): Recipe
         editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
-        deleteRecipe(uid: String!, recipeId: Int! ): Recipe
-        favoriteRecipe(uid: String!, recipeId: Int! ): Recipe
+        deleteRecipe( recipeId: Int! ): Recipe
+        favoriteRecipe( recipeId: Int! ): Recipe
     }
 `;
 
 export const recipeQuery = {
-  getRecipes: async (parent: any, args: { uid: string }) => {
-    const { uid } = args;
+  getRecipes: async (parent: any, args: any, context: ContextType) => {
+    const { uid } = context;
+
     const recipes = await Recipe.find({ uid }).lean();
     return recipes;
   },
 };
 
 export const recipeMutation = {
-  addRecipe: async (parent: any, args: { uid: string; url: string }) => {
-    const { uid, url } = args;
+  addRecipe: async (
+    parent: any,
+    args: { url: string },
+    context: ContextType
+  ) => {
+    const { url } = args;
+    const { uid } = context;
 
     const recipeId = hashCode(url + uid);
     const user = await User.findOne({ id: uid });
@@ -110,9 +116,11 @@ export const recipeMutation = {
   },
   deleteRecipe: async (
     parent: any,
-    args: { uid: string; recipeId: number }
+    args: { uid: string; recipeId: number },
+    context: ContextType
   ) => {
-    const { uid, recipeId } = args;
+    const { recipeId } = args;
+    const { uid } = context;
 
     const user = await User.findOne({ id: uid });
 
@@ -125,9 +133,11 @@ export const recipeMutation = {
   },
   favoriteRecipe: async (
     parent: any,
-    args: { uid: string; recipeId: number }
+    args: { uid: string; recipeId: number },
+    context: ContextType
   ) => {
-    const { uid, recipeId } = args;
+    const { recipeId } = args;
+    const { uid } = context;
 
     const user = await User.findOne({ id: uid });
     let recipe = await Recipe.findOne({ id: recipeId });

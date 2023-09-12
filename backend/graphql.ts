@@ -9,15 +9,16 @@ import { initializeApp } from "firebase-admin/app";
 import { typeDefs } from "./graphql/index";
 import { resolvers } from "./graphql/index";
 import mongoose from "mongoose";
+import { authenticateToken } from "./src/middlewares/auth";
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  databaseURL: process.env.DATABASE_URL,
-  appId: process.env.APP_ID,
+  apiKey: "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M",
+  authDomain: "mealo-mao.firebaseapp.com",
+  projectId: "mealo-mao",
+  storageBucket: "mealo-mao.appspot.com",
+  messagingSenderId: "454226409378",
+  databaseURL: "https://mealo-mao.firebaseio.com",
+  appId: "1:454226409378:web:bd4c7729c54fd33b8024fb",
 };
 
 dotenv.config();
@@ -37,7 +38,21 @@ const server = new ApolloServer({
 });
 
 server.start().then(async () => {
-  app.use(bodyParser.json(), expressMiddleware(server));
+  app.use(authenticateToken);
+  app.use("/graphql", (req, res, next) => {
+    console.log("Context:", req.res?.locals.uid, res?.locals.uid); // Log the context
+    next();
+  });
+  app.use(
+    "/graphql",
+    bodyParser.json(),
+    expressMiddleware(server, {
+      context: async ({ req, res }) => ({
+        uid: res?.locals.uid,
+        email: res?.locals.email,
+      }),
+    })
+  );
 
   mongoose
     .connect(process.env.DB_URL as string)

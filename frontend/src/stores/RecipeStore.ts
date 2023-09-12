@@ -31,7 +31,7 @@ export default class RecipeStore {
     const recipes = (await getRecipes()) || [];
     const categories: string[] = [all];
     const cuisines: string[] = [all];
-    recipes.forEach(recipe => {
+    recipes?.forEach(recipe => {
       if (recipe.category && !categories.includes(recipe.category)) {
         categories.push(recipe.category);
       }
@@ -41,7 +41,7 @@ export default class RecipeStore {
     });
 
     runInAction(() => {
-      this.recipes = recipes;
+      this.recipes = recipes || [];
       this.categories = categories;
       this.cuisines = cuisines;
     });

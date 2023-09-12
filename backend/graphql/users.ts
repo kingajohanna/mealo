@@ -1,6 +1,6 @@
-import { HTTPResponse } from "../src/const/HttpRespone";
 import { Recipe } from "../src/models/Recipe";
 import { User } from "../src/models/User";
+import { ContextType } from "./types";
 
 export const userType = `
   type User {
@@ -11,31 +11,32 @@ export const userType = `
   }
 
   type Query {
-    getUser(id: String!): User
+    getUser: User
   }
 
   type Mutation {
-    addUser(id: String!, email: String!): User
-    deleteUser(id: String!): User
+    addUser: User
+    deleteUser: User
   }
 `;
 
 // A map of functions which return data for the schema.
 export const userQuery = {
-  getUser: async (id: string) => {
-    const user = await User.find({ id }).exec();
+  getUser: async (parent: any, args: any, context: ContextType) => {
+    const { uid } = context;
+    const user = await User.find({ id: uid }).exec();
     return user;
   },
 };
 
 export const userMutation = {
-  addUser: async (parent: any, args: { id: string; email: string }) => {
-    const { id, email } = args;
+  addUser: async (parent: any, args: any, context: ContextType) => {
+    const { uid, email } = context;
 
-    const user = await User.find({ id });
+    const user = await User.find({ id: uid });
     if (!user.length) {
       const rec = new User({
-        id,
+        id: uid,
         email: email,
       });
 
@@ -43,12 +44,12 @@ export const userMutation = {
       return rec;
     }
   },
-  deleteUser: async (parent: any, args: { id: string }) => {
-    const { id } = args;
+  deleteUser: async (parent: any, args: any, context: ContextType) => {
+    const { uid } = context;
 
-    const user = await User.find({ id });
-    await Recipe.deleteMany({ uid: id });
-    await User.deleteOne({ id });
+    const user = await User.find({ id: uid });
+    await Recipe.deleteMany({ uid: uid });
+    await User.deleteOne({ id: uid });
 
     return user;
   },

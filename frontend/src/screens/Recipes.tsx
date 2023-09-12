@@ -15,6 +15,8 @@ import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
 import {RecipeList} from '../components/RecipeList';
+import {gql, useQuery} from '@apollo/client';
+import {GET_RECIPES} from '../api/queries';
 
 export enum Time {
   fast = 'fast',
@@ -23,10 +25,15 @@ export enum Time {
 }
 
 export const Recipes = observer(() => {
-  const {recipeStore} = useStore();
+  const {recipeStore, userStore} = useStore();
+
+  const {loading, error, data, refetch} = useQuery(GET_RECIPES, {
+    variables: {uid: userStore.user?.uid},
+  });
+
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
-  const [recipes, setRecipes] = useState(recipeStore.recipes!);
+  const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes);
   const [text, setText] = useState('');
   const [category, setCategory] = useState(all);
   const [cuisine, setCuisine] = useState(all);
@@ -34,23 +41,29 @@ export const Recipes = observer(() => {
 
   const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
 
+  useEffect(() => {
+    console.log('loading: ', loading);
+    console.log('error: ', error);
+    console.log('data: ', data);
+  }, [loading, error, data]);
+
   const reset = () => {
     setText('');
     setCategory(all);
     setCuisine(all);
     setTime(undefined);
-    setRecipes(recipeStore.recipes);
+    setFilteredRecipes(data?.getRecipes);
   };
 
   useEffect(() => {
-    if (recipeStore.recipes?.length) {
+    if (data?.getRecipes.length) {
       if (
         category === all &&
         cuisine === all &&
         text === '' &&
         time === undefined
       ) {
-        return setRecipes(recipeStore.recipes);
+        return setFilteredRecipes(data?.getRecipes);
       }
 
       const keys: string[] = [];
@@ -86,17 +99,20 @@ export const Recipes = observer(() => {
         });
       };
 
-      const filteredRecipes = recipeStore.recipes?.filter(filter);
+      const filteredRecipes = data?.getRecipes.filter(filter);
 
-      return setRecipes(filteredRecipes);
+      return setFilteredRecipes(filteredRecipes);
     }
   }, [text, category, cuisine, time, recipeStore.recipes]);
 
-  const accessPage = (recipe: Recipe) =>
+  const accessPage = (recipe: Recipe) => {
+    console.log(recipe);
+
     navigation.navigate(Tabs.RECIPE, {recipe});
+  };
 
   const onRefresh = async () => {
-    await recipeStore.refresh();
+    refetch();
   };
 
   return (
@@ -105,7 +121,11 @@ export const Recipes = observer(() => {
         <Header title={Tabs.RECIPES} />
         <View style={styles.contentContainer}>
           <RecipeList
-            data={recipes}
+            data={
+              data?.getRecipes.length !== filteredRecipes?.length
+                ? filteredRecipes
+                : data?.getRecipes
+            }
             onRefresh={onRefresh}
             onPress={accessPage}
           />

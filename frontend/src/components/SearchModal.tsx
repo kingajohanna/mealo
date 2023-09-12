@@ -43,7 +43,7 @@ export const SearchModal: React.FC<SearchModalProps> = observer(
     const {categories, cuisines} = recipeStore;
 
     const getColor = (rule: boolean) => {
-      return rule ? Colors.pine : Colors.green;
+      return rule ? Colors.green : Colors.pine;
     };
 
     const renderTimeIcon = (timeType: Time) => {
@@ -66,7 +66,7 @@ export const SearchModal: React.FC<SearchModalProps> = observer(
           name={getIconName(timeType)}
           color={getColor(isActive)}
           size={50}
-          style={{...styles.icon, backgroundColor}}
+          style={{backgroundColor, ...styles.icon}}
           onPress={() => {
             setTime(isActive ? undefined : timeType);
           }}

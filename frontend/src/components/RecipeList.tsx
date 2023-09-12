@@ -31,7 +31,14 @@ export const RecipeList: FC<Props> = props => {
 
   const onRefresh = async () => {
     setIsRefreshing(true);
+
+    await new Promise<void>(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 700);
+    });
     await props.onRefresh();
+
     setIsRefreshing(false);
   };
 
