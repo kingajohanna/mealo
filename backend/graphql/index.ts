@@ -1,7 +1,6 @@
-import { userType } from "./users";
-import { userResolvers } from "./users";
-import { recipeType } from "./recipe";
-import { recipeResolvers } from "./recipe";
+import { userType, userQuery, userMutation } from "./users";
+
+import { recipeType, recipeQuery, recipeMutation } from "./recipe";
 
 export const typeDefs = `#graphql
   ${userType}
@@ -12,7 +11,11 @@ export const typeDefs = `#graphql
 // A map of functions which return data for the schema.
 export const resolvers = {
   Query: {
-    ...userResolvers,
-    ...recipeResolvers,
+    ...userQuery,
+    ...recipeQuery,
+  },
+  Mutation: {
+    ...userMutation,
+    ...recipeMutation,
   },
 };

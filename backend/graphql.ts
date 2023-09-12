@@ -29,8 +29,6 @@ const HOST = process.env.HOST as string;
 const app = express();
 const httpServer = http.createServer(app);
 
-console.log(resolvers);
-
 // Set up Apollo Server
 const server = new ApolloServer({
   typeDefs,
