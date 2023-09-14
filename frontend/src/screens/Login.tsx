@@ -17,12 +17,13 @@ import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
 import auth from '@react-native-firebase/auth';
 import {Colors} from '../theme/colors';
 import {firebaseEmail, firebasePassword} from '../utils/regex';
-import {addUser} from '../api/backend';
 import SocialButton from '../components/SocialButton/SocialButton';
 import {AuthTextField} from '../components/AuthTextField/AuthTextField';
 import {AuthTabs} from '../navigation/tabs';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ADD_USER} from '../api/queries';
+import {useMutation} from '@apollo/client';
 
 const {width: ScreenWidth, height: ScreenHeight} = Dimensions.get('window');
 
@@ -31,6 +32,8 @@ const googleLogo = require('../assets/images/google-logo.png');
 export const Login = () => {
   const {userStore} = useStore();
   const navigation = useNavigation();
+
+  const [addUser] = useMutation(ADD_USER);
 
   const [isLoginButtonSpinner, setIsLoginButtonSpinner] = useState(false);
   const [isLogin, setIsLogin] = useState(true);

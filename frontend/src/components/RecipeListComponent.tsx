@@ -7,6 +7,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useStore} from '../stores';
 import {Colors} from '../theme/colors';
 import {Recipe} from '../types/recipe';
+import {useMutation, useQuery} from '@apollo/client';
+import {DELETE_RECIPE, FAVORITE_RECIPE, GET_RECIPES} from '../api/queries';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
@@ -17,7 +19,10 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   recipe,
   onPress,
 }) => {
-  const {recipeStore} = useStore();
+  const [editFavoriteRecipe] = useMutation(FAVORITE_RECIPE);
+  const [deleteRecipe] = useMutation(DELETE_RECIPE);
+  const {refetch} = useQuery(GET_RECIPES);
+
   const swipeableRef = useRef<Swipeable | null>(null);
 
   const close = () => {
@@ -36,7 +41,9 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
     const favHandler = () => {
       close();
-      recipeStore.editFav(recipe.id!);
+      editFavoriteRecipe({
+        variables: {recipeId: recipe.id!},
+      });
     };
 
     const deleteHandler = () => {
@@ -47,8 +54,11 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
         [
           {
             text: 'Delete',
-            onPress: () => {
-              recipeStore.removeRecipe(recipe.id!);
+            onPress: async () => {
+              await deleteRecipe({
+                variables: {recipeId: recipe.id!},
+              });
+              refetch();
             },
           },
           {

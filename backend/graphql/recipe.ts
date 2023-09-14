@@ -101,9 +101,6 @@ export const recipeMutation = {
       });
       await newRecipe.save();
 
-      user.recipes.push(recipeId);
-      await user.save();
-
       return newRecipe;
     }
   },
@@ -120,16 +117,8 @@ export const recipeMutation = {
     context: ContextType
   ) => {
     const { recipeId } = args;
-    const { uid } = context;
 
-    const user = await User.findOne({ id: uid });
-
-    if (user) {
-      user.recipes = user.recipes.filter((recipeId) => recipeId !== recipeId);
-      await user.save();
-
-      return await Recipe.findOneAndDelete({ id: recipeId });
-    }
+    return await Recipe.findOneAndDelete({ id: recipeId });
   },
   favoriteRecipe: async (
     parent: any,
@@ -137,28 +126,19 @@ export const recipeMutation = {
     context: ContextType
   ) => {
     const { recipeId } = args;
-    const { uid } = context;
 
-    const user = await User.findOne({ id: uid });
     let recipe = await Recipe.findOne({ id: recipeId });
 
-    if (user && recipe) {
-      recipe = recipe.is_favorite
-        ? await Recipe.findOneAndUpdate(
-            { id: recipeId },
-            { is_favorite: false },
-            { new: true }
-          )
-        : await Recipe.findOneAndUpdate(
-            { id: recipeId },
-            { is_favorite: true },
-            { new: true }
-          );
-
-      user.favorites.push(recipeId);
-      await user.save();
-
-      return recipe;
-    }
+    return recipe?.is_favorite
+      ? await Recipe.findOneAndUpdate(
+          { id: recipeId },
+          { is_favorite: false },
+          { new: true }
+        )
+      : await Recipe.findOneAndUpdate(
+          { id: recipeId },
+          { is_favorite: true },
+          { new: true }
+        );
   },
 };

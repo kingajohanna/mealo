@@ -28,7 +28,7 @@ export default class RecipeStore {
   }
 
   async setRecipes() {
-    const recipes = (await getRecipes()) || [];
+    const recipes: Recipe[] = [];
     const categories: string[] = [all];
     const cuisines: string[] = [all];
     recipes?.forEach(recipe => {

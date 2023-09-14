@@ -15,7 +15,7 @@ import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
 import {RecipeList} from '../components/RecipeList';
-import {gql, useQuery} from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import {GET_RECIPES} from '../api/queries';
 
 export enum Time {
@@ -24,12 +24,8 @@ export enum Time {
   slow = 'slow',
 }
 
-export const Recipes = observer(() => {
-  const {recipeStore, userStore} = useStore();
-
-  const {loading, error, data, refetch} = useQuery(GET_RECIPES, {
-    variables: {uid: userStore.user?.uid},
-  });
+export const Recipes = () => {
+  const {data} = useQuery(GET_RECIPES);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
@@ -40,12 +36,6 @@ export const Recipes = observer(() => {
   const [time, setTime] = useState<Time | undefined>(undefined);
 
   const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
-
-  useEffect(() => {
-    console.log('loading: ', loading);
-    console.log('error: ', error);
-    console.log('data: ', data);
-  }, [loading, error, data]);
 
   const reset = () => {
     setText('');
@@ -103,16 +93,10 @@ export const Recipes = observer(() => {
 
       return setFilteredRecipes(filteredRecipes);
     }
-  }, [text, category, cuisine, time, recipeStore.recipes]);
+  }, [text, category, cuisine, time, data?.getRecipes]);
 
   const accessPage = (recipe: Recipe) => {
-    console.log(recipe);
-
     navigation.navigate(Tabs.RECIPE, {recipe});
-  };
-
-  const onRefresh = async () => {
-    refetch();
   };
 
   return (
@@ -126,7 +110,6 @@ export const Recipes = observer(() => {
                 ? filteredRecipes
                 : data?.getRecipes
             }
-            onRefresh={onRefresh}
             onPress={accessPage}
           />
         </View>
@@ -153,7 +136,7 @@ export const Recipes = observer(() => {
       />
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   fab: {

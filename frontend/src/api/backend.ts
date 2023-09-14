@@ -36,7 +36,7 @@ const fetchWithAuthorization = async (
     if (responseIsJson) return await response.json();
     return response;
   } catch (error) {
-    console.log(error);
+    console.log(url, error);
   }
 };
 

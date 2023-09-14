@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon app.ts",
     "test": "jest --coverage",
+    "dev": "nodemon graphql.ts",
     "compile": "tsc",
-    "start": "npm run compile && node ./dist/graphql.js"
+    "build": "npm run compile && node ./dist/graphql.js"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",

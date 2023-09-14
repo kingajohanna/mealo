@@ -6,8 +6,6 @@ export const userType = `
   type User {
     id: String
     email: String
-    recipes: [Recipe]
-    favorites: [Recipe]
   }
 
   type Query {

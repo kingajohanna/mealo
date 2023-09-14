@@ -1,57 +1,24 @@
 import {useStore} from '../stores';
 import {AuthNavigator} from './AuthNavigator';
 import {NavigationContainer} from '@react-navigation/native';
-import {firebase} from '@react-native-firebase/auth';
+
 import React, {useCallback, useEffect, useState} from 'react';
 import {AppNavigator} from './AppNavigator';
 import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
-import {addRecipe} from '../api/backend';
 import RNBootSplash from 'react-native-bootsplash';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
-import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client';
-import auth from '@react-native-firebase/auth';
 
-export const RootNavigation = () => {
-  const {userStore, recipeStore} = useStore();
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [client, setClient] = useState<ApolloClient<any>>(
-    new ApolloClient({
-      uri: 'http://127.0.0.1:4000/graphql',
-      cache: new InMemoryCache(),
-    }),
-  );
+import {useMutation, useQuery} from '@apollo/client';
 
-  GoogleSignin.configure({
-    webClientId: WEB_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-  });
+import {ADD_RECIPE, GET_RECIPES} from '../api/queries';
+import {observer} from 'mobx-react-lite';
 
-  firebase.auth().onAuthStateChanged(async user => {
-    setLoggedIn(!!user);
-  });
+export const RootNavigation = observer(() => {
+  const {userStore} = useStore();
 
-  useEffect(() => {
-    userStore.setIsLoggedIn(loggedIn);
-    if (loggedIn) {
-      recipeStore.setRecipes();
-      auth()
-        .currentUser?.getIdToken(true)
-        .then(token => {
-          setClient(
-            new ApolloClient({
-              uri: 'http://127.0.0.1:4000/graphql',
-              headers: {
-                Authorization: token ? token : '',
-              },
-              cache: new InMemoryCache(),
-            }),
-          );
-        });
-    }
-  }, [loggedIn]);
+  const [addRecipe] = useMutation(ADD_RECIPE);
+  const {refetch} = useQuery(GET_RECIPES);
 
   useEffect(() => {
     ShareMenu.getInitialShare(handleShare);
@@ -60,6 +27,13 @@ export const RootNavigation = () => {
       listener.remove();
     };
   }, []);
+
+  const addRecipeWrapper = async (url: string) => {
+    await addRecipe({
+      variables: {url},
+    });
+    refetch();
+  };
 
   const handleShare: ShareCallback = useCallback((share?: ShareData) => {
     if (!share) {
@@ -71,7 +45,7 @@ export const RootNavigation = () => {
     const url = Array.isArray(data) ? data[0] : data;
 
     if (url.match(urlCheck) && Platform.OS === 'ios') {
-      recipeStore.addRecipe(url);
+      addRecipeWrapper(url);
     } else {
       Alert.alert(
         'Add recipe',
@@ -85,7 +59,7 @@ export const RootNavigation = () => {
           {
             text: 'OK',
             onPress: () => {
-              addRecipe(url).then(() => recipeStore.setRecipes());
+              addRecipeWrapper(url);
             },
           },
         ],
@@ -95,9 +69,7 @@ export const RootNavigation = () => {
 
   return (
     <NavigationContainer onReady={() => RNBootSplash.hide()}>
-      <ApolloProvider client={client}>
-        {loggedIn ? <AppNavigator /> : <AuthNavigator />}
-      </ApolloProvider>
+      {userStore.isLoggedIn ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
-};
+});

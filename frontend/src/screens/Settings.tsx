@@ -9,10 +9,13 @@ import {useStore} from '../stores';
 import en from '../locales/en';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Header} from '../components/Header';
-import {deleteUser} from '../api/backend';
+import {DELETE_USER} from '../api/queries';
+import {useMutation} from '@apollo/client';
 
 export const Settings = () => {
   const {userStore} = useStore();
+
+  const [deleteUser, {data}] = useMutation(DELETE_USER);
 
   const onSignout = () => {
     try {

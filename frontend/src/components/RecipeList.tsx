@@ -3,14 +3,17 @@ import {Recipe} from '../types/recipe';
 import {FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
+import {GET_RECIPES} from '../api/queries';
+import {useQuery} from '@apollo/client';
 
 interface Props {
   data: Recipe[];
-  onRefresh: () => Promise<void>;
   onPress: (r: Recipe) => void;
 }
 
 export const RecipeList: FC<Props> = props => {
+  const {refetch} = useQuery(GET_RECIPES);
+
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshingHeight = 130;
   const lottieViewRef = useRef<LottieView>(null);
@@ -37,7 +40,7 @@ export const RecipeList: FC<Props> = props => {
         resolve();
       }, 700);
     });
-    await props.onRefresh();
+    refetch();
 
     setIsRefreshing(false);
   };
