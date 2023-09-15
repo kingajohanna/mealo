@@ -6,22 +6,24 @@ import * as dotenv from "dotenv";
 import http from "http";
 import bodyParser from "body-parser";
 import { initializeApp } from "firebase-admin/app";
+
 import { typeDefs } from "./graphql/index";
 import { resolvers } from "./graphql/index";
 import mongoose from "mongoose";
 import { authenticateToken } from "./src/middlewares/auth";
 
+dotenv.config();
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBgkCyXlBxAtvXt8EWrnvXS-wZByOPa55M",
-  authDomain: "mealo-mao.firebaseapp.com",
-  projectId: "mealo-mao",
-  storageBucket: "mealo-mao.appspot.com",
-  messagingSenderId: "454226409378",
-  databaseURL: "https://mealo-mao.firebaseio.com",
-  appId: "1:454226409378:web:bd4c7729c54fd33b8024fb",
+  apiKey: process.env.FIREBASE_API_KEY as string,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN as string,
+  projectId: process.env.FIREBASE_PROJECT_ID as string,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID as string,
+  databaseURL: process.env.FIREBASE_DATABASE_URL as string,
+  appId: process.env.FIREBASE_APP_ID as string,
 };
 
-dotenv.config();
 export const firebaseApp = initializeApp(firebaseConfig);
 
 const PORT = parseInt(process.env.PORT || "", 10);

@@ -17,6 +17,7 @@ import {Header} from '../components/Header';
 import {RecipeList} from '../components/RecipeList';
 import {useQuery} from '@apollo/client';
 import {GET_RECIPES} from '../api/queries';
+import {useAuthQuery} from '../hooks/useAuthQuery';
 
 export enum Time {
   fast = 'fast',
@@ -25,7 +26,7 @@ export enum Time {
 }
 
 export const Recipes = () => {
-  const {data} = useQuery(GET_RECIPES);
+  const [refetch, data] = useAuthQuery(GET_RECIPES);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 

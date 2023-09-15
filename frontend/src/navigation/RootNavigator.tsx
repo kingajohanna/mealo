@@ -13,12 +13,14 @@ import {useMutation, useQuery} from '@apollo/client';
 
 import {ADD_RECIPE, GET_RECIPES} from '../api/queries';
 import {observer} from 'mobx-react-lite';
+import {useAuthQuery} from '../hooks/useAuthQuery';
+import {useAuthMutation} from '../hooks/useAuthMutation';
 
 export const RootNavigation = observer(() => {
   const {userStore} = useStore();
 
-  const [addRecipe] = useMutation(ADD_RECIPE);
-  const {refetch} = useQuery(GET_RECIPES);
+  const [addRecipe] = useAuthMutation(ADD_RECIPE);
+  const [refetch] = useAuthQuery(GET_RECIPES);
 
   useEffect(() => {
     ShareMenu.getInitialShare(handleShare);
@@ -32,7 +34,7 @@ export const RootNavigation = observer(() => {
     await addRecipe({
       variables: {url},
     });
-    refetch();
+    await refetch();
   };
 
   const handleShare: ShareCallback = useCallback((share?: ShareData) => {

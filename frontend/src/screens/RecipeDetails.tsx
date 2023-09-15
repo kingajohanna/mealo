@@ -26,6 +26,7 @@ import {Header} from '../components/Header';
 import {Tabs} from '../navigation/tabs';
 import {useMutation} from '@apollo/client';
 import {EDIT_RECIPE} from '../api/queries';
+import {useAuthMutation} from '../hooks/useAuthMutation';
 
 const {width} = Dimensions.get('window');
 
@@ -42,7 +43,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
   const {recipeStore} = useStore();
   const {recipe} = route.params;
 
-  const [editRecipe, {data}] = useMutation(EDIT_RECIPE);
+  const [editRecipe, data] = useAuthMutation(EDIT_RECIPE);
 
   const [showedRecipe, setShowedRecipe] = useState(recipe);
 

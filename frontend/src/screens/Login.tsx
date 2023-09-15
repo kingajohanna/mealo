@@ -24,6 +24,8 @@ import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ADD_USER} from '../api/queries';
 import {useMutation} from '@apollo/client';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {storage} from '../stores/localStorage';
 
 const {width: ScreenWidth, height: ScreenHeight} = Dimensions.get('window');
 
@@ -33,13 +35,23 @@ export const Login = () => {
   const {userStore} = useStore();
   const navigation = useNavigation();
 
-  const [addUser] = useMutation(ADD_USER);
+  const [addUser] = useAuthMutation(ADD_USER);
 
   const [isLoginButtonSpinner, setIsLoginButtonSpinner] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
+
+  const addToDB = async () => {
+    await auth()
+      .currentUser?.getIdToken(true)
+      .then(token => {
+        storage.set('token', token);
+      });
+    userStore.setIsLoggedIn(true);
+    addUser();
+  };
 
   const onGoogleButtonPress = async () => {
     try {
@@ -51,10 +63,8 @@ export const Login = () => {
       const user = await auth().signInWithCredential(googleCredential);
 
       if (user.additionalUserInfo?.isNewUser) {
-        addUser();
+        await addToDB();
       }
-
-      userStore.setIsLoggedIn(true);
     } catch (error: any) {
       console.log(error);
 
@@ -104,8 +114,7 @@ export const Login = () => {
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
-      addUser();
-      userStore.setIsLoggedIn(true);
+      await addToDB();
 
       return;
     } catch {

@@ -4,7 +4,7 @@ import {FlatList, RefreshControl, View} from 'react-native';
 import {RecipeListComponent} from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
 import {GET_RECIPES} from '../api/queries';
-import {useQuery} from '@apollo/client';
+import {useAuthQuery} from '../hooks/useAuthQuery';
 
 interface Props {
   data: Recipe[];
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const RecipeList: FC<Props> = props => {
-  const {refetch} = useQuery(GET_RECIPES);
+  const [refetch] = useAuthQuery(GET_RECIPES);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshingHeight = 130;

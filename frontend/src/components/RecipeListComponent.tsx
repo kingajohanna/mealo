@@ -4,11 +4,11 @@ import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useStore} from '../stores';
 import {Colors} from '../theme/colors';
 import {Recipe} from '../types/recipe';
-import {useMutation, useQuery} from '@apollo/client';
 import {DELETE_RECIPE, FAVORITE_RECIPE, GET_RECIPES} from '../api/queries';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {useAuthQuery} from '../hooks/useAuthQuery';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
@@ -19,9 +19,9 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   recipe,
   onPress,
 }) => {
-  const [editFavoriteRecipe] = useMutation(FAVORITE_RECIPE);
-  const [deleteRecipe] = useMutation(DELETE_RECIPE);
-  const {refetch} = useQuery(GET_RECIPES);
+  const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
+  const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
+  const [refetch] = useAuthQuery(GET_RECIPES);
 
   const swipeableRef = useRef<Swipeable | null>(null);
 

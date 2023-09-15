@@ -11,11 +11,22 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Header} from '../components/Header';
 import {DELETE_USER} from '../api/queries';
 import {useMutation} from '@apollo/client';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {useApolloClient} from '@apollo/client';
+import {storage} from '../stores/localStorage';
 
 export const Settings = () => {
   const {userStore} = useStore();
 
-  const [deleteUser, {data}] = useMutation(DELETE_USER);
+  const client = useApolloClient();
+
+  const clearStore = async () => {
+    await client.clearStore();
+
+    userStore.setIsLoggedIn(false);
+  };
+
+  const [deleteUser] = useAuthMutation(DELETE_USER);
 
   const onSignout = () => {
     try {
@@ -26,7 +37,8 @@ export const Settings = () => {
         },
         {
           text: 'OK',
-          onPress: () => {
+          onPress: async () => {
+            await clearStore();
             auth()
               .signOut()
               .then(() => userStore.setIsLoggedIn(false));
@@ -46,8 +58,9 @@ export const Settings = () => {
         [
           {
             text: 'Delete',
-            onPress: () => {
-              deleteUser();
+            onPress: async () => {
+              await deleteUser();
+              await clearStore();
               auth()
                 .currentUser?.delete()
                 .then(() => userStore.setIsLoggedIn(false));
