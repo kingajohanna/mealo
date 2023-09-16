@@ -21,12 +21,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 import Dots from 'react-native-dots-pagination';
 import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
-import {useStore} from '../stores';
 import {Header} from '../components/Header';
+import {Tabs} from '../navigation/tabs';
+import {EDIT_RECIPE} from '../api/mutations';
+import {useAuthMutation} from '../hooks/useAuthMutation';
 
 const {width} = Dimensions.get('window');
 
-type Props = StackScreenProps<RecipeStackParamList, 'Recipe'>;
+type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 
 enum EditModalTypes {
   title = 'title',
@@ -36,17 +38,21 @@ enum EditModalTypes {
 }
 
 export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
-  const {recipeStore} = useStore();
   const {recipe} = route.params;
+
+  const [editRecipe, data] = useAuthMutation(EDIT_RECIPE);
   const [showedRecipe, setShowedRecipe] = useState(recipe);
-  const {ingredients, title, totalTime, image, category, cuisine, yields} =
-    showedRecipe;
-  const [instructions, setInstructions] = useState(recipe.instructions);
   const [openIngredients, setOpenIngredients] = useState(true);
   const [activeDot, setActiveDot] = useState(0);
   const [openMenu, setOpenMenu] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
+
+  useEffect(() => {
+    if (data?.editRecipe) {
+      setShowedRecipe(data?.editRecipe);
+    }
+  }, [data]);
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -58,28 +64,22 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
     [],
   );
 
-  useEffect(() => {
-    if (instructions[instructions.length - 3]?.includes('Ha tetszett')) {
-      setInstructions(instructions.slice(0, instructions.length - 3));
-    }
-  });
-
   const openEditModal = (type: EditModalTypes | undefined) => {
     switch (type) {
       case EditModalTypes.title:
-        setEditValue(title || '');
+        setEditValue(showedRecipe.title || '');
         setEditModalType(type);
         break;
       case EditModalTypes.category:
-        setEditValue(category || '');
+        setEditValue(showedRecipe.category || '');
         setEditModalType(type);
         break;
       case EditModalTypes.cuisine:
-        setEditValue(cuisine || '');
+        setEditValue(showedRecipe.cuisine || '');
         setEditModalType(type);
         break;
       case EditModalTypes.time:
-        setEditValue(totalTime || '');
+        setEditValue(showedRecipe.totalTime || '');
         setEditModalType(type);
         break;
       default:
@@ -179,14 +179,14 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
         <FastImage
           style={{height: 250}}
           source={{
-            uri: image,
+            uri: showedRecipe.image,
             priority: FastImage.priority.normal,
           }}
         />
         <View style={styles.imageOverlay} />
         <View style={styles.textOverlay}>
           <View style={styles.timerIconStyle}>
-            {totalTime && (
+            {showedRecipe.totalTime && (
               <View style={styles.timerRow}>
                 <MaterialCommunityIcons
                   name="timer-outline"
@@ -194,16 +194,18 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
                   size={28}
                 />
 
-                <Text style={styles.timerText}>{totalTime} min</Text>
+                <Text style={styles.timerText}>
+                  {showedRecipe.totalTime} min
+                </Text>
               </View>
             )}
-            {yields && (
+            {showedRecipe.yields && (
               <View style={styles.timerRow}>
                 <Image
                   style={{width: 30, height: 30}}
                   source={require('../assets/images/yields.png')}
                 />
-                <Text style={styles.timerText}>{yields}</Text>
+                <Text style={styles.timerText}>{showedRecipe.yields}</Text>
               </View>
             )}
           </View>
@@ -214,7 +216,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <ScreenBackground>
-      <Header title={recipe.title} menu={renderMenu} back={renderBack} />
+      <Header title={showedRecipe.title} menu={renderMenu} back={renderBack} />
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
@@ -229,7 +231,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
             onPress={() => setOpenIngredients(!openIngredients)}
             titleStyle={styles.listAccordionTitle}>
             <View style={styles.ingredientsContainer}>
-              {ingredients.map((ingredient, index) => {
+              {showedRecipe.ingredients.map((ingredient, index) => {
                 return (
                   <Ingredients key={'ingredient' + index} style={styles.text}>
                     <Text>{ingredient}</Text>
@@ -245,7 +247,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             pagingEnabled
-            data={instructions}
+            data={showedRecipe.instructions}
             onScroll={onScroll}
             renderItem={({item, index}) => (
               <View
@@ -258,7 +260,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
             )}
           />
           <Dots
-            length={instructions.length}
+            length={showedRecipe.instructions.length}
             active={activeDot}
             activeColor={Colors.pine}
           />
@@ -282,12 +284,11 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
         <Dialog.Button
           label="Change"
           onPress={async () => {
-            const recipe = await recipeStore.editRecipe(
-              showedRecipe.id!,
-              getEditContent(),
-            );
+            editRecipe({
+              variables: {recipeId: showedRecipe.id!, body: getEditContent()},
+            });
+
             setEditValue('');
-            setShowedRecipe(recipe);
             setEditModalType(undefined);
           }}
         />

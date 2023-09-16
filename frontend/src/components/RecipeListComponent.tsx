@@ -4,9 +4,12 @@ import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useStore} from '../stores';
 import {Colors} from '../theme/colors';
 import {Recipe} from '../types/recipe';
+import {GET_RECIPES} from '../api/queries';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {useAuthQuery} from '../hooks/useAuthQuery';
+import {DELETE_RECIPE, FAVORITE_RECIPE} from '../api/mutations';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
@@ -17,7 +20,10 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   recipe,
   onPress,
 }) => {
-  const {recipeStore} = useStore();
+  const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
+  const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
+  const [refetch] = useAuthQuery(GET_RECIPES);
+
   const swipeableRef = useRef<Swipeable | null>(null);
 
   const close = () => {
@@ -36,7 +42,9 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
 
     const favHandler = () => {
       close();
-      recipeStore.editFav(recipe.id!);
+      editFavoriteRecipe({
+        variables: {recipeId: recipe.id!},
+      });
     };
 
     const deleteHandler = () => {
@@ -47,8 +55,11 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
         [
           {
             text: 'Delete',
-            onPress: () => {
-              recipeStore.removeRecipe(recipe.id!);
+            onPress: async () => {
+              await deleteRecipe({
+                variables: {recipeId: recipe.id!},
+              });
+              refetch();
             },
           },
           {

@@ -1,20 +1,19 @@
-import {observer} from 'mobx-react-lite';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {ScreenBackground} from '../components/Background';
 import {Tabs} from '../navigation/tabs';
-import {useStore} from '../stores';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RecipeStackParamList} from '../navigation/AppNavigator';
 import {Recipe} from '../types/recipe';
 import {FAB} from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
 import {RecipeList} from '../components/RecipeList';
+import {GET_RECIPES} from '../api/queries';
+import {useAuthQuery} from '../hooks/useAuthQuery';
 
 export enum Time {
   fast = 'fast',
@@ -22,11 +21,14 @@ export enum Time {
   slow = 'slow',
 }
 
-export const Recipes = observer(() => {
-  const {recipeStore} = useStore();
+export const all = 'All';
+
+export const Recipes = () => {
+  const [refetch, data] = useAuthQuery(GET_RECIPES);
+
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
-  const [recipes, setRecipes] = useState(recipeStore.recipes!);
+  const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes);
   const [text, setText] = useState('');
   const [category, setCategory] = useState(all);
   const [cuisine, setCuisine] = useState(all);
@@ -39,18 +41,18 @@ export const Recipes = observer(() => {
     setCategory(all);
     setCuisine(all);
     setTime(undefined);
-    setRecipes(recipeStore.recipes);
+    setFilteredRecipes(data?.getRecipes.recipes);
   };
 
   useEffect(() => {
-    if (recipeStore.recipes?.length) {
+    if (data?.getRecipes.recipes.length) {
       if (
         category === all &&
         cuisine === all &&
         text === '' &&
         time === undefined
       ) {
-        return setRecipes(recipeStore.recipes);
+        return setFilteredRecipes(data?.getRecipes.recipes);
       }
 
       const keys: string[] = [];
@@ -86,17 +88,14 @@ export const Recipes = observer(() => {
         });
       };
 
-      const filteredRecipes = recipeStore.recipes?.filter(filter);
+      const filteredRecipes = data?.getRecipes.recipes.filter(filter);
 
-      return setRecipes(filteredRecipes);
+      return setFilteredRecipes(filteredRecipes);
     }
-  }, [text, category, cuisine, time, recipeStore.recipes]);
+  }, [text, category, cuisine, time, data?.getRecipes.recipes]);
 
-  const accessPage = (recipe: Recipe) =>
+  const accessPage = (recipe: Recipe) => {
     navigation.navigate(Tabs.RECIPE, {recipe});
-
-  const onRefresh = async () => {
-    await recipeStore.refresh();
   };
 
   return (
@@ -105,8 +104,11 @@ export const Recipes = observer(() => {
         <Header title={Tabs.RECIPES} />
         <View style={styles.contentContainer}>
           <RecipeList
-            data={recipes}
-            onRefresh={onRefresh}
+            data={
+              data?.getRecipes.recipes.length !== filteredRecipes?.length
+                ? filteredRecipes
+                : data?.getRecipes.recipes
+            }
             onPress={accessPage}
           />
         </View>
@@ -133,7 +135,7 @@ export const Recipes = observer(() => {
       />
     </>
   );
-});
+};
 
 const styles = StyleSheet.create({
   fab: {

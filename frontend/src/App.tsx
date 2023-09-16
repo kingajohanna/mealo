@@ -1,13 +1,68 @@
 import {RootNavigation} from './navigation/RootNavigator';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider as PaperProvider} from 'react-native-paper';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {baseTheme} from './theme/paperTheme';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  createHttpLink,
+} from '@apollo/client';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {BACKEND_URL, IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
+import auth from '@react-native-firebase/auth';
+import {useStore} from './stores';
+import {useMMKVString} from 'react-native-mmkv';
+import {setContext} from '@apollo/client/link/context';
 
 export default function App() {
+  const {userStore} = useStore();
+  const [token, setToken] = useMMKVString('token');
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const httpLink = createHttpLink({
+    uri: BACKEND_URL,
+  });
+
+  const authLink = setContext((_, {headers}) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: token || '',
+      },
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
+
+  GoogleSignin.configure({
+    webClientId: WEB_CLIENT_ID,
+    iosClientId: IOS_CLIENT_ID,
+  });
+
+  auth().onAuthStateChanged(async user => {
+    setLoggedIn(!!user);
+  });
+
+  useEffect(() => {
+    userStore.setIsLoggedIn(loggedIn);
+    if (loggedIn) {
+      auth()
+        .currentUser?.getIdToken(true)
+        .then(token => {
+          setToken(token);
+        });
+    }
+  }, [loggedIn]);
+
   return (
     <PaperProvider theme={baseTheme}>
-      <RootNavigation />
+      <ApolloProvider client={client}>
+        <RootNavigation />
+      </ApolloProvider>
     </PaperProvider>
   );
 }

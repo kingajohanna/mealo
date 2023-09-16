@@ -6,4 +6,6 @@ req:
 - venv
 
 to run scrape service:
-cd scraper/scraper_service && pip3 install -r requirements.txt && source ./venv/bin/activate && uvicorn app:app --reload --host 0.0.0.0 --port 3001
+python3 -m venv ./venv
+
+cd scraper/scraper_service && source ./venv/bin/activate && pip3 install -r requirements.txt && uvicorn app:app --reload --host 127.0.0.1 --port 3001

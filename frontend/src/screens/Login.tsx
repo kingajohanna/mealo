@@ -13,16 +13,16 @@ import {
 import {useStore} from '../stores';
 import en from '../locales/en';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
 import auth from '@react-native-firebase/auth';
 import {Colors} from '../theme/colors';
 import {firebaseEmail, firebasePassword} from '../utils/regex';
-import {addUser} from '../api/backend';
 import SocialButton from '../components/SocialButton/SocialButton';
 import {AuthTextField} from '../components/AuthTextField/AuthTextField';
-import {AuthTabs} from '../navigation/tabs';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ADD_USER} from '../api/mutations';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {storage} from '../stores/localStorage';
 
 const {width: ScreenWidth, height: ScreenHeight} = Dimensions.get('window');
 
@@ -31,6 +31,8 @@ const googleLogo = require('../assets/images/google-logo.png');
 export const Login = () => {
   const {userStore} = useStore();
   const navigation = useNavigation();
+
+  const [addUser] = useAuthMutation(ADD_USER);
 
   const [isLoginButtonSpinner, setIsLoginButtonSpinner] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -46,12 +48,17 @@ export const Login = () => {
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const user = await auth().signInWithCredential(googleCredential);
+      userStore.setIsLoggedIn(true);
 
       if (user.additionalUserInfo?.isNewUser) {
+        await auth()
+          .currentUser?.getIdToken(true)
+          .then(token => {
+            storage.set('token', token);
+          });
+        userStore.setIsLoggedIn(true);
         addUser();
       }
-
-      userStore.setIsLoggedIn(true);
     } catch (error: any) {
       console.log(error);
 
@@ -76,6 +83,11 @@ export const Login = () => {
         Alert.alert(en.auth.error.title, en.auth.error.text);
       } else {
         await auth().signInWithEmailAndPassword(email, password);
+        await auth()
+          .currentUser?.getIdToken(true)
+          .then(token => {
+            storage.set('token', token);
+          });
         userStore.setIsLoggedIn(true);
       }
     } catch {
@@ -101,8 +113,13 @@ export const Login = () => {
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
-      addUser();
+      await auth()
+        .currentUser?.getIdToken(true)
+        .then(token => {
+          storage.set('token', token);
+        });
       userStore.setIsLoggedIn(true);
+      addUser();
 
       return;
     } catch {

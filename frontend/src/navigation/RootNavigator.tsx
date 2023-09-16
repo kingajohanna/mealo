@@ -1,37 +1,27 @@
 import {useStore} from '../stores';
 import {AuthNavigator} from './AuthNavigator';
 import {NavigationContainer} from '@react-navigation/native';
-import {firebase} from '@react-native-firebase/auth';
-import React, {useCallback, useEffect, useState} from 'react';
+
+import React, {useCallback, useEffect} from 'react';
 import {AppNavigator} from './AppNavigator';
 import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
-import {addRecipe} from '../api/backend';
 import RNBootSplash from 'react-native-bootsplash';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
 
-export const RootNavigation = () => {
-  const {userStore, recipeStore} = useStore();
-  const [loggedIn, setLoggedIn] = useState(false);
+import {GET_RECIPES} from '../api/queries';
+import {observer} from 'mobx-react-lite';
+import {useAuthQuery} from '../hooks/useAuthQuery';
+import {useAuthMutation} from '../hooks/useAuthMutation';
+import {ADD_RECIPE} from '../api/mutations';
+import {useApolloClient} from '@apollo/client';
 
-  GoogleSignin.configure({
-    webClientId: WEB_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-  });
+export const RootNavigation = observer(() => {
+  const {userStore} = useStore();
 
-  firebase.auth().onAuthStateChanged(user => setLoggedIn(!!user));
-
-  useEffect(() => {
-    userStore.setIsLoggedIn(loggedIn);
-  }, [loggedIn]);
-
-  useEffect(() => {
-    if (loggedIn) {
-      recipeStore.setRecipes();
-    }
-  }, [loggedIn]);
+  const [addRecipe] = useAuthMutation(ADD_RECIPE);
+  const [refetch] = useAuthQuery(GET_RECIPES);
+  const client = useApolloClient();
 
   useEffect(() => {
     ShareMenu.getInitialShare(handleShare);
@@ -40,6 +30,14 @@ export const RootNavigation = () => {
       listener.remove();
     };
   }, []);
+
+  const addRecipeWrapper = async (url: string) => {
+    await addRecipe({
+      variables: {url},
+    });
+
+    await client.refetchQueries({include: ['GetRecipes']});
+  };
 
   const handleShare: ShareCallback = useCallback((share?: ShareData) => {
     if (!share) {
@@ -51,7 +49,7 @@ export const RootNavigation = () => {
     const url = Array.isArray(data) ? data[0] : data;
 
     if (url.match(urlCheck) && Platform.OS === 'ios') {
-      recipeStore.addRecipe(url);
+      addRecipeWrapper(url);
     } else {
       Alert.alert(
         'Add recipe',
@@ -65,7 +63,7 @@ export const RootNavigation = () => {
           {
             text: 'OK',
             onPress: () => {
-              addRecipe(url).then(() => recipeStore.setRecipes());
+              addRecipeWrapper(url);
             },
           },
         ],
@@ -75,7 +73,7 @@ export const RootNavigation = () => {
 
   return (
     <NavigationContainer onReady={() => RNBootSplash.hide()}>
-      {loggedIn ? <AppNavigator /> : <AuthNavigator />}
+      {userStore.isLoggedIn ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
-};
+});

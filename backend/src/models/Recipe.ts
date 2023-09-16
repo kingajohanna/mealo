@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface IRecipe {
   id: number;
-  uid: number;
+  uid: string;
   host: string;
   canonical_url: string;
   title: string;
@@ -15,13 +15,13 @@ export interface IRecipe {
   image: string;
   nutrients: any[];
   language: string;
-  ingredients: any[];
-  instuctions: any[];
+  ingredients: string[];
+  instuctions: string[];
   ratings: string;
   author: string;
   cuisine: string;
   description: string;
-  reviews: any[];
+  reviews: string[];
   siteName: string;
   is_favorite: boolean;
 }
