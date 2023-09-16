@@ -36,20 +36,8 @@ export default function App() {
     };
   });
 
-  const errorLink = onError(({graphQLErrors, networkError}) => {
-    if (graphQLErrors) {
-      graphQLErrors.forEach(({message}) => {
-        console.log(message);
-      });
-    }
-
-    if (networkError) {
-      console.log(networkError.message);
-    }
-  });
-
   const client = new ApolloClient({
-    link: errorLink.concat(authLink.concat(httpLink)),
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
   });
 
@@ -60,7 +48,6 @@ export default function App() {
 
   auth().onAuthStateChanged(async user => {
     setLoggedIn(!!user);
-    if (!user) setToken('');
   });
 
   useEffect(() => {

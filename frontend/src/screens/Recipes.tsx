@@ -43,18 +43,18 @@ export const Recipes = () => {
     setCategory(all);
     setCuisine(all);
     setTime(undefined);
-    setFilteredRecipes(data?.getRecipes);
+    setFilteredRecipes(data?.getRecipes.recipes);
   };
 
   useEffect(() => {
-    if (data?.getRecipes.length) {
+    if (data?.getRecipes.recipes.length) {
       if (
         category === all &&
         cuisine === all &&
         text === '' &&
         time === undefined
       ) {
-        return setFilteredRecipes(data?.getRecipes);
+        return setFilteredRecipes(data?.getRecipes.recipes);
       }
 
       const keys: string[] = [];
@@ -90,11 +90,11 @@ export const Recipes = () => {
         });
       };
 
-      const filteredRecipes = data?.getRecipes.filter(filter);
+      const filteredRecipes = data?.getRecipes.recipes.filter(filter);
 
       return setFilteredRecipes(filteredRecipes);
     }
-  }, [text, category, cuisine, time, data?.getRecipes]);
+  }, [text, category, cuisine, time, data?.getRecipes.recipes]);
 
   const accessPage = (recipe: Recipe) => {
     navigation.navigate(Tabs.RECIPE, {recipe});
@@ -107,9 +107,9 @@ export const Recipes = () => {
         <View style={styles.contentContainer}>
           <RecipeList
             data={
-              data?.getRecipes.length !== filteredRecipes?.length
+              data?.getRecipes.recipes.length !== filteredRecipes?.length
                 ? filteredRecipes
-                : data?.getRecipes
+                : data?.getRecipes.recipes
             }
             onPress={accessPage}
           />

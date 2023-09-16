@@ -21,14 +21,11 @@ const fetchWithAuthorization = async (
   responseIsJson = false,
 ) => {
   try {
-    const token = await auth().currentUser?.getIdToken(true);
-
     const response = await fetch(baseUrl + url, {
       method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        authorization: token!,
       },
       body: body ? JSON.stringify(body) : undefined,
     });

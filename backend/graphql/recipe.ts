@@ -56,8 +56,14 @@ export const recipeType = `
         is_favorite: Boolean
     }
 
+    type Recipes {
+      recipes: [Recipe]
+      categories: [String]
+      cuisines: [String]
+    }
+
     type Query {
-        getRecipes: [Recipe]
+        getRecipes: Recipes
     }
 
     type Mutation {
@@ -73,7 +79,19 @@ export const recipeQuery = {
     const { uid } = context;
 
     const recipes = await Recipe.find({ uid }).lean();
-    return recipes;
+    const categories: string[] = ["All"];
+    const cuisines: string[] = ["All"];
+
+    recipes?.forEach((recipe: any) => {
+      if (recipe.category && !categories.includes(recipe.category)) {
+        categories.push(recipe.category);
+      }
+      if (recipe.cuisine && !cuisines.includes(recipe.cuisine)) {
+        cuisines.push(recipe.cuisine);
+      }
+    });
+
+    return { recipes, categories, cuisines };
   },
 };
 

@@ -25,7 +25,7 @@ export const Favourites = () => {
       <Header title={Tabs.FAVOURITES} />
       <View style={{width: '100%', flex: 1}}>
         <RecipeList
-          data={data?.getRecipes.filter(
+          data={data?.getRecipes.recipes.filter(
             (recipe: Recipe) => recipe.is_favorite === true,
           )}
           onPress={accessPage}

@@ -8,6 +8,7 @@ import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
+import auth from '@react-native-firebase/auth';
 
 import {useMutation, useQuery} from '@apollo/client';
 
@@ -15,6 +16,7 @@ import {ADD_RECIPE, GET_RECIPES} from '../api/queries';
 import {observer} from 'mobx-react-lite';
 import {useAuthQuery} from '../hooks/useAuthQuery';
 import {useAuthMutation} from '../hooks/useAuthMutation';
+import {storage} from '../stores/localStorage';
 
 export const RootNavigation = observer(() => {
   const {userStore} = useStore();

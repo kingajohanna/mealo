@@ -43,16 +43,6 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
 
-  const addToDB = async () => {
-    await auth()
-      .currentUser?.getIdToken(true)
-      .then(token => {
-        storage.set('token', token);
-      });
-    userStore.setIsLoggedIn(true);
-    addUser();
-  };
-
   const onGoogleButtonPress = async () => {
     try {
       setIsLoginButtonSpinner(true);
@@ -61,9 +51,16 @@ export const Login = () => {
       const {idToken} = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const user = await auth().signInWithCredential(googleCredential);
+      userStore.setIsLoggedIn(true);
 
       if (user.additionalUserInfo?.isNewUser) {
-        await addToDB();
+        await auth()
+          .currentUser?.getIdToken(true)
+          .then(token => {
+            storage.set('token', token);
+          });
+        userStore.setIsLoggedIn(true);
+        addUser();
       }
     } catch (error: any) {
       console.log(error);
@@ -89,6 +86,11 @@ export const Login = () => {
         Alert.alert(en.auth.error.title, en.auth.error.text);
       } else {
         await auth().signInWithEmailAndPassword(email, password);
+        await auth()
+          .currentUser?.getIdToken(true)
+          .then(token => {
+            storage.set('token', token);
+          });
         userStore.setIsLoggedIn(true);
       }
     } catch {
@@ -114,7 +116,13 @@ export const Login = () => {
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
-      await addToDB();
+      await auth()
+        .currentUser?.getIdToken(true)
+        .then(token => {
+          storage.set('token', token);
+        });
+      userStore.setIsLoggedIn(true);
+      addUser();
 
       return;
     } catch {
