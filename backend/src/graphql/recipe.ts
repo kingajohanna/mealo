@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Recipe } from "../src/models/Recipe";
-import { User } from "../src/models/User";
-import { hashCode } from "../src/utils/hash";
+import { Recipe } from "../models/Recipe";
+import { User } from "../models/User";
+import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
 
 // The GraphQL schema

@@ -21,11 +21,9 @@ import {ScrollView} from 'react-native-gesture-handler';
 import Dots from 'react-native-dots-pagination';
 import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
-import {useStore} from '../stores';
 import {Header} from '../components/Header';
 import {Tabs} from '../navigation/tabs';
-import {useMutation} from '@apollo/client';
-import {EDIT_RECIPE} from '../api/queries';
+import {EDIT_RECIPE} from '../api/mutations';
 import {useAuthMutation} from '../hooks/useAuthMutation';
 
 const {width} = Dimensions.get('window');
@@ -40,13 +38,10 @@ enum EditModalTypes {
 }
 
 export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
-  const {recipeStore} = useStore();
   const {recipe} = route.params;
 
   const [editRecipe, data] = useAuthMutation(EDIT_RECIPE);
-
   const [showedRecipe, setShowedRecipe] = useState(recipe);
-
   const [openIngredients, setOpenIngredients] = useState(true);
   const [activeDot, setActiveDot] = useState(0);
   const [openMenu, setOpenMenu] = useState(false);
@@ -68,12 +63,6 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
     },
     [],
   );
-
-  /*useEffect(() => {
-    if (instructions[instructions.length - 3]?.includes('Ha tetszett')) {
-      setInstructions(instructions.slice(0, instructions.length - 3));
-    }
-  });*/
 
   const openEditModal = (type: EditModalTypes | undefined) => {
     switch (type) {

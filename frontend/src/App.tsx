@@ -10,16 +10,13 @@ import {
 } from '@apollo/client';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {BACKEND_URL, IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
-import {firebase} from '@react-native-firebase/auth';
 import auth from '@react-native-firebase/auth';
 import {useStore} from './stores';
-import {storage} from './stores/localStorage';
 import {useMMKVString} from 'react-native-mmkv';
 import {setContext} from '@apollo/client/link/context';
-import {onError} from '@apollo/client/link/error';
 
 export default function App() {
-  const {userStore, recipeStore} = useStore();
+  const {userStore} = useStore();
   const [token, setToken] = useMMKVString('token');
   const [loggedIn, setLoggedIn] = useState(false);
 

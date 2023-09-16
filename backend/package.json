@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "test": "jest --coverage",
-    "dev": "nodemon graphql.ts",
+    "dev": "nodemon app.ts",
     "compile": "tsc",
-    "build": "npm run compile && node ./dist/graphql.js"
+    "build": "npm run compile && node ./dist/app.js"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",

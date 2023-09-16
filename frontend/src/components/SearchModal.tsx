@@ -1,13 +1,11 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {View, TextInput, StyleSheet, Dimensions} from 'react-native';
-import {useStore} from '../stores';
 import {Colors} from '../theme/colors';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {Picker} from '@react-native-picker/picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Time} from '../screens/Recipes';
 import {Button} from 'react-native-paper';
-import {observer} from 'mobx-react-lite';
 import {GET_RECIPES} from '../api/queries';
 import {useAuthQuery} from '../hooks/useAuthQuery';
 
@@ -40,8 +38,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   reset,
   search,
 }) => {
-  const {recipeStore} = useStore();
-
   const [refetch, data] = useAuthQuery(GET_RECIPES);
 
   const getColor = (rule: boolean) => {

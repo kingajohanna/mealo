@@ -1,13 +1,11 @@
-import {DocumentNode, useApolloClient, useQuery} from '@apollo/client';
-import {setContext} from '@apollo/client/link/context';
+import {DocumentNode, useQuery} from '@apollo/client';
 import {useEffect, useState} from 'react';
-import {GET_RECIPES} from '../api/queries';
 import auth from '@react-native-firebase/auth';
 import {storage} from '../stores/localStorage';
 
 const MAXTRY = 5;
 
-export const useAuthQuery = (query: DocumentNode, variables?: any) => {
+export const useAuthQuery = (query: DocumentNode) => {
   const {refetch, error, data, loading, client} = useQuery(query);
   const [tryCount, setTryCount] = useState(0);
 

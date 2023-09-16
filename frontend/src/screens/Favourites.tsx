@@ -8,7 +8,6 @@ import {RecipeStackParamList} from '../navigation/AppNavigator';
 import {Tabs} from '../navigation/tabs';
 import {Recipe} from '../types/recipe';
 import {RecipeList} from '../components/RecipeList';
-import {useQuery} from '@apollo/client';
 import {GET_RECIPES} from '../api/queries';
 import {useAuthQuery} from '../hooks/useAuthQuery';
 

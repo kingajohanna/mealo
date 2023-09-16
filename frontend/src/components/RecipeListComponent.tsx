@@ -6,9 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {Colors} from '../theme/colors';
 import {Recipe} from '../types/recipe';
-import {DELETE_RECIPE, FAVORITE_RECIPE, GET_RECIPES} from '../api/queries';
+import {GET_RECIPES} from '../api/queries';
 import {useAuthMutation} from '../hooks/useAuthMutation';
 import {useAuthQuery} from '../hooks/useAuthQuery';
+import {DELETE_RECIPE, FAVORITE_RECIPE} from '../api/mutations';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;

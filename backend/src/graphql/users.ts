@@ -1,5 +1,5 @@
-import { Recipe } from "../src/models/Recipe";
-import { User } from "../src/models/User";
+import { Recipe } from "../models/Recipe";
+import { User } from "../models/User";
 import { ContextType } from "./types";
 
 export const userType = `

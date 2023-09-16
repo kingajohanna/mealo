@@ -1,21 +1,17 @@
-import {observer} from 'mobx-react-lite';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {ScreenBackground} from '../components/Background';
 import {Tabs} from '../navigation/tabs';
-import {useStore} from '../stores';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RecipeStackParamList} from '../navigation/AppNavigator';
 import {Recipe} from '../types/recipe';
 import {FAB} from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {all} from '../stores/RecipeStore';
 import {SearchModal} from '../components/SearchModal';
 import {Colors} from '../theme/colors';
 import {Header} from '../components/Header';
 import {RecipeList} from '../components/RecipeList';
-import {useQuery} from '@apollo/client';
 import {GET_RECIPES} from '../api/queries';
 import {useAuthQuery} from '../hooks/useAuthQuery';
 
@@ -24,6 +20,8 @@ export enum Time {
   moderate = 'moderate',
   slow = 'slow',
 }
+
+export const all = 'All';
 
 export const Recipes = () => {
   const [refetch, data] = useAuthQuery(GET_RECIPES);

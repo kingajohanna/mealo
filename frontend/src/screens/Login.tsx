@@ -13,17 +13,14 @@ import {
 import {useStore} from '../stores';
 import en from '../locales/en';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
 import auth from '@react-native-firebase/auth';
 import {Colors} from '../theme/colors';
 import {firebaseEmail, firebasePassword} from '../utils/regex';
 import SocialButton from '../components/SocialButton/SocialButton';
 import {AuthTextField} from '../components/AuthTextField/AuthTextField';
-import {AuthTabs} from '../navigation/tabs';
 import {useNavigation} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ADD_USER} from '../api/queries';
-import {useMutation} from '@apollo/client';
+import {ADD_USER} from '../api/mutations';
 import {useAuthMutation} from '../hooks/useAuthMutation';
 import {storage} from '../stores/localStorage';
 

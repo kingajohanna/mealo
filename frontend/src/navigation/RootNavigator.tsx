@@ -2,21 +2,18 @@ import {useStore} from '../stores';
 import {AuthNavigator} from './AuthNavigator';
 import {NavigationContainer} from '@react-navigation/native';
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AppNavigator} from './AppNavigator';
 import ShareMenu, {ShareCallback, ShareData} from 'react-native-share-menu';
 import {urlCheck} from '../utils/regex';
 import {Alert, Platform} from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
-import auth from '@react-native-firebase/auth';
 
-import {useMutation, useQuery} from '@apollo/client';
-
-import {ADD_RECIPE, GET_RECIPES} from '../api/queries';
+import {GET_RECIPES} from '../api/queries';
 import {observer} from 'mobx-react-lite';
 import {useAuthQuery} from '../hooks/useAuthQuery';
 import {useAuthMutation} from '../hooks/useAuthMutation';
-import {storage} from '../stores/localStorage';
+import {ADD_RECIPE} from '../api/mutations';
 
 export const RootNavigation = observer(() => {
   const {userStore} = useStore();

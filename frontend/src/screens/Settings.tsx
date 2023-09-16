@@ -9,11 +9,9 @@ import {useStore} from '../stores';
 import en from '../locales/en';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Header} from '../components/Header';
-import {DELETE_USER} from '../api/queries';
-import {useMutation} from '@apollo/client';
+import {DELETE_USER} from '../api/mutations';
 import {useAuthMutation} from '../hooks/useAuthMutation';
 import {useApolloClient} from '@apollo/client';
-import {storage} from '../stores/localStorage';
 
 export const Settings = () => {
   const {userStore} = useStore();
