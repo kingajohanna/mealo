@@ -29,12 +29,12 @@ class StreetKitchen(AbstractScraper):
 
     def ingredients(self):
         ingredients = []
-        ingredient_group = self.soup.find("div", {"class": "ingredient-group"}).findAll(
-            "dd"
-        )
+        ingredient_groups = self.soup.findAll("div", {"class": "ingredient-group"})
 
-        for ingredient in ingredient_group:
-            ingredients.append(normalize_string(ingredient.get_text()).strip())
+        for ingredient_group_raw in ingredient_groups:
+            ingredient_group = ingredient_group_raw.findAll("dd")
+            for ingredient in ingredient_group:
+                ingredients.append(normalize_string(ingredient.get_text()).strip())
 
         return ingredients
 
