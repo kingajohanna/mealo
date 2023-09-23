@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@waylaidwanderer/chatgpt-api": "^1.37.3",
+    "bing-chat": "^0.2.3",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "express-http-proxy": "^2.0.0",
+    "http-proxy": "^1.18.1"
+  }
+}

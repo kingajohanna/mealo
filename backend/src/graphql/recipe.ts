@@ -68,6 +68,7 @@ export const recipeType = `
 
     type Mutation {
         addRecipe( url: String!): Recipe
+        addOcrRecipe( recipe: RecipeInput ): Recipe
         editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
         deleteRecipe( recipeId: Int! ): Recipe
         favoriteRecipe( recipeId: Int! ): Recipe
@@ -121,6 +122,20 @@ export const recipeMutation = {
 
       return newRecipe;
     }
+  },
+  addOcrRecipe: async (
+    parent: any,
+    args: { recipe: any },
+    context: ContextType
+  ) => {
+    const { recipe } = args;
+    const { uid } = context;
+
+    return await Recipe.create({
+      ...recipe,
+      uid,
+      id: hashCode(recipe.title + uid),
+    });
   },
   editRecipe: async (parent: any, args: { recipeId: number; body: any }) => {
     const { recipeId, body } = args;

@@ -4,16 +4,16 @@ import {Colors} from '../theme/colors';
 
 type HeaderProps = {
   title: string;
-  menu?: ReactNode;
-  back?: ReactNode;
+  rightAction?: ReactNode;
+  leftAction?: ReactNode;
 } & ViewProps;
 
 export const Header: React.FC<HeaderProps> = props => {
   return (
     <View style={styles.header}>
-      {props.back}
+      {props.leftAction}
       <Text style={styles.text}>{props.title}</Text>
-      {props.menu}
+      {props.rightAction}
     </View>
   );
 };

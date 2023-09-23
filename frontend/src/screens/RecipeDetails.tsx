@@ -1,32 +1,23 @@
-import {StackScreenProps} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  FlatList,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  Image,
-} from 'react-native';
-import {ScreenBackground} from '../components/Background';
-import {RecipeStackParamList} from '../navigation/AppNavigator';
+import { StackScreenProps } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import { ScreenBackground } from '../components/Background';
+import { RecipeStackParamList } from '../navigation/AppNavigator';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {Colors} from '../theme/colors';
+import { Colors } from '../theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Ingredients} from '../components/Ingredients';
-import {List, Menu} from 'react-native-paper';
-import {ScrollView} from 'react-native-gesture-handler';
-import Dots from 'react-native-dots-pagination';
+import { CheckableText } from '../components/CheckableText';
+import { List, Menu } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
-import {Header} from '../components/Header';
-import {Tabs} from '../navigation/tabs';
-import {EDIT_RECIPE} from '../api/mutations';
-import {useAuthMutation} from '../hooks/useAuthMutation';
+import { Header } from '../components/Header';
+import { Tabs } from '../navigation/tabs';
+import { EDIT_RECIPE } from '../api/mutations';
+import { useAuthMutation } from '../hooks/useAuthMutation';
+import { Carousel } from '../components/Carousel';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 
@@ -37,13 +28,12 @@ enum EditModalTypes {
   cuisine = 'cuisine',
 }
 
-export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
-  const {recipe} = route.params;
+export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
+  const { recipe } = route.params;
 
   const [editRecipe, data] = useAuthMutation(EDIT_RECIPE);
   const [showedRecipe, setShowedRecipe] = useState(recipe);
   const [openIngredients, setOpenIngredients] = useState(true);
-  const [activeDot, setActiveDot] = useState(0);
   const [openMenu, setOpenMenu] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
@@ -53,16 +43,6 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
       setShowedRecipe(data?.editRecipe);
     }
   }, [data]);
-
-  const onScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const slideSize = event.nativeEvent.layoutMeasurement.width;
-      const index = event.nativeEvent.contentOffset.x / slideSize;
-      const roundIndex = Math.round(index);
-      setActiveDot(roundIndex);
-    },
-    [],
-  );
 
   const openEditModal = (type: EditModalTypes | undefined) => {
     switch (type) {
@@ -112,7 +92,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
     return;
   };
 
-  const MenuItem = ({onPress, title}: {onPress: () => void; title: string}) => (
+  const MenuItem = ({ onPress, title }: { onPress: () => void; title: string }) => (
     <Menu.Item onPress={onPress} style={styles.menu} title={title} />
   );
 
@@ -136,7 +116,8 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
           size={28}
           onPress={() => setOpenMenu(!openMenu)}
         />
-      }>
+      }
+    >
       <MenuItem
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.title);
@@ -165,19 +146,14 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
   );
 
   const renderBack = (
-    <SimpleLineIcons
-      name="arrow-left"
-      size={25}
-      color={Colors.beige}
-      onPress={() => navigation.goBack()}
-    />
+    <SimpleLineIcons name="arrow-left" size={25} color={Colors.beige} onPress={() => navigation.goBack()} />
   );
 
   const renderImage = () => {
     return (
       <View>
         <FastImage
-          style={{height: 250}}
+          style={{ height: 250 }}
           source={{
             uri: showedRecipe.image,
             priority: FastImage.priority.normal,
@@ -188,23 +164,14 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
           <View style={styles.timerIconStyle}>
             {showedRecipe.totalTime && (
               <View style={styles.timerRow}>
-                <MaterialCommunityIcons
-                  name="timer-outline"
-                  color={Colors.textLight}
-                  size={28}
-                />
+                <MaterialCommunityIcons name="timer-outline" color={Colors.textLight} size={28} />
 
-                <Text style={styles.timerText}>
-                  {showedRecipe.totalTime} min
-                </Text>
+                <Text style={styles.timerText}>{showedRecipe.totalTime} min</Text>
               </View>
             )}
             {showedRecipe.yields && (
               <View style={styles.timerRow}>
-                <Image
-                  style={{width: 30, height: 30}}
-                  source={require('../assets/images/yields.png')}
-                />
+                <Image style={{ width: 30, height: 30 }} source={require('../assets/images/yields.png')} />
                 <Text style={styles.timerText}>{showedRecipe.yields}</Text>
               </View>
             )}
@@ -215,65 +182,55 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
   };
 
   return (
-    <ScreenBackground>
-      <Header title={showedRecipe.title} menu={renderMenu} back={renderBack} />
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}>
+    <ScreenBackground fullscreen>
+      <Header title={showedRecipe.title} rightAction={renderMenu} leftAction={renderBack} />
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {renderImage()}
         <View style={styles.contentContainer}>
           <List.Accordion
-            theme={{colors: {background: 'transparent', text: Colors.pine}}}
+            theme={{ colors: { background: 'transparent', text: Colors.pine } }}
             style={styles.listAccordion}
             title="Ingredients"
             id="1"
             expanded={openIngredients}
             onPress={() => setOpenIngredients(!openIngredients)}
-            titleStyle={styles.listAccordionTitle}>
+            titleStyle={styles.listAccordionTitle}
+          >
             <View style={styles.ingredientsContainer}>
-              {showedRecipe.ingredients.map((ingredient, index) => {
+              {showedRecipe.ingredients.map((ingredient: string, index: number) => {
                 return (
-                  <Ingredients key={'ingredient' + index} style={styles.text}>
+                  <CheckableText
+                    checkedStyle={{
+                      textDecorationLine: 'line-through',
+                      textDecorationStyle: 'solid',
+                    }}
+                    key={'ingredient' + index}
+                    style={styles.text}
+                  >
                     <Text>{ingredient}</Text>
-                  </Ingredients>
+                  </CheckableText>
                 );
               })}
             </View>
           </List.Accordion>
 
           <Text style={styles.title}>Instructions</Text>
-
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
+          <Carousel
             data={showedRecipe.instructions}
-            onScroll={onScroll}
-            renderItem={({item, index}) => (
-              <View
-                key={'instruction' + index}
-                style={[styles.instructionContainer, {width: width - 20}]}>
+            renderItem={({ item, index }) => (
+              <View key={'instruction' + index} style={[styles.instructionContainer, { width: width - 20 }]}>
                 <Text style={styles.text} key={'instruction' + index}>
                   {item}
                 </Text>
               </View>
             )}
           />
-          <Dots
-            length={showedRecipe.instructions.length}
-            active={activeDot}
-            activeColor={Colors.pine}
-          />
         </View>
       </ScrollView>
 
       <Dialog.Container visible={editModalType !== undefined}>
         <Dialog.Title>Edit {editModalType}</Dialog.Title>
-        <Dialog.Input
-          placeholder={editModalType}
-          value={editValue}
-          onChangeText={text => setEditValue(text)}
-        />
+        <Dialog.Input placeholder={editModalType} value={editValue} onChangeText={(text) => setEditValue(text)} />
         <Dialog.Button
           label="Cancel"
           onPress={() => {
@@ -285,7 +242,7 @@ export const RecipeDetails: React.FC<Props> = ({route, navigation}) => {
           label="Change"
           onPress={async () => {
             editRecipe({
-              variables: {recipeId: showedRecipe.id!, body: getEditContent()},
+              variables: { recipeId: showedRecipe.id, body: getEditContent() },
             });
 
             setEditValue('');

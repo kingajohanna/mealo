@@ -1,19 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {ScreenBackground} from '../components/Background';
-import {Tabs} from '../navigation/tabs';
-import {useNavigation} from '@react-navigation/core';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RecipeStackParamList} from '../navigation/AppNavigator';
-import {Recipe} from '../types/recipe';
-import {FAB} from 'react-native-paper';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { ScreenBackground } from '../components/Background';
+import { Tabs } from '../navigation/tabs';
+import { useNavigation } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RecipeStackParamList } from '../navigation/AppNavigator';
+import { Recipe } from '../types/recipe';
+import { FAB } from 'react-native-paper';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {SearchModal} from '../components/SearchModal';
-import {Colors} from '../theme/colors';
-import {Header} from '../components/Header';
-import {RecipeList} from '../components/RecipeList';
-import {GET_RECIPES} from '../api/queries';
-import {useAuthQuery} from '../hooks/useAuthQuery';
+import { SearchModal } from '../components/SearchModal';
+import { Colors } from '../theme/colors';
+import { Header } from '../components/Header';
+import { RecipeList } from '../components/RecipeList';
+import { GET_RECIPES } from '../api/queries';
+import { useAuthQuery } from '../hooks/useAuthQuery';
 
 export enum Time {
   fast = 'fast',
@@ -46,12 +46,7 @@ export const Recipes = () => {
 
   useEffect(() => {
     if (data?.getRecipes.recipes.length) {
-      if (
-        category === all &&
-        cuisine === all &&
-        text === '' &&
-        time === undefined
-      ) {
+      if (category === all && cuisine === all && text === '' && time === undefined) {
         return setFilteredRecipes(data?.getRecipes.recipes);
       }
 
@@ -81,10 +76,7 @@ export const Recipes = () => {
       const filter = (recipe: Recipe) => {
         return keys.every((key, i) => {
           const value = recipe[key];
-          return (
-            typeof value === 'string' &&
-            value.toLowerCase().includes(values[i].toLowerCase())
-          );
+          return typeof value === 'string' && value.toLowerCase().includes(values[i].toLowerCase());
         });
       };
 
@@ -95,7 +87,7 @@ export const Recipes = () => {
   }, [text, category, cuisine, time, data?.getRecipes.recipes]);
 
   const accessPage = (recipe: Recipe) => {
-    navigation.navigate(Tabs.RECIPE, {recipe});
+    navigation.navigate(Tabs.RECIPE, { recipe });
   };
 
   return (
@@ -105,9 +97,7 @@ export const Recipes = () => {
         <View style={styles.contentContainer}>
           <RecipeList
             data={
-              data?.getRecipes.recipes.length !== filteredRecipes?.length
-                ? filteredRecipes
-                : data?.getRecipes.recipes
+              data?.getRecipes.recipes.length !== filteredRecipes?.length ? filteredRecipes : data?.getRecipes.recipes
             }
             onPress={accessPage}
           />
@@ -124,14 +114,15 @@ export const Recipes = () => {
           cuisine={cuisine}
           setCuisine={setCuisine}
           reset={reset}
-          search={() => refRBSheet.current!.close()}
+          search={() => refRBSheet.current?.close()}
         />
       </ScreenBackground>
+      <FAB icon="magnify" color={Colors.textLight} style={styles.fab} onPress={() => refRBSheet.current?.open()} />
       <FAB
-        icon="magnify"
+        icon="plus"
         color={Colors.textLight}
-        style={styles.fab}
-        onPress={() => refRBSheet.current!.open()}
+        style={[styles.fab, { right: 70 }]}
+        onPress={() => navigation.navigate(Tabs.READ_OCR)}
       />
     </>
   );

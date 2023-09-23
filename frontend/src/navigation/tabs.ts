@@ -2,9 +2,18 @@ export enum Tabs {
   RECIPES = 'Recipes',
   FAVOURITES = 'Favourites',
   SETTINGS = 'Settings',
-  RECIPE = 'Recipe',
   RECIPENAVIGATOR = 'RecipeNavigator',
   RECIPEFAVNAVIGATOR = 'RecipeFavNavigator',
+
+  // details
+  RECIPE = 'Recipe',
+
+  // add recipe
+  READ_OCR = 'ReadOcr',
+  ADD_TITLE = 'AddTitle',
+  ADD_INGREDIENTS = 'AddIngredients',
+  ADD_INSTRUCTIONS = 'AddInstructions',
+  OVERVIEW = 'Overview',
 }
 
 export enum AuthTabs {

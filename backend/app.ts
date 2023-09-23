@@ -40,10 +40,6 @@ const server = new ApolloServer({
 
 server.start().then(async () => {
   app.use(authenticateToken);
-  app.use("/graphql", (req, res, next) => {
-    console.log("Context:", req.res?.locals.uid, res?.locals.uid); // Log the context
-    next();
-  });
   app.use(
     "/graphql",
     bodyParser.json(),

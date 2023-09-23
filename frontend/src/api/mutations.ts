@@ -1,4 +1,4 @@
-import {gql} from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const EDIT_RECIPE = gql`
   mutation EditRecipe($recipeId: Int!, $body: RecipeInput!) {
@@ -75,6 +75,24 @@ export const DELETE_RECIPE = gql`
 export const FAVORITE_RECIPE = gql`
   mutation FavoriteRecipe($recipeId: Int!) {
     favoriteRecipe(recipeId: $recipeId) {
+      id
+      title
+      category
+      speed
+      totalTime
+      yields
+      image
+      ingredients
+      instructions
+      cuisine
+      is_favorite
+    }
+  }
+`;
+
+export const ADD_OCR_RECIPE = gql`
+  mutation AddOcrRecipe($recipe: RecipeInput!) {
+    addOcrRecipe(recipe: $recipe) {
       id
       title
       category

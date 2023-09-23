@@ -1,17 +1,12 @@
-import {
-  DocumentNode,
-  useApolloClient,
-  useMutation,
-  useQuery,
-} from '@apollo/client';
-import {useEffect, useState} from 'react';
+import { DocumentNode, useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
-import {storage} from '../stores/localStorage';
+import { storage } from '../stores/localStorage';
 
 const MAXTRY = 5;
 
 export const useAuthMutation = (mutation: DocumentNode) => {
-  const [runMutation, {data, loading, error, client}] = useMutation(mutation);
+  const [runMutation, { data, loading, error, client }] = useMutation(mutation);
   const [tryCount, setTryCount] = useState(0);
 
   useEffect(() => {
@@ -21,7 +16,7 @@ export const useAuthMutation = (mutation: DocumentNode) => {
 
       auth()
         .currentUser?.getIdToken(true)
-        .then(token => {
+        .then((token) => {
           storage.set('token', token);
         });
     }

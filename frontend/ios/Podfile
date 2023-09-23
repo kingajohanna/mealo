@@ -67,6 +67,9 @@ target 'mealo' do
         config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
       end
     end
+    installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "i386 arm64"
+    end
   end
 end
 

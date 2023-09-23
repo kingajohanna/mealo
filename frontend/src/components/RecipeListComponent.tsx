@@ -1,25 +1,22 @@
-import React, {useRef} from 'react';
-import {StyleSheet, View, Text, Pressable, Animated, Alert} from 'react-native';
+import React, { useRef } from 'react';
+import { StyleSheet, View, Text, Pressable, Animated, Alert } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Colors} from '../theme/colors';
-import {Recipe} from '../types/recipe';
-import {GET_RECIPES} from '../api/queries';
-import {useAuthMutation} from '../hooks/useAuthMutation';
-import {useAuthQuery} from '../hooks/useAuthQuery';
-import {DELETE_RECIPE, FAVORITE_RECIPE} from '../api/mutations';
+import { Colors } from '../theme/colors';
+import { Recipe } from '../types/recipe';
+import { GET_RECIPES } from '../api/queries';
+import { useAuthMutation } from '../hooks/useAuthMutation';
+import { useAuthQuery } from '../hooks/useAuthQuery';
+import { DELETE_RECIPE, FAVORITE_RECIPE } from '../api/mutations';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
   onPress: () => void;
 };
 
-export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
-  recipe,
-  onPress,
-}) => {
+export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, onPress }) => {
   const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
   const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
   const [refetch] = useAuthQuery(GET_RECIPES);
@@ -33,7 +30,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
   };
 
   const renderRightAction = (dragX: {
-    interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
+    interpolate: (arg0: { inputRange: number[]; outputRange: number[] }) => any;
   }) => {
     const trans = dragX.interpolate({
       inputRange: [0, 0, 100, 104],
@@ -43,66 +40,52 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
     const favHandler = () => {
       close();
       editFavoriteRecipe({
-        variables: {recipeId: recipe.id!},
+        variables: { recipeId: recipe.id },
       });
     };
 
     const deleteHandler = () => {
       close();
-      Alert.alert(
-        'Delete recipe',
-        'Do you really want to delete this recipe?',
-        [
-          {
-            text: 'Delete',
-            onPress: async () => {
-              await deleteRecipe({
-                variables: {recipeId: recipe.id!},
-              });
-              refetch();
-            },
+      Alert.alert('Delete recipe', 'Do you really want to delete this recipe?', [
+        {
+          text: 'Delete',
+          onPress: async () => {
+            await deleteRecipe({
+              variables: { recipeId: recipe.id },
+            });
+            refetch();
           },
-          {
-            text: 'Cancel',
-            onPress: () => {},
-          },
-        ],
-      );
+        },
+        {
+          text: 'Cancel',
+        },
+      ]);
     };
 
     return (
       <Animated.View
         style={{
           flex: 1,
-          transform: [{translateX: trans}],
+          transform: [{ translateX: trans }],
           alignItems: 'center',
           justifyContent: 'center',
           flexDirection: 'row',
           marginVertical: 8,
-        }}>
-        <Pressable
-          style={{...styles.swipeableButton, backgroundColor: Colors.red}}
-          onPress={deleteHandler}>
+        }}
+      >
+        <Pressable style={{ ...styles.swipeableButton, backgroundColor: Colors.red }} onPress={deleteHandler}>
           <MaterialIcons name="delete" color={Colors.textLight} size={32} />
         </Pressable>
         <Pressable style={styles.swipeableButton} onPress={favHandler}>
-          <Icon
-            name={recipe.is_favorite ? 'heart' : 'heart-outline'}
-            color={Colors.pine}
-            size={32}
-          />
+          <Icon name={recipe.is_favorite ? 'heart' : 'heart-outline'} color={Colors.pine} size={32} />
         </Pressable>
       </Animated.View>
     );
   };
 
   const renderRightActions = (progress: {
-    interpolate: (arg0: {inputRange: number[]; outputRange: number[]}) => any;
-  }) => (
-    <View style={styles.rightActionsContainer}>
-      {renderRightAction(progress)}
-    </View>
-  );
+    interpolate: (arg0: { inputRange: number[]; outputRange: number[] }) => any;
+  }) => <View style={styles.rightActionsContainer}>{renderRightAction(progress)}</View>;
 
   return (
     <Swipeable renderRightActions={renderRightActions} ref={swipeableRef}>
@@ -112,20 +95,15 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({
           source={{
             uri: recipe.image,
             priority: FastImage.priority.normal,
-          }}>
+          }}
+        >
           <View style={styles.overlay} />
           <View style={styles.infoContainer}>
             <Text style={styles.title}>{recipe.title}</Text>
             {recipe.yields && <Text style={styles.text}>{recipe.yields}</Text>}
-            {recipe.totalTime && (
-              <Text style={styles.text}>{recipe.totalTime} min</Text>
-            )}
-            {recipe.category && (
-              <Text style={styles.text}>{recipe.category}</Text>
-            )}
-            {recipe.cuisine && (
-              <Text style={styles.text}>{recipe.cuisine}</Text>
-            )}
+            {recipe.totalTime && <Text style={styles.text}>{recipe.totalTime} min</Text>}
+            {recipe.category && <Text style={styles.text}>{recipe.category}</Text>}
+            {recipe.cuisine && <Text style={styles.text}>{recipe.cuisine}</Text>}
           </View>
         </FastImage>
       </Pressable>

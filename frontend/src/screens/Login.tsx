@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -10,27 +10,23 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import {useStore} from '../stores';
+import { useStore } from '../stores';
 import en from '../locales/en';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import {Colors} from '../theme/colors';
-import {firebaseEmail, firebasePassword} from '../utils/regex';
+import { Colors } from '../theme/colors';
+import { firebaseEmail, firebasePassword } from '../utils/regex';
 import SocialButton from '../components/SocialButton/SocialButton';
-import {AuthTextField} from '../components/AuthTextField/AuthTextField';
-import {useNavigation} from '@react-navigation/native';
+import { AuthTextField } from '../components/AuthTextField/AuthTextField';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ADD_USER} from '../api/mutations';
-import {useAuthMutation} from '../hooks/useAuthMutation';
-import {storage} from '../stores/localStorage';
+import { ADD_USER } from '../api/mutations';
+import { useAuthMutation } from '../hooks/useAuthMutation';
+import { storage } from '../stores/localStorage';
 
-const {width: ScreenWidth, height: ScreenHeight} = Dimensions.get('window');
-
-const googleLogo = require('../assets/images/google-logo.png');
+const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get('window');
 
 export const Login = () => {
-  const {userStore} = useStore();
-  const navigation = useNavigation();
+  const { userStore } = useStore();
 
   const [addUser] = useAuthMutation(ADD_USER);
 
@@ -43,9 +39,9 @@ export const Login = () => {
   const onGoogleButtonPress = async () => {
     try {
       setIsLoginButtonSpinner(true);
-      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      const {idToken} = await GoogleSignin.signIn();
+      const { idToken } = await GoogleSignin.signIn();
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const user = await auth().signInWithCredential(googleCredential);
       userStore.setIsLoggedIn(true);
@@ -53,7 +49,7 @@ export const Login = () => {
       if (user.additionalUserInfo?.isNewUser) {
         await auth()
           .currentUser?.getIdToken(true)
-          .then(token => {
+          .then((token) => {
             storage.set('token', token);
           });
         userStore.setIsLoggedIn(true);
@@ -74,18 +70,13 @@ export const Login = () => {
 
   const onLogin = async (email: string, password: string) => {
     try {
-      if (
-        !password ||
-        !email ||
-        !password.match(firebasePassword) ||
-        !email.match(firebaseEmail)
-      ) {
+      if (!password || !email || !password.match(firebasePassword) || !email.match(firebaseEmail)) {
         Alert.alert(en.auth.error.title, en.auth.error.text);
       } else {
         await auth().signInWithEmailAndPassword(email, password);
         await auth()
           .currentUser?.getIdToken(true)
-          .then(token => {
+          .then((token) => {
             storage.set('token', token);
           });
         userStore.setIsLoggedIn(true);
@@ -95,11 +86,7 @@ export const Login = () => {
     }
   };
 
-  const onRegister = async (
-    email: string,
-    password: string,
-    repassword: string,
-  ) => {
+  const onRegister = async (email: string, password: string, repassword: string) => {
     try {
       if (
         !password ||
@@ -115,7 +102,7 @@ export const Login = () => {
       await auth().createUserWithEmailAndPassword(email, password);
       await auth()
         .currentUser?.getIdToken(true)
-        .then(token => {
+        .then((token) => {
           storage.set('token', token);
         });
       userStore.setIsLoggedIn(true);
@@ -138,17 +125,9 @@ export const Login = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.headerContainerGlue}
-          onPress={() => setIsLogin(!isLogin)}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            color="#777684"
-            size={20}
-          />
-          <Text style={styles.signUpTextStyle}>
-            {isLogin ? en.auth.signup.title : en.auth.login.title}
-          </Text>
+        <TouchableOpacity style={styles.headerContainerGlue} onPress={() => setIsLogin(!isLogin)}>
+          <MaterialCommunityIcons name="chevron-left" color="#777684" size={20} />
+          <Text style={styles.signUpTextStyle}>{isLogin ? en.auth.signup.title : en.auth.login.title}</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.rightTopAssetContainer}>
@@ -160,30 +139,16 @@ export const Login = () => {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.loginTitleContainer}>
-          <Text style={styles.loginTextStyle}>
-            {isLogin ? en.auth.login.title : en.auth.signup.title}
-          </Text>
+          <Text style={styles.loginTextStyle}>{isLogin ? en.auth.login.title : en.auth.signup.title}</Text>
         </View>
         <View style={styles.textFieldContainer}>
-          <AuthTextField
-            placeholder={'john_doe@example.com'}
-            onChangeText={setEmail}
-          />
+          <AuthTextField placeholder={'john_doe@example.com'} onChangeText={setEmail} />
           <View style={styles.passwordTextFieldContainer}>
-            <AuthTextField
-              width="70%"
-              secureTextEntry
-              placeholder={'• • • • • • • •'}
-              onChangeText={setPassword}
-            />
+            <AuthTextField width="70%" secureTextEntry placeholder={'• • • • • • • •'} onChangeText={setPassword} />
           </View>
           {isLogin && (
-            <TouchableOpacity
-              style={styles.forgotPasswordContainer}
-              onPress={() => passwordReset(email)}>
-              <Text style={styles.forgotPasswordTextStyle}>
-                Forgot password?
-              </Text>
+            <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => passwordReset(email)}>
+              <Text style={styles.forgotPasswordTextStyle}>Forgot password?</Text>
             </TouchableOpacity>
           )}
           {!isLogin && (
@@ -192,7 +157,7 @@ export const Login = () => {
                 width="70%"
                 secureTextEntry
                 placeholder={'• • • • • • • •'}
-                onChangeText={password => setRepassword(password)}
+                onChangeText={(password) => setRepassword(password)}
               />
             </View>
           )}
@@ -200,17 +165,11 @@ export const Login = () => {
         <View style={styles.socialButtonsContainer}>
           <SocialButton
             text={isLogin ? en.auth.login.button : en.auth.signup.title}
-            onPress={() =>
-              isLogin
-                ? onLogin(email, password)
-                : onRegister(email, password, repassword)
-            }
+            onPress={() => (isLogin ? onLogin(email, password) : onRegister(email, password, repassword))}
             shadowColor={Colors.pine}
             backgroundColor={Colors.aqua}
           />
-          <ScrollView
-            style={styles.socialButtonsContainerGlue}
-            contentInset={styles.socialLoginButtonsContentInset}>
+          <ScrollView style={styles.socialButtonsContainerGlue} contentInset={styles.socialLoginButtonsContentInset}>
             <View style={styles.socialLoginButtonContainer}>
               <SocialButton
                 width={60}
@@ -221,7 +180,7 @@ export const Login = () => {
                 onPress={onGoogleButtonPress}
                 component={
                   <Image
-                    source={googleLogo}
+                    source={require('../assets/images/googleLogo.png')}
                     style={styles.socialLoginButtonImageStyle}
                   />
                 }
