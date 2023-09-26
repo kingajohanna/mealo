@@ -28,13 +28,19 @@ export const Recipes = () => {
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
-  const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes);
+  const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes.recipes);
   const [text, setText] = useState('');
   const [category, setCategory] = useState(all);
   const [cuisine, setCuisine] = useState(all);
   const [time, setTime] = useState<Time | undefined>(undefined);
 
   const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
+
+  useEffect(() => {
+    if (data?.getRecipes.recipes) {
+      setFilteredRecipes(data?.getRecipes.recipes);
+    }
+  }, [data?.getRecipes.recipes]);
 
   const reset = () => {
     setText('');

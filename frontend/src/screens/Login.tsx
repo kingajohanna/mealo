@@ -21,7 +21,6 @@ import { AuthTextField } from '../components/AuthTextField/AuthTextField';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ADD_USER } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { storage } from '../stores/localStorage';
 
 const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get('window');
 
@@ -47,11 +46,6 @@ export const Login = () => {
       userStore.setIsLoggedIn(true);
 
       if (user.additionalUserInfo?.isNewUser) {
-        await auth()
-          .currentUser?.getIdToken(true)
-          .then((token) => {
-            storage.set('token', token);
-          });
         userStore.setIsLoggedIn(true);
         addUser();
       }
@@ -74,11 +68,6 @@ export const Login = () => {
         Alert.alert(en.auth.error.title, en.auth.error.text);
       } else {
         await auth().signInWithEmailAndPassword(email, password);
-        await auth()
-          .currentUser?.getIdToken(true)
-          .then((token) => {
-            storage.set('token', token);
-          });
         userStore.setIsLoggedIn(true);
       }
     } catch {
@@ -100,11 +89,6 @@ export const Login = () => {
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
-      await auth()
-        .currentUser?.getIdToken(true)
-        .then((token) => {
-          storage.set('token', token);
-        });
       userStore.setIsLoggedIn(true);
       addUser();
 

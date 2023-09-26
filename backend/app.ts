@@ -10,6 +10,8 @@ import { typeDefs } from "./src/graphql/index";
 import { resolvers } from "./src/graphql/index";
 import mongoose from "mongoose";
 import { authenticateToken } from "./src/middlewares/auth";
+import multer from "multer";
+import { graphqlUploadExpress } from "graphql-upload-minimal";
 
 dotenv.config();
 
@@ -31,6 +33,17 @@ const HOST = process.env.HOST as string;
 const app = express();
 const httpServer = http.createServer(app);
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+export const upload = multer({ storage: storage });
+
 // Set up Apollo Server
 const server = new ApolloServer({
   typeDefs,
@@ -39,9 +52,11 @@ const server = new ApolloServer({
 });
 
 server.start().then(async () => {
-  app.use(authenticateToken);
+  app.use(express.static("images"));
+  app.use("/", graphqlUploadExpress());
+  app.use("/", authenticateToken);
   app.use(
-    "/graphql",
+    "/",
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => ({

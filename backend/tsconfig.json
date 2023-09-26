@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["es2020"],
-    "module": "commonjs",
+    "module": "NodeNext",
     "preserveConstEnums": true,
-    "moduleResolution": "node",
+    //"moduleResolution": "NodeNext",
+    "maxNodeModuleJsDepth": 10,
+    "allowJs": true,
     "strict": true,
     "sourceMap": true,
     "target": "ES2020",

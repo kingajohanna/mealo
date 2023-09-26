@@ -73,7 +73,7 @@ export const Settings = () => {
   return (
     <ScreenBackground style={{ paddingTop: 70 }}>
       <Header title={Tabs.SETTINGS} />
-      <Button onPress={onSignout} icon={<SimpleLineIcons name="logout" size={20} />} title="Delete account" />
+      <Button onPress={onSignout} icon={<SimpleLineIcons name="logout" size={20} />} title="Logout" />
       <Button
         onPress={onDelete}
         icon={<Icon name="person-remove-outline" size={24} color={Colors.beige} />}

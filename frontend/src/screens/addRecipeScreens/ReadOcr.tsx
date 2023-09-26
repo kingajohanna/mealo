@@ -6,7 +6,6 @@ import { Colors } from '../../theme/colors';
 import * as ImagePicker from 'react-native-image-picker';
 import TextRecognition from '@react-native-ml-kit/text-recognition';
 import { Button } from '../../components/Button';
-import { Recipe } from '../../types/recipe';
 import LottieView from 'lottie-react-native';
 import { Modal, Portal } from 'react-native-paper';
 import { AddRecipeProps } from '../AddRecipe';
@@ -14,7 +13,6 @@ import { BottomButtons } from '../../components/BottomButtons';
 
 export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState('');
 
   const chooseFromGallery = async () => {
     const image = await ImagePicker.launchImageLibrary({
@@ -22,14 +20,7 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
     });
     if (image.assets) {
       setLoading(true);
-
-      console.log(image.assets[0].uri!);
-
-      setImage(image.assets[0].uri!);
-
       const result = await TextRecognition.recognize(image.assets[0].uri!);
-
-      console.log(result.text);
 
       const response = await fetch('http://localhost:3000/send-message', {
         method: 'POST',
@@ -80,7 +71,7 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
       <BottomButtons
         back={props.back}
         next={() => {
-          props.setRecipe({ ...props.recipe, image }), props.next();
+          props.setRecipe({ ...props.recipe }), props.next();
         }}
         backTitle="Cancel"
       />

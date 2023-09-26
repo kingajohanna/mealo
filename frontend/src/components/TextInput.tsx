@@ -7,6 +7,7 @@ type Props = {
   text: string;
   placeholder?: string;
   style?: StyleProp<TextStyle>;
+  disabled?: boolean;
 };
 
 export const TextInput: React.FC<Props> = (props) => {
@@ -17,6 +18,7 @@ export const TextInput: React.FC<Props> = (props) => {
       onChangeText={props.onChangeText}
       value={props.text}
       placeholder={props.placeholder}
+      editable={!props.disabled}
     />
   );
 };
@@ -25,7 +27,6 @@ const styles = StyleSheet.create({
   titleText: {
     borderWidth: 2,
     padding: 10,
-
     borderRadius: 15,
     marginHorizontal: 8,
     borderColor: Colors.pine,

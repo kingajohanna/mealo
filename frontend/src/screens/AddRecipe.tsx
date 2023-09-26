@@ -6,7 +6,7 @@ import { Recipe } from '../types/recipe';
 import { ReadOCR } from './addRecipeScreens/ReadOcr';
 import { ChooseIngredients } from './addRecipeScreens/ChooseIngredients';
 import { ChooseSteps } from './addRecipeScreens/ChooseSteps';
-import { ChooseTime } from './addRecipeScreens/ChooseTime';
+import { ChooseAdditionalInfo } from './addRecipeScreens/ChooseAdditionalInfo';
 
 export type AddRecipeProps = {
   text: string;
@@ -21,7 +21,7 @@ export const AddRecipe = () => {
   const navigation = useNavigation();
   const [activeDot, setActiveDot] = useState(0);
 
-  const [text, setText] = useState(testText);
+  const [text, setText] = useState('');
   const [recipe, setRecipe] = useState<Partial<Recipe>>({});
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const AddRecipe = () => {
       activeDot === 0 ? navigation.goBack() : setActiveDot(activeDot - 1);
     },
     next: () => {
-      setActiveDot(activeDot + 1);
+      activeDot === data.length - 1 ? navigation.goBack() : setActiveDot(activeDot + 1);
     },
   };
 
@@ -46,7 +46,7 @@ export const AddRecipe = () => {
     <ChooseTitle {...props} />,
     <ChooseIngredients {...props} />,
     <ChooseSteps {...props} />,
-    <ChooseTime {...props} />,
+    <ChooseAdditionalInfo {...props} />,
   ];
 
   return (

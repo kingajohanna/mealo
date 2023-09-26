@@ -91,8 +91,8 @@ export const FAVORITE_RECIPE = gql`
 `;
 
 export const ADD_OCR_RECIPE = gql`
-  mutation AddOcrRecipe($recipe: RecipeInput!) {
-    addOcrRecipe(recipe: $recipe) {
+  mutation AddOcrRecipe($recipe: RecipeInput!, $image: Upload) {
+    addOcrRecipe(recipe: $recipe, image: $image) {
       id
       title
       category

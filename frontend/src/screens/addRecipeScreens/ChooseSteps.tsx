@@ -9,7 +9,7 @@ import { AddRecipeProps } from '../AddRecipe';
 import { BottomButtons } from '../../components/BottomButtons';
 
 export const ChooseSteps: React.FC<AddRecipeProps> = (props) => {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string[]>(props.recipe.instructions || []);
 
   const splitted = props.text.split('\n');
 
@@ -28,6 +28,7 @@ export const ChooseSteps: React.FC<AddRecipeProps> = (props) => {
             <CheckableText
               key={index}
               checkedStyle={{ backgroundColor: Colors.salmon }}
+              checked={props.recipe.instructions?.includes(text)}
               addChecked={(checked: boolean) => addStep(text, checked)}
             >
               {text}
@@ -36,7 +37,10 @@ export const ChooseSteps: React.FC<AddRecipeProps> = (props) => {
         </ScrollView>
       </View>
       <BottomButtons
-        back={props.back}
+        back={() => {
+          props.setRecipe({ ...props.recipe, instructions: selected });
+          props.back();
+        }}
         next={() => {
           props.setRecipe({ ...props.recipe, instructions: selected });
           props.next();

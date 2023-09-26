@@ -1,11 +1,12 @@
-import axios from "axios";
+import axios, { get } from "axios";
 import { Recipe } from "../models/Recipe";
 import { User } from "../models/User";
 import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
+import { deleteFile, storeFile } from "../utils/filesave";
 
-// The GraphQL schema
 export const recipeType = `
+    scalar Upload
     input RecipeInput {
         host: String
         canonical_url: String
@@ -68,7 +69,7 @@ export const recipeType = `
 
     type Mutation {
         addRecipe( url: String!): Recipe
-        addOcrRecipe( recipe: RecipeInput ): Recipe
+        addOcrRecipe( recipe: RecipeInput, image: Upload ): Recipe
         editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
         deleteRecipe( recipeId: Int! ): Recipe
         favoriteRecipe( recipeId: Int! ): Recipe
@@ -125,18 +126,28 @@ export const recipeMutation = {
   },
   addOcrRecipe: async (
     parent: any,
-    args: { recipe: any },
+    args: { recipe: any; image: any },
     context: ContextType
   ) => {
-    const { recipe } = args;
+    const { recipe, image } = args;
     const { uid } = context;
+
+    const getImage = async () => {
+      if (!image) return {};
+      const img = await image;
+
+      const saved: any = await storeFile(img);
+      return { image: saved.dbPath };
+    };
 
     return await Recipe.create({
       ...recipe,
+      ...(await getImage()),
       uid,
-      id: hashCode(recipe.title + uid),
+      id: hashCode(recipe.title.replace(" ", "") + uid),
     });
   },
+
   editRecipe: async (parent: any, args: { recipeId: number; body: any }) => {
     const { recipeId, body } = args;
 
@@ -144,6 +155,7 @@ export const recipeMutation = {
       new: true,
     });
   },
+
   deleteRecipe: async (
     parent: any,
     args: { uid: string; recipeId: number },
@@ -151,8 +163,14 @@ export const recipeMutation = {
   ) => {
     const { recipeId } = args;
 
+    const recipe = await Recipe.findOne({ id: recipeId });
+    const imageName = recipe?.image?.split("/").pop();
+
+    deleteFile(imageName as string);
+
     return await Recipe.findOneAndDelete({ id: recipeId });
   },
+
   favoriteRecipe: async (
     parent: any,
     args: { uid: string; recipeId: number },

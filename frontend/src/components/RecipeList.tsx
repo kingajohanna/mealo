@@ -13,7 +13,6 @@ interface Props {
 
 export const RecipeList: FC<Props> = (props) => {
   const [refetch] = useAuthQuery(GET_RECIPES);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshingHeight = 130;
   const lottieViewRef = useRef<LottieView>(null);
@@ -37,7 +36,7 @@ export const RecipeList: FC<Props> = (props) => {
         resolve();
       }, 700);
     });
-    refetch();
+    await refetch();
 
     setIsRefreshing(false);
   };
