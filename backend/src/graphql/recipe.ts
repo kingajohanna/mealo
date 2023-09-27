@@ -1,4 +1,4 @@
-import axios, { get } from "axios";
+import axios from "axios";
 import { Recipe } from "../models/Recipe";
 import { User } from "../models/User";
 import { hashCode } from "../utils/hash";
