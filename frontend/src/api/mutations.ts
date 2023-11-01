@@ -14,6 +14,10 @@ export const EDIT_RECIPE = gql`
       instructions
       cuisine
       is_favorite
+      siteName
+      difficulty
+      calories
+      ratings
     }
   }
 `;
@@ -50,6 +54,10 @@ export const ADD_RECIPE = gql`
       instructions
       cuisine
       is_favorite
+      siteName
+      difficulty
+      calories
+      ratings
     }
   }
 `;
@@ -68,6 +76,10 @@ export const DELETE_RECIPE = gql`
       instructions
       cuisine
       is_favorite
+      siteName
+      difficulty
+      calories
+      ratings
     }
   }
 `;
@@ -86,6 +98,10 @@ export const FAVORITE_RECIPE = gql`
       instructions
       cuisine
       is_favorite
+      siteName
+      difficulty
+      calories
+      ratings
     }
   }
 `;

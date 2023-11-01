@@ -7,7 +7,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   iconStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
-  title: string;
+  title?: string;
 } & PressableProps;
 
 export const Button: React.FC<Props> = (props) => {
@@ -16,8 +16,10 @@ export const Button: React.FC<Props> = (props) => {
       style={[styles.buttonContainer, props.style, { opacity: props.disabled ? 0.5 : 1 }]}
       onPress={props.onPress}
     >
-      {props.icon && <View style={[styles.iconContainer, props.iconStyle]}>{props.icon}</View>}
-      <Text style={[styles.text, props.titleStyle]}>{props.title}</Text>
+      {props.icon && (
+        <View style={[styles.iconContainer, { marginRight: props.title ? 20 : 0 }, props.iconStyle]}>{props.icon}</View>
+      )}
+      {props.title && <Text style={[styles.text, props.titleStyle]}>{props.title}</Text>}
     </Pressable>
   );
 };
@@ -34,9 +36,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   iconContainer: {
-    marginRight: 20,
     alignItems: 'center',
-    transform: [{ scaleX: -1 }],
   },
   text: {
     flex: 1,

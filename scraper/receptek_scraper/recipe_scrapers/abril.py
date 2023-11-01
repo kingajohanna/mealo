@@ -24,3 +24,9 @@ class Abril(AbstractScraper):
 
     def instructions(self):
         return self.schema.instructions()
+
+    def calories(self):
+        return self.schema.calories()
+
+    def difficulty(self):
+        return self.schema.difficulty()

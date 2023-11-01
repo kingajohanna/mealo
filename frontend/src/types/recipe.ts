@@ -21,5 +21,7 @@ export type Recipe = {
   id: string;
   is_favorite?: boolean;
   speed?: string;
+  calories?: string;
+  difficulty?: string;
   [key: string]: string | undefined | boolean | string[];
 };

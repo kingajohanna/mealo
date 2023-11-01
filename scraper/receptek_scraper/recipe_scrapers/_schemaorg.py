@@ -41,7 +41,8 @@ class SchemaOrg:
             # make sure entries of type Recipe are always parsed first
             syntax_data = data.get(syntax, [])
             try:
-                index = [x.get("@type", "") for x in syntax_data].index("Recipe")
+                index = [x.get("@type", "")
+                         for x in syntax_data].index("Recipe")
                 syntax_data.insert(0, syntax_data.pop(index))
             except ValueError:
                 pass
@@ -99,7 +100,8 @@ class SchemaOrg:
 
     def total_time(self):
         if not (self.data.keys() & {"totalTime", "prepTime", "cookTime"}):
-            raise SchemaOrgException("Cooking time information not found in SchemaOrg")
+            raise SchemaOrgException(
+                "Cooking time information not found in SchemaOrg")
 
         def get_key_and_minutes(k):
             source = self.data.get(k)
@@ -119,17 +121,20 @@ class SchemaOrg:
 
     def cook_time(self):
         if not (self.data.keys() & {"cookTime"}):
-            raise SchemaOrgException("Cooktime information not found in SchemaOrg")
+            raise SchemaOrgException(
+                "Cooktime information not found in SchemaOrg")
         return get_minutes(self.data.get("cookTime"), return_zero_on_not_found=True)
 
     def prep_time(self):
         if not (self.data.keys() & {"prepTime"}):
-            raise SchemaOrgException("Preptime information not found in SchemaOrg")
+            raise SchemaOrgException(
+                "Preptime information not found in SchemaOrg")
         return get_minutes(self.data.get("prepTime"), return_zero_on_not_found=True)
 
     def yields(self):
         if not (self.data.keys() & {"recipeYield", "yield"}):
-            raise SchemaOrgException("Servings information not found in SchemaOrg")
+            raise SchemaOrgException(
+                "Servings information not found in SchemaOrg")
         yield_data = self.data.get("recipeYield") or self.data.get("yield")
         if yield_data and isinstance(yield_data, list):
             yield_data = yield_data[0]
@@ -158,7 +163,8 @@ class SchemaOrg:
 
     def ingredients(self):
         ingredients = (
-            self.data.get("recipeIngredient") or self.data.get("ingredients") or []
+            self.data.get("recipeIngredient") or self.data.get(
+                "ingredients") or []
         )
         return [
             normalize_string(ingredient) for ingredient in ingredients if ingredient
@@ -200,7 +206,8 @@ class SchemaOrg:
             if name is not None:
                 instructions_gist.append(name)
             for item in schema_item.get("itemListElement"):
-                instructions_gist += self._extract_howto_instructions_text(item)
+                instructions_gist += self._extract_howto_instructions_text(
+                    item)
         return instructions_gist
 
     def instructions(self):
@@ -251,3 +258,15 @@ class SchemaOrg:
         if review is None:
             raise SchemaOrgException("No description data in SchemaOrg.")
         return normalize_string(review)
+
+    def calories(self):
+        calories = self.data.get("nutrition", {})
+        if calories is None:
+            raise SchemaOrgException("No calories data in SchemaOrg.")
+        return calories.get("calories")
+
+    def difficulty(self):
+        difficulty = self.data.get("difficulty")
+        if difficulty is None:
+            raise SchemaOrgException("No difficulty data in SchemaOrg.")
+        return difficulty

@@ -43,3 +43,9 @@ class TestTemplateScraper(ScraperTest):
 
     def test_description(self):
         self.assertEqual(None, self.harvester_class.description())
+
+    def test_calories(self):
+        self.assertEqual(None, self.harvester_class.calories())
+
+    def test_difficulty(self):
+        self.assertEqual(None, self.harvester_class.difficulty())

@@ -47,6 +47,12 @@ class SchemaScraperFactory:
         def description(self):
             return self.schema.description()
 
+        def calories(self):
+            return self.schema.calories()
+
+        def difficulty(self):
+            return self.schema.difficulty()
+
     @classmethod
     def generate(cls, url, **options):
         return cls.SchemaScraper(url, **options)

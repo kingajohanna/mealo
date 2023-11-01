@@ -6,7 +6,7 @@ from collections import OrderedDict
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin
 
-#import requests
+# import requests
 import aiohttp
 import ssl
 import certifi
@@ -37,14 +37,14 @@ class AbstractScraper:
     def __init__(self):
         self.logger = logging.getLogger("AbstractScraper")
 
-    async def _scrape(self, 
-        url: Union[str, None],
-        proxies: Optional[
+    async def _scrape(self,
+                      url: Union[str, None],
+                      proxies: Optional[
             Dict[str, str]
-        ] = None,  # allows us to specify optional proxy server
+                          ] = None,  # allows us to specify optional proxy server
         timeout: Optional[
             Union[float, Tuple[float, float], Tuple[float, None]]
-        ] = None,  # allows us to specify optional timeout for request
+                      ] = None,  # allows us to specify optional timeout for request
         wild_mode: Optional[bool] = False,
         html: Union[str, bytes, None] = None,
     ):
@@ -53,9 +53,11 @@ class AbstractScraper:
             self.url = url
         else:
             try:
-                assert url is not None, "url required for fetching recipe data"   
-                ssl_context = ssl.create_default_context(cafile=certifi.where())
-                conn = aiohttp.TCPConnector(ssl=ssl_context)         
+                print(url)
+                assert url is not None, "url required for fetching recipe data"
+                ssl_context = ssl.create_default_context(
+                    cafile=certifi.where())
+                conn = aiohttp.TCPConnector(ssl=ssl_context)
                 async with aiohttp.ClientSession(connector=conn) as client:
                     async with client.get(url, headers=HEADERS, proxy=proxies, timeout=timeout) as resp:
                         assert resp.status == 200
@@ -76,7 +78,6 @@ class AbstractScraper:
                         current_method = plugin.run(current_method)
                 setattr(self.__class__, name, current_method)
             setattr(self.__class__, "plugins_initialized", True)
-        
 
     @classmethod
     def host(cls) -> str:
@@ -84,7 +85,8 @@ class AbstractScraper:
         raise NotImplementedError("This should be implemented.")
 
     def canonical_url(self):
-        canonical_link = self.soup.find("link", {"rel": "canonical", "href": True})
+        canonical_link = self.soup.find(
+            "link", {"rel": "canonical", "href": True})
         if canonical_link:
             return urljoin(str(self.url), canonical_link["href"])
         return self.url
@@ -176,6 +178,12 @@ class AbstractScraper:
         raise NotImplementedError("This should be implemented.")
 
     def reviews(self):
+        raise NotImplementedError("This should be implemented.")
+
+    def calories(self):
+        raise NotImplementedError("This should be implemented.")
+
+    def difficulty(self):
         raise NotImplementedError("This should be implemented.")
 
     def links(self):

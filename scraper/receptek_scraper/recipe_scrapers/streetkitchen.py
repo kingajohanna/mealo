@@ -14,11 +14,11 @@ class StreetKitchen(AbstractScraper):
 
     def total_time(self):
         try:
-            time = self.soup.find(["li", "p"], text=re.compile('Elkészítési idő:.*|Elkészítés.*:.*')).get_text()
+            time = self.soup.find(["li", "p"], text=re.compile(
+                'Elkészítési idő:.*|Elkészítés.*:.*')).get_text()
             return get_minutes(time)
         except AttributeError:
             pass
-
 
     def image(self):
         return (
@@ -29,13 +29,16 @@ class StreetKitchen(AbstractScraper):
 
     def ingredients(self):
         ingredients = []
-        ingredient_groups = self.soup.findAll("div", {"class": "ingredient-group"})
+        ingredient_groups = self.soup.findAll(
+            "div", {"class": "ingredient-group"})
 
         for ingredient_group_raw in ingredient_groups:
             ingredient_group = ingredient_group_raw.findAll("dd")
             for ingredient in ingredient_group:
-                ingredients.append(normalize_string(ingredient.get_text()).strip())
+                ingredients.append(normalize_string(
+                    ingredient.get_text()).strip())
 
+        ingredients = list(set(ingredients))
         return ingredients
 
     def instructions(self):
@@ -51,3 +54,9 @@ class StreetKitchen(AbstractScraper):
         return get_yields(
             self.soup.find("span", {"class": "quantity-number"}).get_text()
         )
+
+    def calories(self):
+        return self.schema.calories()
+
+    def difficulty(self):
+        return self.schema.difficulty()
