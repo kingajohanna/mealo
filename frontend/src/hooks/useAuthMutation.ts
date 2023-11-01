@@ -1,29 +1,16 @@
-import {
-  DocumentNode,
-  useApolloClient,
-  useMutation,
-  useQuery,
-} from '@apollo/client';
-import {useEffect, useState} from 'react';
-import auth from '@react-native-firebase/auth';
-import {storage} from '../stores/localStorage';
+import { DocumentNode, useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
 
 const MAXTRY = 5;
 
 export const useAuthMutation = (mutation: DocumentNode) => {
-  const [runMutation, {data, loading, error, client}] = useMutation(mutation);
+  const [runMutation, { data, loading, error, client }] = useMutation(mutation);
   const [tryCount, setTryCount] = useState(0);
 
   useEffect(() => {
     if (error && tryCount < MAXTRY) {
       console.log(error);
       setTryCount(tryCount + 1);
-
-      auth()
-        .currentUser?.getIdToken(true)
-        .then(token => {
-          storage.set('token', token);
-        });
     }
   }, [data, loading, error]);
 

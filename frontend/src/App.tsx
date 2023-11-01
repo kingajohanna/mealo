@@ -1,40 +1,41 @@
-import {RootNavigation} from './navigation/RootNavigator';
-import {Provider as PaperProvider} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
-import {baseTheme} from './theme/paperTheme';
-import {
-  ApolloClient,
-  ApolloProvider,
-  InMemoryCache,
-  createHttpLink,
-} from '@apollo/client';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {BACKEND_URL, IOS_CLIENT_ID, WEB_CLIENT_ID} from '@env';
+import { RootNavigation } from './navigation/RootNavigator';
+import { Provider as PaperProvider } from 'react-native-paper';
+import React from 'react';
+import { baseTheme } from './theme/paperTheme';
+import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink, from } from '@apollo/client';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { BACKEND_URL, IOS_CLIENT_ID, WEB_CLIENT_ID } from '@env';
 import auth from '@react-native-firebase/auth';
-import {useStore} from './stores';
-import {useMMKVString} from 'react-native-mmkv';
-import {setContext} from '@apollo/client/link/context';
+import { useStore } from './stores';
+import { setContext } from '@apollo/client/link/context';
+import { createUploadLink } from 'apollo-upload-client';
+import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
 
 export default function App() {
-  const {userStore} = useStore();
-  const [token, setToken] = useMMKVString('token');
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { userStore } = useStore();
 
-  const httpLink = createHttpLink({
+  const httpLink = createUploadLink({
     uri: BACKEND_URL,
   });
 
-  const authLink = setContext((_, {headers}) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: token || '',
-      },
-    };
-  });
+  const asyncAuthLink = setContext(
+    () =>
+      new Promise(async (success) => {
+        await auth()
+          .currentUser?.getIdToken()
+          .then((token) => {
+            success({
+              headers: {
+                'Apollo-Require-Preflight': 'true',
+                authorization: token,
+              },
+            });
+          });
+      }),
+  );
 
   const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: from([asyncAuthLink, httpLink]),
     cache: new InMemoryCache(),
   });
 
@@ -43,20 +44,9 @@ export default function App() {
     iosClientId: IOS_CLIENT_ID,
   });
 
-  auth().onAuthStateChanged(async user => {
-    setLoggedIn(!!user);
+  auth().onAuthStateChanged(async (user) => {
+    userStore.setIsLoggedIn(!!user);
   });
-
-  useEffect(() => {
-    userStore.setIsLoggedIn(loggedIn);
-    if (loggedIn) {
-      auth()
-        .currentUser?.getIdToken(true)
-        .then(token => {
-          setToken(token);
-        });
-    }
-  }, [loggedIn]);
 
   return (
     <PaperProvider theme={baseTheme}>

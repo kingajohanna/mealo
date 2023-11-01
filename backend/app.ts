@@ -10,6 +10,7 @@ import { typeDefs } from "./src/graphql/index";
 import { resolvers } from "./src/graphql/index";
 import mongoose from "mongoose";
 import { authenticateToken } from "./src/middlewares/auth";
+import { graphqlUploadExpress } from "graphql-upload-minimal";
 
 dotenv.config();
 
@@ -39,13 +40,11 @@ const server = new ApolloServer({
 });
 
 server.start().then(async () => {
-  app.use(authenticateToken);
-  app.use("/graphql", (req, res, next) => {
-    console.log("Context:", req.res?.locals.uid, res?.locals.uid); // Log the context
-    next();
-  });
+  app.use(express.static("images"));
+  app.use("/", graphqlUploadExpress());
+  app.use("/", authenticateToken);
   app.use(
-    "/graphql",
+    "/",
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => ({

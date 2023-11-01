@@ -1,19 +1,18 @@
-import {FC, useRef, useState} from 'react';
-import {Recipe} from '../types/recipe';
-import {FlatList, RefreshControl, View} from 'react-native';
-import {RecipeListComponent} from './RecipeListComponent';
+import { FC, useRef, useState } from 'react';
+import { Recipe } from '../types/recipe';
+import { FlatList, RefreshControl, View } from 'react-native';
+import { RecipeListComponent } from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
-import {GET_RECIPES} from '../api/queries';
-import {useAuthQuery} from '../hooks/useAuthQuery';
+import { GET_RECIPES } from '../api/queries';
+import { useAuthQuery } from '../hooks/useAuthQuery';
 
 interface Props {
   data: Recipe[];
   onPress: (r: Recipe) => void;
 }
 
-export const RecipeList: FC<Props> = props => {
+export const RecipeList: FC<Props> = (props) => {
   const [refetch] = useAuthQuery(GET_RECIPES);
-
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshingHeight = 130;
   const lottieViewRef = useRef<LottieView>(null);
@@ -23,11 +22,8 @@ export const RecipeList: FC<Props> = props => {
     const paddingBottom = index === props.data.length - 1 ? 30 : 0;
 
     return (
-      <View style={{paddingTop, paddingBottom}}>
-        <RecipeListComponent
-          recipe={item}
-          onPress={() => props.onPress(item)}
-        />
+      <View style={{ paddingTop, paddingBottom }}>
+        <RecipeListComponent recipe={item} onPress={() => props.onPress(item)} />
       </View>
     );
   };
@@ -35,12 +31,12 @@ export const RecipeList: FC<Props> = props => {
   const onRefresh = async () => {
     setIsRefreshing(true);
 
-    await new Promise<void>(resolve => {
+    await new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
       }, 700);
     });
-    refetch();
+    await refetch();
 
     setIsRefreshing(false);
   };
@@ -64,14 +60,14 @@ export const RecipeList: FC<Props> = props => {
       ) : null}
       <FlatList
         data={props.data}
-        renderItem={({item, index}) => renderItem(item, index)}
-        keyExtractor={item => item.id!}
+        renderItem={({ item, index }) => renderItem(item, index)}
+        keyExtractor={(item, index) => item.id + index.toString()}
         refreshControl={
           <RefreshControl
-            onLayout={e => console.log(e.nativeEvent)}
+            onLayout={(e) => console.log(e.nativeEvent)}
             tintColor="transparent"
             colors={['transparent']}
-            style={{backgroundColor: 'transparent'}}
+            style={{ backgroundColor: 'transparent' }}
             refreshing={isRefreshing}
             onRefresh={() => onRefresh()}
           />

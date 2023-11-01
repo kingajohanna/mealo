@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 /**
  * ? Local Imports
  */
-import styles, {_shadowStyle, _container} from './SocialButton.style';
+import styles, { _container } from './SocialButton.style';
 
 interface ISocialButtonProps {
   text?: string;
@@ -28,27 +28,17 @@ const SocialButton = (props: ISocialButtonProps) => {
     height = 85,
     width = '50%',
     loginButtonTextStyle,
-    shadowColor = '#757575',
     backgroundColor = '#69bc4c',
     isSpinner = false,
-    spinnerSize = 16,
-    spinnerType = 'Circle',
-    spinnerColor = '#fff',
     onPress,
   } = props;
 
   return (
-    <TouchableOpacity
-      style={_container(width, height, backgroundColor)}
-      onPress={onPress}>
+    <TouchableOpacity style={_container(width, height, backgroundColor)} onPress={onPress}>
       {isSpinner ? (
         <ActivityIndicator size="small" />
       ) : (
-        component || (
-          <Text style={[styles.buttonTextStyle, loginButtonTextStyle]}>
-            {text}
-          </Text>
-        )
+        component || <Text style={[styles.buttonTextStyle, loginButtonTextStyle]}>{text}</Text>
       )}
     </TouchableOpacity>
   );

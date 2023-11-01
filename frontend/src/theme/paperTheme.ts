@@ -1,5 +1,5 @@
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
-import {Colors} from './colors';
+import { DefaultTheme } from 'react-native-paper';
+import { Colors } from './colors';
 
 export const baseTheme = {
   ...DefaultTheme,

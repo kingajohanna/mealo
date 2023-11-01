@@ -1,23 +1,25 @@
-import {Recipes} from '../screens/Recipes';
-import {Colors} from '../theme/colors';
-import {Tabs} from './tabs';
-import {StyleSheet} from 'react-native';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import { Recipes } from '../screens/Recipes';
+import { Colors } from '../theme/colors';
+import { Tabs } from './tabs';
+import { StyleSheet } from 'react-native';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import * as React from 'react';
-import {androidBottomPadding} from '../utils/androidHelper';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {createStackNavigator} from '@react-navigation/stack';
-import {Recipe} from '../types/recipe';
+import { androidBottomPadding } from '../utils/androidHelper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Recipe } from '../types/recipe';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import {RecipeDetails} from '../screens/RecipeDetails';
-import {Favourites} from '../screens/Favourites';
-import {Settings} from '../screens/Settings';
+import { RecipeDetails } from '../screens/RecipeDetails';
+import { Favourites } from '../screens/Favourites';
+import { Settings } from '../screens/Settings';
+import { AddRecipe } from '../screens/AddRecipe';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
   Favourites: undefined;
-  Recipe: {recipe: Recipe};
+  Recipe: { recipe: Recipe };
+  [Tabs.READ_OCR]: undefined;
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -25,77 +27,52 @@ const Stack = createStackNavigator<RecipeStackParamList>();
 
 function RecipeNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name={Tabs.RECIPES}
-        component={Recipes}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name={Tabs.RECIPE}
-        component={RecipeDetails}
-        options={{headerShown: false}}
-      />
-    </Stack.Navigator>
-  );
-}
-
-function RecipeFavNavigator() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name={Tabs.FAVOURITES}
+    <Tab.Navigator
+      activeColor={Colors.beige}
+      inactiveColor={Colors.beigeOp}
+      initialRouteName={Tabs.RECIPENAVIGATOR}
+      barStyle={styles.tabBar}
+    >
+      <Tab.Screen
+        name={Tabs.RECIPEFAVNAVIGATOR}
         component={Favourites}
-        options={{headerShown: false}}
+        options={{
+          tabBarLabel: Tabs.FAVOURITES,
+          tabBarIcon: ({ color }) => <IonIcon name="heart" color={color} size={28} />,
+        }}
       />
-      <Stack.Screen
-        name={Tabs.RECIPE}
-        component={RecipeDetails}
-        options={{headerShown: false}}
+      <Tab.Screen
+        name={Tabs.RECIPENAVIGATOR}
+        component={Recipes}
+        options={{
+          tabBarLabel: Tabs.RECIPES,
+          tabBarIcon: ({ color }) => <MaterialIcon name="book" color={color} size={26} />,
+        }}
       />
-    </Stack.Navigator>
+      <Tab.Screen
+        name={Tabs.SETTINGS}
+        component={Settings}
+        options={{
+          tabBarLabel: Tabs.SETTINGS,
+          tabBarIcon: ({ color }) => <IonIcon name="ios-settings" color={color} size={26} />,
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
 export const AppNavigator = () => {
   return (
     <SafeAreaProvider style={styles.container}>
-      <Tab.Navigator
-        activeColor={Colors.beige}
-        inactiveColor={Colors.beigeOp}
-        initialRouteName={Tabs.RECIPENAVIGATOR}
-        barStyle={styles.tabBar}>
-        <Tab.Screen
-          name={Tabs.RECIPEFAVNAVIGATOR}
-          component={RecipeFavNavigator}
-          options={{
-            tabBarLabel: Tabs.FAVOURITES,
-            tabBarIcon: ({color}) => (
-              <IonIcon name="heart" color={color} size={28} />
-            ),
-          }}
+      <Stack.Navigator>
+        <Stack.Screen name={Tabs.RECIPES} component={RecipeNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
+        <Stack.Screen
+          name={Tabs.READ_OCR}
+          component={AddRecipe}
+          options={{ headerShown: false, presentation: 'modal' }}
         />
-        <Tab.Screen
-          name={Tabs.RECIPENAVIGATOR}
-          component={RecipeNavigator}
-          options={{
-            tabBarLabel: Tabs.RECIPES,
-            tabBarIcon: ({color}) => (
-              <MaterialIcon name="book" color={color} size={26} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={Tabs.SETTINGS}
-          component={Settings}
-          options={{
-            tabBarLabel: Tabs.SETTINGS,
-            tabBarIcon: ({color}) => (
-              <IonIcon name="ios-settings" color={color} size={26} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </SafeAreaProvider>
   );
 };

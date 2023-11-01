@@ -1,15 +1,16 @@
 import React from 'react';
-import {View, TextInput, StyleSheet, Dimensions} from 'react-native';
-import {Colors} from '../theme/colors';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { Colors } from '../theme/colors';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Time} from '../screens/Recipes';
-import {Button} from 'react-native-paper';
-import {GET_RECIPES} from '../api/queries';
-import {useAuthQuery} from '../hooks/useAuthQuery';
+import { Time } from '../screens/Recipes';
+import { Button } from 'react-native-paper';
+import { GET_RECIPES } from '../api/queries';
+import { useAuthQuery } from '../hooks/useAuthQuery';
+import { TextInput } from './TextInput';
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 interface SearchModalProps {
   refRBSheet: React.MutableRefObject<RBSheet>;
@@ -64,7 +65,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         name={getIconName(timeType)}
         color={getColor(isActive)}
         size={50}
-        style={{backgroundColor, ...styles.icon}}
+        style={{ backgroundColor, ...styles.icon }}
         onPress={() => {
           setTime(isActive ? undefined : timeType);
         }}
@@ -82,14 +83,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         wrapper: styles.wrapper,
         draggableIcon: styles.draggableIcon,
         container: styles.container,
-      }}>
-      <TextInput
-        style={styles.titleText}
-        placeholderTextColor={Colors.textDark}
-        onChangeText={onChangeText}
-        value={text}
-        placeholder="Search recipes"
-      />
+      }}
+    >
+      <TextInput onChangeText={onChangeText} text={text} placeholder="Search recipes" />
       <View style={styles.timeContainer}>
         {renderTimeIcon(Time.fast)}
         {renderTimeIcon(Time.moderate)}
@@ -100,38 +96,26 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <Picker
             style={styles.halfWidth}
             selectedValue={category}
-            onValueChange={itemValue => setCategory(itemValue)}>
-            {data?.getRecipes.categories.map(
-              (cat: string | undefined, index: any) => (
-                <Picker.Item label={cat} value={cat} key={`category${index}`} />
-              ),
-            )}
+            onValueChange={(itemValue) => setCategory(itemValue)}
+          >
+            {data?.getRecipes.categories.map((cat: string | undefined, index: any) => (
+              <Picker.Item label={cat} value={cat} key={`category${index}`} />
+            ))}
           </Picker>
         )}
         {data?.getRecipes.cuisines && (
-          <Picker
-            style={styles.halfWidth}
-            selectedValue={cuisine}
-            onValueChange={itemValue => setCuisine(itemValue)}>
-            {data?.getRecipes.cuisines.map(
-              (cui: string | undefined, index: any) => (
-                <Picker.Item label={cui} value={cui} key={`cuisine${index}`} />
-              ),
-            )}
+          <Picker style={styles.halfWidth} selectedValue={cuisine} onValueChange={(itemValue) => setCuisine(itemValue)}>
+            {data?.getRecipes.cuisines.map((cui: string | undefined, index: any) => (
+              <Picker.Item label={cui} value={cui} key={`cuisine${index}`} />
+            ))}
           </Picker>
         )}
       </View>
       <View style={styles.buttonContainer}>
-        <Button
-          style={styles.button}
-          textColor={Colors.textLight}
-          onPress={reset}>
+        <Button style={styles.button} textColor={Colors.textLight} onPress={reset}>
           Reset
         </Button>
-        <Button
-          style={styles.button}
-          textColor={Colors.textLight}
-          onPress={search}>
+        <Button style={styles.button} textColor={Colors.textLight} onPress={search}>
           Search
         </Button>
       </View>
@@ -167,14 +151,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 5,
     flex: 1,
-    backgroundColor: Colors.beige,
-  },
-  titleText: {
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
-    marginHorizontal: 8,
-    borderColor: Colors.pine,
     backgroundColor: Colors.beige,
   },
   timeContainer: {
