@@ -9,7 +9,8 @@ import auth from '@react-native-firebase/auth';
 import { useStore } from './stores';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
-import { loadErrorMessages, loadDevMessages } from '@apollo/client/dev';
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
   const { userStore } = useStore();
@@ -49,10 +50,12 @@ export default function App() {
   });
 
   return (
-    <PaperProvider theme={baseTheme}>
-      <ApolloProvider client={client}>
-        <RootNavigation />
-      </ApolloProvider>
-    </PaperProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider theme={baseTheme}>
+        <ApolloProvider client={client}>
+          <RootNavigation />
+        </ApolloProvider>
+      </PaperProvider>
+    </GestureHandlerRootView>
   );
 }
