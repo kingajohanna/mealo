@@ -40,3 +40,9 @@ class Template(AbstractScraper):
 
     def description(self):
         return self.schema.description()
+
+    def calories(self):
+        return self.schema.calories()
+
+    def difficulty(self):
+        return self.schema.difficulty()

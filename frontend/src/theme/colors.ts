@@ -7,6 +7,7 @@ export const Colors = {
   beige: '#e6e0cf',
   beigeOp: '#e6e0cfA6',
   red: '#d33f49',
+  grey: '#9B9B9B',
   textDark: '#01161E',
   textLight: '#EEEEEE',
 };

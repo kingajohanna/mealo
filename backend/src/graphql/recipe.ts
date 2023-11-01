@@ -29,6 +29,8 @@ export const recipeType = `
         reviews: [String]
         siteName: String
         is_favorite: Boolean
+        calories: String
+        difficulty: String
     }
 
     type Recipe {
@@ -55,6 +57,8 @@ export const recipeType = `
         reviews: [String]
         siteName: String
         is_favorite: Boolean
+        calories: String
+        difficulty: String
     }
 
     type Recipes {
@@ -113,6 +117,8 @@ export const recipeMutation = {
       url,
     });
 
+    console.log(response.data);
+
     if (response && user) {
       const newRecipe = new Recipe({
         id: recipeId,
@@ -151,9 +157,14 @@ export const recipeMutation = {
   editRecipe: async (parent: any, args: { recipeId: number; body: any }) => {
     const { recipeId, body } = args;
 
-    return await Recipe.findOneAndUpdate({ id: recipeId }, body, {
+    console.log(body);
+
+    const rec = await Recipe.findOneAndUpdate({ id: recipeId }, body, {
       new: true,
     });
+    console.log(rec);
+
+    return rec;
   },
 
   deleteRecipe: async (

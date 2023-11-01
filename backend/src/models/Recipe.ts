@@ -24,6 +24,8 @@ export interface IRecipe {
   reviews: string[];
   siteName: string;
   is_favorite: boolean;
+  calories: string;
+  difficulty: string;
 }
 
 const recipeSchema = new mongoose.Schema({
@@ -60,6 +62,8 @@ const recipeSchema = new mongoose.Schema({
   reviews: { type: Array, default: null },
   siteName: { type: String, default: null },
   is_favorite: { type: Boolean, default: null },
+  calories: { type: String, default: null },
+  difficulty: { type: String, default: null },
 });
 
 export const Recipe = mongoose.model<IRecipe>(

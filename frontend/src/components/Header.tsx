@@ -1,6 +1,6 @@
-import React, {ReactNode} from 'react';
-import {StyleSheet, View, Text, ViewProps} from 'react-native';
-import {Colors} from '../theme/colors';
+import React, { ReactNode } from 'react';
+import { StyleSheet, View, Text, ViewProps } from 'react-native';
+import { Colors } from '../theme/colors';
 
 type HeaderProps = {
   title: string;
@@ -8,11 +8,13 @@ type HeaderProps = {
   leftAction?: ReactNode;
 } & ViewProps;
 
-export const Header: React.FC<HeaderProps> = props => {
+export const Header: React.FC<HeaderProps> = (props) => {
   return (
     <View style={styles.header}>
       {props.leftAction}
-      <Text style={styles.text}>{props.title}</Text>
+      <Text adjustsFontSizeToFit={true} numberOfLines={2} style={styles.text}>
+        {props.title}
+      </Text>
       {props.rightAction}
     </View>
   );

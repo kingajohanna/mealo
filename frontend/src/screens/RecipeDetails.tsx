@@ -1,11 +1,12 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { Colors } from '../theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { CheckableText } from '../components/CheckableText';
 import { List, Menu } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -13,9 +14,10 @@ import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { EDIT_RECIPE } from '../api/mutations';
+import { EDIT_RECIPE, FAVORITE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { Carousel } from '../components/Carousel';
+import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../components/RecipeDetailInfoBubble';
+import { Button } from '../components/Button';
 
 const { width } = Dimensions.get('window');
 
@@ -26,41 +28,68 @@ enum EditModalTypes {
   category = 'category',
   time = 'total time',
   cuisine = 'cuisine',
+  rating = 'rating',
+  calories = 'calories',
+  difficulty = 'difficulty',
+  yields = 'yields',
 }
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
-  const { recipe } = route.params;
-
-  const [editRecipe, data] = useAuthMutation(EDIT_RECIPE);
-  const [showedRecipe, setShowedRecipe] = useState(recipe);
+  const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
+  const [editFavoriteRecipe, fav_data] = useAuthMutation(FAVORITE_RECIPE);
+  const [recipe, setRecipe] = useState(route.params.recipe);
   const [openIngredients, setOpenIngredients] = useState(true);
+  const [openInstructions, setOpenInstructions] = useState(true);
   const [openMenu, setOpenMenu] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
 
   useEffect(() => {
-    if (data?.editRecipe) {
-      setShowedRecipe(data?.editRecipe);
-    }
-  }, [data]);
+    if (edit_data?.editRecipe) {
+      console.log(edit_data?.editRecipe);
 
-  const openEditModal = (type: EditModalTypes | undefined) => {
+      setRecipe(edit_data?.editRecipe);
+    }
+  }, [edit_data]);
+
+  useEffect(() => {
+    if (fav_data?.favorite_recipe) {
+      setRecipe(fav_data?.favoriteRecipe);
+    }
+  }, [fav_data]);
+
+  const favHandler = () => {
+    setRecipe({ ...recipe, is_favorite: !recipe.is_favorite });
+    editFavoriteRecipe({
+      variables: { recipeId: recipe.id },
+    });
+  };
+
+  const onOpenEditModal = (type: EditModalTypes | undefined) => {
+    setOpenEditModal(type !== undefined);
+    setEditModalType(type);
     switch (type) {
       case EditModalTypes.title:
-        setEditValue(showedRecipe.title || '');
-        setEditModalType(type);
+        setEditValue(recipe.title || '');
         break;
       case EditModalTypes.category:
-        setEditValue(showedRecipe.category || '');
-        setEditModalType(type);
+        setEditValue(recipe.category || '');
         break;
       case EditModalTypes.cuisine:
-        setEditValue(showedRecipe.cuisine || '');
-        setEditModalType(type);
+        setEditValue(recipe.cuisine || '');
         break;
       case EditModalTypes.time:
-        setEditValue(showedRecipe.totalTime || '');
-        setEditModalType(type);
+        setEditValue(recipe.totalTime || '');
+        break;
+      case EditModalTypes.rating:
+        setEditValue(recipe.ratings || '');
+        break;
+      case EditModalTypes.calories:
+        setEditValue(recipe.calories || '');
+        break;
+      case EditModalTypes.difficulty:
+        setEditValue(recipe.difficulty || '');
         break;
       default:
         setEditModalType(undefined);
@@ -86,6 +115,18 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         return {
           cuisine: editValue,
         };
+      case EditModalTypes.rating:
+        return {
+          ratings: editValue,
+        };
+      case EditModalTypes.calories:
+        return {
+          calories: editValue,
+        };
+      case EditModalTypes.difficulty:
+        return {
+          difficulty: editValue,
+        };
       default:
         break;
     }
@@ -98,7 +139,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 
   const setOpenMenuAndEdit = (type: EditModalTypes) => {
     setOpenMenu(false);
-    openEditModal(type);
+    onOpenEditModal(type);
   };
 
   const renderMenu = (
@@ -107,7 +148,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       visible={openMenu}
       onDismiss={() => {
         setOpenMenu(false);
-        openEditModal(undefined);
+        onOpenEditModal(undefined);
       }}
       anchor={
         <MaterialCommunityIcons
@@ -132,12 +173,6 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       />
       <MenuItem
         onPress={() => {
-          setOpenMenuAndEdit(EditModalTypes.time);
-        }}
-        title="Edit total time"
-      />
-      <MenuItem
-        onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.cuisine);
         }}
         title="Edit cuisine"
@@ -153,100 +188,147 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     return (
       <View>
         <FastImage
-          style={{ height: 250 }}
+          style={{ height: 300 }}
           source={{
-            uri: showedRecipe.image,
+            uri: recipe.image,
             priority: FastImage.priority.normal,
           }}
         />
         <View style={styles.imageOverlay} />
-        <View style={styles.textOverlay}>
-          <View style={styles.timerIconStyle}>
-            {showedRecipe.totalTime && (
-              <View style={styles.timerRow}>
-                <MaterialCommunityIcons name="timer-outline" color={Colors.textLight} size={28} />
-
-                <Text style={styles.timerText}>{showedRecipe.totalTime} min</Text>
-              </View>
-            )}
-            {showedRecipe.yields && (
-              <View style={styles.timerRow}>
-                <Image style={{ width: 30, height: 30 }} source={require('../assets/images/yields.png')} />
-                <Text style={styles.timerText}>{showedRecipe.yields}</Text>
-              </View>
-            )}
-          </View>
-        </View>
       </View>
     );
   };
 
   return (
     <ScreenBackground fullscreen>
-      <Header title={showedRecipe.title} rightAction={renderMenu} leftAction={renderBack} />
+      <Header title={recipe.title} rightAction={renderMenu} leftAction={renderBack} />
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {renderImage()}
         <View style={styles.contentContainer}>
-          <List.Accordion
-            theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-            style={styles.listAccordion}
-            title="Ingredients"
-            id="1"
-            expanded={openIngredients}
-            onPress={() => setOpenIngredients(!openIngredients)}
-            titleStyle={styles.listAccordionTitle}
-          >
-            <View style={styles.ingredientsContainer}>
-              {showedRecipe.ingredients.map((ingredient: string, index: number) => {
-                return (
-                  <CheckableText
-                    checkedStyle={{
-                      textDecorationLine: 'line-through',
-                      textDecorationStyle: 'solid',
-                    }}
-                    key={'ingredient' + index}
-                    style={styles.text}
-                  >
-                    <Text>{ingredient}</Text>
-                  </CheckableText>
-                );
-              })}
-            </View>
-          </List.Accordion>
+          <View style={styles.infoBubbles}>
+            <RecipeDetailInfoBubble
+              data={recipe.ratings?.toString()}
+              type={RecipeDetailInfoBubbleType.RATING}
+              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.rating)}
+            />
+            <RecipeDetailInfoBubble
+              data={recipe.calories?.toString()}
+              type={RecipeDetailInfoBubbleType.CALORIES}
+              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.calories)}
+            />
+            <RecipeDetailInfoBubble
+              data={recipe.yields?.split(' ')[0].toString()}
+              type={RecipeDetailInfoBubbleType.SERVING}
+              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.yields)}
+            />
+            <RecipeDetailInfoBubble
+              data={recipe.difficulty?.toString()}
+              type={RecipeDetailInfoBubbleType.DIFFICULTY}
+              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.difficulty)}
+            />
+            <RecipeDetailInfoBubble
+              data={recipe.totalTime?.toString()}
+              type={RecipeDetailInfoBubbleType.TIME}
+              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.time)}
+            />
+          </View>
 
-          <Text style={styles.title}>Instructions</Text>
-          <Carousel
-            data={showedRecipe.instructions}
-            renderItem={({ item, index }) => (
-              <View key={'instruction' + index} style={[styles.instructionContainer, { width: width - 20 }]}>
-                <Text style={styles.text} key={'instruction' + index}>
-                  {item}
-                </Text>
+          <View style={styles.siteDataContainer}>
+            {/* name={Platform.OS === 'android' ? 'share-social' : 'share-outline'} */}
+            <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
+            <Text style={styles.siteText}>{recipe.siteName}</Text>
+          </View>
+
+          <View style={styles.listBorder}>
+            <List.Accordion
+              theme={{ colors: { background: 'transparent', text: Colors.pine } }}
+              style={styles.listAccordion}
+              title="Ingredients"
+              left={() => (
+                <MaterialCommunityIcons name="chef-hat" color={Colors.pine} size={24} style={styles.listIcon} />
+              )}
+              id="1"
+              expanded={openIngredients}
+              onPress={() => setOpenIngredients(!openIngredients)}
+              titleStyle={styles.listAccordionTitle}
+            >
+              <View style={styles.ingredientsContainer}>
+                {recipe.ingredients.map((ingredient: string, index: number) => {
+                  return (
+                    <CheckableText checkedStyle={styles.checkedText} key={'ingredient' + index} style={styles.text}>
+                      <Text style={styles.text}>• </Text>
+                      <Text style={styles.text}>{ingredient}</Text>
+                    </CheckableText>
+                  );
+                })}
               </View>
-            )}
-          />
+            </List.Accordion>
+          </View>
+
+          <View style={styles.listBorder}>
+            <List.Accordion
+              theme={{ colors: { background: 'transparent', text: Colors.pine } }}
+              style={styles.listAccordion}
+              title="Instructions"
+              left={() => <MaterialCommunityIcons name="knife" color={Colors.pine} size={24} style={styles.listIcon} />}
+              id="1"
+              expanded={openInstructions}
+              onPress={() => setOpenInstructions(!openInstructions)}
+              titleStyle={styles.listAccordionTitle}
+            >
+              <View style={styles.ingredientsContainer}>
+                {recipe.instructions.map((instruction: string, index: number) => {
+                  return (
+                    <View key={instruction + index} style={{ paddingRight: 8 }}>
+                      <Text style={styles.textMedium}>{index + 1} step </Text>
+                      <View style={styles.ingredientsListContainer}>
+                        <View style={styles.verticalLine} />
+                        <Text style={styles.text} key={'instruction' + index}>
+                          {instruction}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </List.Accordion>
+          </View>
         </View>
       </ScrollView>
 
-      <Dialog.Container visible={editModalType !== undefined}>
+      <View style={styles.buttonContainer}>
+        <Button
+          icon={<IonIcon name={recipe.is_favorite ? 'heart' : 'heart-outline'} color={Colors.grey} size={32} />}
+          style={[styles.smallButton, { borderColor: Colors.grey }]}
+          onPress={favHandler}
+        />
+        <Button
+          icon={<IonIcon name="play" color={Colors.pine} size={32} />}
+          style={[styles.smallButton, { borderColor: Colors.pine }]}
+        />
+        <Button
+          title="Start cooking"
+          titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
+          style={styles.cookButton}
+        />
+      </View>
+
+      <Dialog.Container visible={openEditModal}>
         <Dialog.Title>Edit {editModalType}</Dialog.Title>
         <Dialog.Input placeholder={editModalType} value={editValue} onChangeText={(text) => setEditValue(text)} />
         <Dialog.Button
           label="Cancel"
           onPress={() => {
-            setEditValue('');
-            setEditModalType(undefined);
+            setOpenEditModal(false);
           }}
         />
         <Dialog.Button
           label="Change"
           onPress={async () => {
+            setOpenEditModal(false);
             editRecipe({
-              variables: { recipeId: showedRecipe.id, body: getEditContent() },
+              variables: { recipeId: recipe.id, body: getEditContent() },
             });
-
-            setEditValue('');
-            setEditModalType(undefined);
           }}
         />
       </Dialog.Container>
@@ -255,16 +337,29 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   title: {
     fontSize: 18,
     lineHeight: 56,
     color: Colors.pine,
     paddingLeft: 15,
   },
+  textMedium: {
+    fontSize: 18,
+    lineHeight: 24,
+  },
   text: {
     fontSize: 16,
     lineHeight: 22,
     paddingLeft: 20,
+    color: Colors.textDark,
+  },
+  checkedText: {
+    textDecorationLine: 'line-through',
+    textDecorationStyle: 'solid',
   },
   imageOverlay: {
     position: 'absolute',
@@ -273,7 +368,23 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     backgroundColor: 'black',
-    opacity: 0.5,
+    opacity: 0.3,
+  },
+  ingredientsListContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 8,
+  },
+  listBorder: {
+    borderWidth: 2,
+    borderRadius: 15,
+    paddingBottom: 5,
+    marginTop: 10,
+    borderColor: Colors.grey,
+  },
+  listIcon: {
+    paddingLeft: 12,
+    paddingTop: 6,
   },
   textOverlay: {
     position: 'absolute',
@@ -297,11 +408,22 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 18,
   },
+  infoBubbles: {
+    flexDirection: 'row',
+    width: '80%',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+  },
   ingredientsContainer: {
     backgroundColor: Colors.beige,
     borderRadius: 10,
     paddingTop: 10,
     paddingBottom: 10,
+    paddingStart: 16,
+    borderTopWidth: 2,
+    borderTopStartRadius: 0,
+    borderTopEndRadius: 0,
+    borderTopColor: Colors.grey,
   },
   menu: {
     backgroundColor: Colors.beige,
@@ -313,9 +435,37 @@ const styles = StyleSheet.create({
   scrollView: {
     width: '100%',
   },
+  cookButton: {
+    borderWidth: 2,
+    backgroundColor: Colors.pine,
+    borderColor: Colors.pine,
+    width: width - 54 - 54 - 60,
+  },
+  siteDataContainer: {
+    paddingLeft: 12,
+    paddingTop: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  siteText: {
+    paddingLeft: 12,
+    fontSize: 16,
+    color: Colors.pine,
+  },
+  smallButton: {
+    borderWidth: 2,
+    width: 54,
+    paddingHorizontal: 0,
+    justifyContent: 'center',
+    marginRight: 8,
+  },
   contentContainer: {
+    backgroundColor: Colors.beige,
+    marginTop: -50,
     padding: 10,
     paddingBottom: 40,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   listAccordion: {
     backgroundColor: 'transparent',
@@ -323,6 +473,7 @@ const styles = StyleSheet.create({
   listAccordionTitle: {
     color: Colors.pine,
     fontSize: 18,
+    alignItems: 'center',
   },
   instructionContainer: {
     backgroundColor: Colors.beige,
@@ -331,5 +482,10 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  verticalLine: {
+    height: '95%',
+    width: 3,
+    backgroundColor: Colors.grey,
   },
 });

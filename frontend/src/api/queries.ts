@@ -1,4 +1,4 @@
-import {gql} from '@apollo/client';
+import { gql } from '@apollo/client';
 
 export const GET_RECIPES = gql`
   query GetRecipes {
@@ -17,6 +17,10 @@ export const GET_RECIPES = gql`
         instructions
         cuisine
         is_favorite
+        siteName
+        difficulty
+        calories
+        ratings
       }
     }
   }

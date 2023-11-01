@@ -22,7 +22,9 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
       setLoading(true);
       const result = await TextRecognition.recognize(image.assets[0].uri!);
 
-      const response = await fetch('http://localhost:3000/send-message', {
+      console.log(result.text);
+
+      const response = await fetch('http://localhost:3002/send-message', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

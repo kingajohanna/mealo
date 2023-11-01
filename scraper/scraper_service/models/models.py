@@ -4,9 +4,9 @@ from bson import ObjectId
 from enum import Enum
 
 
-
 class URL(BaseModel):
     url: HttpUrl
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -23,11 +23,13 @@ class PyObjectId(ObjectId):
     def __modify_schema__(cls, field_schema):
         field_schema.update(type="string")
 
+
 class SpeedEnum(str, Enum):
     FAST = 'fast'
     MODERATE = 'moderate'
     SLOW = 'slow'
     UNDEFINED = 'undefined'
+
 
 class RecipeModel(BaseModel):
     host: str = Field(...)
@@ -50,6 +52,8 @@ class RecipeModel(BaseModel):
     description: Optional[str]
     reviews: Optional[str]
     siteName: str = Field(...)
+    calories: Optional[str]
+    difficulty: Optional[str]
 
     class Config:
         json_encoders = {ObjectId: str}
@@ -74,11 +78,16 @@ class RecipeModel(BaseModel):
                 "description": "Best hamburger in the world",
                 "reviews": "",
                 "siteName": "deliciousfood",
+                "calories": "1000",
+                "difficulty": "easy"
             }
         }
+
 
 class RecipeUpdate(BaseModel):
     title: Optional[str]
     category: Optional[str]
     totalTime: Optional[str]
     cuisine: Optional[str]
+    calories: Optional[str]
+    difficulty: Optional[str]
