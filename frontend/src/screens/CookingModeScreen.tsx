@@ -11,6 +11,8 @@ import { Tabs } from '../navigation/tabs';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { CheckableText } from '../components/CheckableText';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import KeepAwake from '@sayem314/react-native-keep-awake';
+import { Timers } from './Timers';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.COOKINGMODE>;
 
@@ -19,6 +21,7 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
   const [instructionIndex, setInstructionIndex] = useState(0);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRefTimer = useRef<BottomSheetModal>(null);
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -35,6 +38,7 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
   return (
     <>
       <ScreenBackground fullscreen notificationBarColor={Colors.beige} style={styles.screenBackground}>
+        <KeepAwake />
         <View style={styles.container}>
           <View style={styles.header}>
             <View style={styles.iconsContainer}>
@@ -45,7 +49,12 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
                 style={styles.icon}
                 onPress={() => bottomSheetModalRef.current?.present()}
               />
-              <MaterialCommunityIcon name="timer-outline" color={Colors.pine} size={50} />
+              <MaterialCommunityIcon
+                name="timer-outline"
+                color={Colors.pine}
+                size={50}
+                onPress={() => bottomSheetModalRefTimer.current?.present()}
+              />
             </View>
 
             <IonIcon name="close" color={Colors.pine} size={50} onPress={() => navigation.goBack()} />
@@ -95,6 +104,25 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
               </CheckableText>
             ))}
           </View>
+        </BottomSheetModal>
+        <BottomSheetModal
+          ref={bottomSheetModalRefTimer}
+          index={0}
+          snapPoints={['60%']}
+          backdropComponent={useCallback(
+            (props: any) => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+                onPress={() => bottomSheetModalRefTimer.current?.dismiss()}
+              />
+            ),
+            [],
+          )}
+          backgroundStyle={styles.bottomSheetBackground}
+        >
+          <Timers recipe={recipe} onClose={() => bottomSheetModalRefTimer.current?.dismiss()} />
         </BottomSheetModal>
       </ScreenBackground>
     </>

@@ -9,6 +9,7 @@ export enum Tabs {
   RECIPE = 'Recipe',
 
   COOKINGMODE = 'CookingMode',
+  TIMERS = 'Timers',
 
   // add recipe
   READ_OCR = 'ReadOcr',

@@ -16,6 +16,7 @@ import { Settings } from '../screens/Settings';
 import { AddRecipe } from '../screens/AddRecipe';
 import { CookingMode } from '../screens/CookingModeScreen';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { Timers } from '../screens/Timers';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -23,6 +24,7 @@ export type RecipeStackParamList = {
   Recipe: { recipe: Recipe };
   [Tabs.READ_OCR]: undefined;
   [Tabs.COOKINGMODE]: { recipe: Recipe };
+  [Tabs.TIMERS]: { recipe: Recipe };
 };
 
 const Tab = createMaterialBottomTabNavigator();

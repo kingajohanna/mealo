@@ -79,7 +79,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         {...props}
         disappearsOnIndex={-1}
         appearsOnIndex={0}
-        onPress={() => refRBSheet.current?.dismiss()}
+        onPress={() => refRBSheet.current?.close()}
       />
     ),
     [],
