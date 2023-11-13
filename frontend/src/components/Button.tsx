@@ -13,6 +13,7 @@ type Props = {
 export const Button: React.FC<Props> = (props) => {
   return (
     <Pressable
+      disabled={props.disabled}
       style={[styles.buttonContainer, props.style, { opacity: props.disabled ? 0.5 : 1 }]}
       onPress={props.onPress}
     >

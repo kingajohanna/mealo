@@ -14,12 +14,17 @@ import { RecipeDetails } from '../screens/RecipeDetails';
 import { Favourites } from '../screens/Favourites';
 import { Settings } from '../screens/Settings';
 import { AddRecipe } from '../screens/AddRecipe';
+import { CookingMode } from '../screens/CookingModeScreen';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { Timers } from '../screens/Timers';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
   Favourites: undefined;
   Recipe: { recipe: Recipe };
   [Tabs.READ_OCR]: undefined;
+  [Tabs.COOKINGMODE]: { recipe: Recipe };
+  [Tabs.TIMERS]: { recipe: Recipe };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -64,15 +69,18 @@ function RecipeNavigator() {
 export const AppNavigator = () => {
   return (
     <SafeAreaProvider style={styles.container}>
-      <Stack.Navigator>
-        <Stack.Screen name={Tabs.RECIPES} component={RecipeNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
-        <Stack.Screen
-          name={Tabs.READ_OCR}
-          component={AddRecipe}
-          options={{ headerShown: false, presentation: 'modal' }}
-        />
-      </Stack.Navigator>
+      <BottomSheetModalProvider>
+        <Stack.Navigator>
+          <Stack.Screen name={Tabs.RECIPES} component={RecipeNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
+          <Stack.Screen name={Tabs.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />
+          <Stack.Screen
+            name={Tabs.READ_OCR}
+            component={AddRecipe}
+            options={{ headerShown: false, presentation: 'modal' }}
+          />
+        </Stack.Navigator>
+      </BottomSheetModalProvider>
     </SafeAreaProvider>
   );
 };

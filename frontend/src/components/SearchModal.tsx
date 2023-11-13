@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../theme/colors';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -9,11 +9,11 @@ import { Button } from 'react-native-paper';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { TextInput } from './TextInput';
-
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 const { height } = Dimensions.get('window');
 
 interface SearchModalProps {
-  refRBSheet: React.MutableRefObject<RBSheet>;
+  refRBSheet: React.MutableRefObject<any>;
   onChangeText: React.Dispatch<React.SetStateAction<string>>;
   text: string;
   time: Time | undefined;
@@ -73,17 +73,25 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     );
   };
 
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        onPress={() => refRBSheet.current?.close()}
+      />
+    ),
+    [],
+  );
+
   return (
-    <RBSheet
+    <BottomSheetModal
       ref={refRBSheet}
-      closeOnDragDown={false}
-      closeOnPressMask={true}
-      height={height * 0.7}
-      customStyles={{
-        wrapper: styles.wrapper,
-        draggableIcon: styles.draggableIcon,
-        container: styles.container,
-      }}
+      index={0}
+      snapPoints={['50%']}
+      backdropComponent={renderBackdrop}
+      backgroundStyle={styles.bottomSheetBackground}
     >
       <TextInput onChangeText={onChangeText} text={text} placeholder="Search recipes" />
       <View style={styles.timeContainer}>
@@ -119,11 +127,16 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           Search
         </Button>
       </View>
-    </RBSheet>
+    </BottomSheetModal>
   );
 };
 
 const styles = StyleSheet.create({
+  bottomSheetBackground: {
+    backgroundColor: Colors.beige,
+    borderTopColor: Colors.salmon,
+    borderTopWidth: 3,
+  },
   icon: {
     borderWidth: 1,
     borderRadius: 10,

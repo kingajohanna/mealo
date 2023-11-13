@@ -310,6 +310,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           title="Start cooking"
           titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
           style={styles.cookButton}
+          onPress={() => navigation.navigate(Tabs.COOKINGMODE, { recipe })}
         />
       </View>
 

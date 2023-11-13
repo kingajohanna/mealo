@@ -14,6 +14,7 @@ import { Header } from '../components/Header';
 import { RecipeList } from '../components/RecipeList';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 export enum Time {
   fast = 'fast',
@@ -35,6 +36,7 @@ export const Recipes = () => {
   const [time, setTime] = useState<Time | undefined>(undefined);
 
   const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     if (data?.getRecipes.recipes) {
@@ -110,7 +112,7 @@ export const Recipes = () => {
         </View>
 
         <SearchModal
-          refRBSheet={refRBSheet}
+          refRBSheet={bottomSheetModalRef}
           onChangeText={setText}
           text={text}
           time={time}
@@ -120,10 +122,15 @@ export const Recipes = () => {
           cuisine={cuisine}
           setCuisine={setCuisine}
           reset={reset}
-          search={() => refRBSheet.current?.close()}
+          search={() => bottomSheetModalRef.current?.dismiss()}
         />
       </ScreenBackground>
-      <FAB icon="magnify" color={Colors.textLight} style={styles.fab} onPress={() => refRBSheet.current?.open()} />
+      <FAB
+        icon="magnify"
+        color={Colors.textLight}
+        style={styles.fab}
+        onPress={() => bottomSheetModalRef.current?.present()}
+      />
       <FAB
         icon="plus"
         color={Colors.textLight}

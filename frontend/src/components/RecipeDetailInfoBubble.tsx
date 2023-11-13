@@ -46,11 +46,7 @@ export const RecipeDetailInfoBubble: React.FC<RecipeDetailInfoBubbleProps> = (pr
   };
 
   return (
-    <Pressable
-      style={[styles.background, { opacity: !props.data ? 0.5 : 1 }]}
-      onLongPress={props.onLongPress}
-      onPress={toast}
-    >
+    <Pressable style={[styles.background, { opacity: !props.data ? 0.5 : 1 }]} onLongPress={props.onLongPress}>
       <View style={styles.iconBackground}>{getIcon(props.type)}</View>
       <Text numberOfLines={2} style={styles.text}>
         {props.data}
