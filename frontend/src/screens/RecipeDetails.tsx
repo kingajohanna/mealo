@@ -14,10 +14,14 @@ import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { EDIT_RECIPE, FAVORITE_RECIPE } from '../api/mutations';
+import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../components/RecipeDetailInfoBubble';
 import { Button } from '../components/Button';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../stores';
+import { useAuthQuery } from '../hooks/useAuthQuery';
+import { GET_RECIPES } from '../api/queries';
 
 const { width } = Dimensions.get('window');
 
@@ -35,29 +39,46 @@ enum EditModalTypes {
 }
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
+  const [refetch, data] = useAuthQuery(GET_RECIPES);
+
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
+  const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
   const [editFavoriteRecipe, fav_data] = useAuthMutation(FAVORITE_RECIPE);
   const [recipe, setRecipe] = useState(route.params.recipe);
   const [openIngredients, setOpenIngredients] = useState(true);
   const [openInstructions, setOpenInstructions] = useState(true);
   const [openMenu, setOpenMenu] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openFolderModal, setOpenFolderModal] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
 
+  const initialFolderValues = Object.fromEntries(
+    data?.getRecipes.folders.map((folder: string) => [folder, recipe.folders?.includes(folder) ? true : false]),
+  );
+  const [folderValues, setFolderValues] = useState(initialFolderValues);
+
   useEffect(() => {
     if (edit_data?.editRecipe) {
-      console.log(edit_data?.editRecipe);
-
-      setRecipe(edit_data?.editRecipe);
+      setRecipe(edit_data.editRecipe);
     }
   }, [edit_data]);
 
   useEffect(() => {
+    if (folder_data?.folderRecipe) {
+      setRecipe(folder_data.folderRecipe);
+    }
+  }, [folder_data]);
+
+  useEffect(() => {
     if (fav_data?.favorite_recipe) {
-      setRecipe(fav_data?.favoriteRecipe);
+      setRecipe(fav_data.favoriteRecipe);
     }
   }, [fav_data]);
+
+  useEffect(() => {
+    setFolderValues(initialFolderValues);
+  }, [data.getRecipes.folders]);
 
   const favHandler = () => {
     setRecipe({ ...recipe, is_favorite: !recipe.is_favorite });
@@ -142,6 +163,13 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     onOpenEditModal(type);
   };
 
+  const handleSwitchChange = (folder: string) => {
+    setFolderValues((prevValues: any) => ({
+      ...prevValues,
+      [folder]: !prevValues[folder],
+    }));
+  };
+
   const renderMenu = (
     <Menu
       contentStyle={styles.menu}
@@ -176,6 +204,12 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           setOpenMenuAndEdit(EditModalTypes.cuisine);
         }}
         title="Edit cuisine"
+      />
+      <MenuItem
+        onPress={() => {
+          setOpenFolderModal(true);
+        }}
+        title="Add to folder"
       />
     </Menu>
   );
@@ -314,6 +348,41 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
 
+      <Dialog.Container visible={openFolderModal}>
+        <Dialog.Title>Add to folder</Dialog.Title>
+        {data?.getRecipes.folders.map((folder: string) => (
+          <Dialog.Switch
+            label={folder}
+            value={folderValues[folder]}
+            onChange={() => handleSwitchChange(folder)}
+            key={'key' + folder}
+          />
+        ))}
+        <Dialog.Input placeholder="New folder" onChangeText={(text) => setEditValue(text)} value={editValue} />
+        <Dialog.Button
+          label="Cancel"
+          onPress={() => {
+            setOpenFolderModal(false);
+            setEditValue('');
+          }}
+        />
+        <Dialog.Button
+          label="Change"
+          onPress={async () => {
+            setOpenFolderModal(false);
+            const trueFolders = Object.keys(folderValues).filter((folder) => folderValues[folder]);
+            if (editValue !== '') trueFolders.push(editValue);
+            await editFolders({
+              variables: {
+                recipeId: recipe.id,
+                folders: trueFolders,
+              },
+            });
+            setEditValue('');
+            refetch();
+          }}
+        />
+      </Dialog.Container>
       <Dialog.Container visible={openEditModal}>
         <Dialog.Title>Edit {editModalType}</Dialog.Title>
         <Dialog.Input placeholder={editModalType} value={editValue} onChangeText={(text) => setEditValue(text)} />

@@ -31,6 +31,7 @@ export const recipeType = `
         is_favorite: Boolean
         calories: String
         difficulty: String
+        folders: [String]
     }
 
     type Recipe {
@@ -59,12 +60,14 @@ export const recipeType = `
         is_favorite: Boolean
         calories: String
         difficulty: String
+        folders: [String]
     }
 
     type Recipes {
       recipes: [Recipe]
       categories: [String]
       cuisines: [String]
+      folders: [String]
     }
 
     type Query {
@@ -77,6 +80,7 @@ export const recipeType = `
         editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
         deleteRecipe( recipeId: Int! ): Recipe
         favoriteRecipe( recipeId: Int! ): Recipe
+        folderRecipe( recipeId: Int!, folders: [String] ): Recipe
     }
 `;
 
@@ -87,6 +91,7 @@ export const recipeQuery = {
     const recipes = await Recipe.find({ uid }).lean();
     const categories: string[] = ["All"];
     const cuisines: string[] = ["All"];
+    const folders: string[] = [];
 
     recipes?.forEach((recipe: any) => {
       if (recipe.category && !categories.includes(recipe.category)) {
@@ -95,9 +100,17 @@ export const recipeQuery = {
       if (recipe.cuisine && !cuisines.includes(recipe.cuisine)) {
         cuisines.push(recipe.cuisine);
       }
+      if (recipe.folders) {
+        recipe.folders.forEach((folder: string) => {
+          if (!folders.includes(folder)) {
+            folders.push(folder);
+          }
+        });
+      }
     });
+    folders.sort();
 
-    return { recipes, categories, cuisines };
+    return { recipes, categories, cuisines, folders };
   },
 };
 
@@ -184,7 +197,7 @@ export const recipeMutation = {
 
   favoriteRecipe: async (
     parent: any,
-    args: { uid: string; recipeId: number },
+    args: { recipeId: number },
     context: ContextType
   ) => {
     const { recipeId } = args;
@@ -202,5 +215,25 @@ export const recipeMutation = {
           { is_favorite: true },
           { new: true }
         );
+  },
+
+  folderRecipe: async (
+    parent: any,
+    args: { recipeId: number; folders: string[] },
+    context: ContextType
+  ) => {
+    const { recipeId, folders } = args;
+    const { uid } = context;
+
+    let recipe = await Recipe.findOne({ id: recipeId });
+
+    console.log(folders);
+
+    if (!recipe) return;
+    return await Recipe.findOneAndUpdate(
+      { id: recipeId },
+      { folders },
+      { new: true }
+    );
   },
 };

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, View, Text, ViewProps } from 'react-native';
+import { StyleSheet, View, Text, ViewProps, StyleProp, TextStyle } from 'react-native';
 import { Colors } from '../theme/colors';
 
 type HeaderProps = {
@@ -11,11 +11,11 @@ type HeaderProps = {
 export const Header: React.FC<HeaderProps> = (props) => {
   return (
     <View style={styles.header}>
-      {props.leftAction}
+      <View style={{ width: 30 }}>{props.leftAction}</View>
       <Text adjustsFontSizeToFit={true} numberOfLines={2} style={styles.text}>
         {props.title}
       </Text>
-      {props.rightAction}
+      <View style={{ width: 30, alignItems: 'center', justifyContent: 'center' }}>{props.rightAction}</View>
     </View>
   );
 };

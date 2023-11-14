@@ -4,6 +4,9 @@ export enum Tabs {
   SETTINGS = 'Settings',
   RECIPENAVIGATOR = 'RecipeNavigator',
   RECIPEFAVNAVIGATOR = 'RecipeFavNavigator',
+  FOLDERSTACK = 'FolderStack',
+  FOLDERS = 'Folders',
+  RECIPEFOLDER = 'RecipeFolder',
 
   // details
   RECIPE = 'Recipe',
