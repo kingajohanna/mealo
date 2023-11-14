@@ -17,6 +17,8 @@ import { AddRecipe } from '../screens/AddRecipe';
 import { CookingMode } from '../screens/CookingModeScreen';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Timers } from '../screens/Timers';
+import { FolderScreen } from '../screens/FolderScreen';
+import { RecipeFolderScreen } from '../screens/RecipeFolderScreen';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -25,6 +27,8 @@ export type RecipeStackParamList = {
   [Tabs.READ_OCR]: undefined;
   [Tabs.COOKINGMODE]: { recipe: Recipe };
   [Tabs.TIMERS]: { recipe: Recipe };
+  [Tabs.FOLDERS]: undefined;
+  [Tabs.RECIPEFOLDER]: { filter: string };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -55,6 +59,14 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
+        name={Tabs.FOLDERSTACK}
+        component={FolderNavigator}
+        options={{
+          tabBarLabel: Tabs.FOLDERS,
+          tabBarIcon: ({ color }) => <IonIcon name="folder-open" color={color} size={26} />,
+        }}
+      />
+      <Tab.Screen
         name={Tabs.SETTINGS}
         component={Settings}
         options={{
@@ -66,12 +78,22 @@ function RecipeNavigator() {
   );
 }
 
+const FolderNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name={Tabs.FOLDERS} component={FolderScreen} options={{ headerShown: false }} />
+      <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+};
+
 export const AppNavigator = () => {
   return (
     <SafeAreaProvider style={styles.container}>
       <BottomSheetModalProvider>
         <Stack.Navigator>
           <Stack.Screen name={Tabs.RECIPES} component={RecipeNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />
           <Stack.Screen

@@ -5,6 +5,7 @@ export const GET_RECIPES = gql`
     getRecipes {
       categories
       cuisines
+      folders
       recipes {
         id
         title
@@ -21,6 +22,7 @@ export const GET_RECIPES = gql`
         difficulty
         calories
         ratings
+        folders
       }
     }
   }

@@ -18,6 +18,7 @@ export const EDIT_RECIPE = gql`
       difficulty
       calories
       ratings
+      folders
     }
   }
 `;
@@ -58,6 +59,7 @@ export const ADD_RECIPE = gql`
       difficulty
       calories
       ratings
+      folders
     }
   }
 `;
@@ -80,6 +82,7 @@ export const DELETE_RECIPE = gql`
       difficulty
       calories
       ratings
+      folders
     }
   }
 `;
@@ -102,6 +105,7 @@ export const FAVORITE_RECIPE = gql`
       difficulty
       calories
       ratings
+      folders
     }
   }
 `;
@@ -120,6 +124,26 @@ export const ADD_OCR_RECIPE = gql`
       instructions
       cuisine
       is_favorite
+      folders
+    }
+  }
+`;
+
+export const FOLDER_RECIPE = gql`
+  mutation FolderRecipe($recipeId: Int!, $folders: [String]) {
+    folderRecipe(recipeId: $recipeId, folders: $folders) {
+      id
+      title
+      category
+      speed
+      totalTime
+      yields
+      image
+      ingredients
+      instructions
+      cuisine
+      is_favorite
+      folders
     }
   }
 `;

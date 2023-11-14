@@ -23,5 +23,6 @@ export type Recipe = {
   speed?: string;
   calories?: string;
   difficulty?: string;
+  folders?: string[];
   [key: string]: string | undefined | boolean | string[];
 };
