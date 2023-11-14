@@ -108,6 +108,7 @@ export const recipeQuery = {
         });
       }
     });
+    folders.sort();
 
     return { recipes, categories, cuisines, folders };
   },
