@@ -54,7 +54,9 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [editValue, setEditValue] = useState('');
 
   const initialFolderValues = Object.fromEntries(
-    data?.getRecipes.folders.map((folder: string) => [folder, recipe.folders?.includes(folder) ? true : false]),
+    data?.getRecipes.folders
+      .map((folder: string) => [folder, recipe.folders?.includes(folder) ? true : false])
+      .sort((a: [string, boolean], b: [string, boolean]) => a[0].localeCompare(b[0])),
   );
   const [folderValues, setFolderValues] = useState(initialFolderValues);
 
@@ -350,14 +352,16 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 
       <Dialog.Container visible={openFolderModal}>
         <Dialog.Title>Add to folder</Dialog.Title>
-        {data?.getRecipes.folders.map((folder: string) => (
-          <Dialog.Switch
-            label={folder}
-            value={folderValues[folder]}
-            onChange={() => handleSwitchChange(folder)}
-            key={'key' + folder}
-          />
-        ))}
+        <ScrollView>
+          {Object.keys(folderValues).map((folder: string) => (
+            <Dialog.Switch
+              label={folder}
+              value={folderValues[folder]}
+              onChange={() => handleSwitchChange(folder)}
+              key={'key' + folder}
+            />
+          ))}
+        </ScrollView>
         <Dialog.Input placeholder="New folder" onChangeText={(text) => setEditValue(text)} value={editValue} />
         <Dialog.Button
           label="Cancel"
