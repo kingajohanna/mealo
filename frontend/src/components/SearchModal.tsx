@@ -10,6 +10,7 @@ import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { TextInput } from './TextInput';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import i18next from 'i18next';
 const { height } = Dimensions.get('window');
 
 interface SearchModalProps {
@@ -93,7 +94,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       backdropComponent={renderBackdrop}
       backgroundStyle={styles.bottomSheetBackground}
     >
-      <TextInput onChangeText={onChangeText} text={text} placeholder="Search recipes" />
+      <TextInput onChangeText={onChangeText} text={text} placeholder={i18next.t(`recipes:searchModalTitle`)} />
       <View style={styles.timeContainer}>
         {renderTimeIcon(Time.fast)}
         {renderTimeIcon(Time.moderate)}
@@ -121,10 +122,10 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       </View>
       <View style={styles.buttonContainer}>
         <Button style={styles.button} textColor={Colors.textLight} onPress={reset}>
-          Reset
+          {i18next.t(`recipes:reset`)}
         </Button>
         <Button style={styles.button} textColor={Colors.textLight} onPress={search}>
-          Search
+          {i18next.t(`recipes:search`)}
         </Button>
       </View>
     </BottomSheetModal>

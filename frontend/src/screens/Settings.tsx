@@ -13,6 +13,7 @@ import { DELETE_USER } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { useApolloClient } from '@apollo/client';
 import { Button } from '../components/Button';
+import i18next from 'i18next';
 
 export const Settings = () => {
   const { userStore } = useStore();
@@ -29,12 +30,12 @@ export const Settings = () => {
 
   const onSignout = () => {
     try {
-      Alert.alert('Logout', 'Click OK to logout!', [
+      Alert.alert('Logout', i18next.t('settings:logoutText'), [
         {
-          text: 'Cancel',
+          text: i18next.t(`general:cancel`),
         },
         {
-          text: 'OK',
+          text: i18next.t(`general:ok`),
           onPress: async () => {
             await clearStore();
             auth()
@@ -44,15 +45,15 @@ export const Settings = () => {
         },
       ]);
     } catch (error) {
-      return Alert.alert(en.auth.error.title, en.auth.error.text);
+      return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
     }
   };
 
   const onDelete = () => {
     try {
-      Alert.alert('Delete', 'Are you sure you want to delete your whole account?', [
+      Alert.alert(i18next.t(`general:delete`), i18next.t('settings:deleteText'), [
         {
-          text: 'Delete',
+          text: i18next.t(`general:delete`),
           onPress: async () => {
             await deleteUser();
             await clearStore();
@@ -62,24 +63,28 @@ export const Settings = () => {
           },
         },
         {
-          text: 'Cancel',
+          text: i18next.t(`general:cancel`),
         },
       ]);
     } catch (error) {
-      return Alert.alert(en.auth.error.title, en.auth.error.text);
+      return Alert.alert(i18next.t('auth:error.title'), i18next.t('auth.error:text'));
     }
   };
 
   return (
     <ScreenBackground style={{ paddingTop: 70 }}>
-      <Header title={Tabs.SETTINGS} />
-      <Button onPress={onSignout} icon={<SimpleLineIcons name="logout" size={20} />} title="Logout" />
+      <Header title={i18next.t('settings:title')} />
+      <Button
+        onPress={onSignout}
+        icon={<SimpleLineIcons name="logout" size={20} />}
+        title={i18next.t('settings:logout')}
+      />
       <Button
         onPress={onDelete}
         icon={<Icon name="person-remove-outline" size={24} color={Colors.beige} />}
         style={{ backgroundColor: Colors.red }}
         iconStyle={{ transform: [{ scaleX: -1 }] }}
-        title="Delete account"
+        title={i18next.t('settings:deleteTitle')}
         titleStyle={{ color: Colors.beige }}
       />
     </ScreenBackground>

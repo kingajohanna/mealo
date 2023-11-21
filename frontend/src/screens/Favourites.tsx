@@ -10,6 +10,7 @@ import { Recipe } from '../types/recipe';
 import { RecipeList } from '../components/RecipeList';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
+import i18next from 'i18next';
 
 export const Favourites = () => {
   const [refetch, data] = useAuthQuery(GET_RECIPES);
@@ -20,7 +21,7 @@ export const Favourites = () => {
 
   return (
     <ScreenBackground>
-      <Header title={Tabs.FAVOURITES} />
+      <Header title={i18next.t('favorites:title')} />
       <View style={{ width: '100%', flex: 1 }}>
         <RecipeList
           data={data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.is_favorite === true)}

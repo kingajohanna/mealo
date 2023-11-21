@@ -21,6 +21,7 @@ import { AuthTextField } from '../components/AuthTextField/AuthTextField';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ADD_USER } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
+import i18next from 'i18next';
 
 const { width: ScreenWidth, height: ScreenHeight } = Dimensions.get('window');
 
@@ -56,7 +57,7 @@ export const Login = () => {
         return;
       }
 
-      Alert.alert(en.auth.error.title, en.auth.error.text);
+      Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
     } finally {
       setIsLoginButtonSpinner(false);
     }
@@ -65,13 +66,13 @@ export const Login = () => {
   const onLogin = async (email: string, password: string) => {
     try {
       if (!password || !email || !password.match(firebasePassword) || !email.match(firebaseEmail)) {
-        Alert.alert(en.auth.error.title, en.auth.error.text);
+        Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
       } else {
         await auth().signInWithEmailAndPassword(email, password);
         userStore.setIsLoggedIn(true);
       }
     } catch {
-      Alert.alert(en.auth.error.title, en.auth.error.text);
+      Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
     }
   };
 
@@ -85,7 +86,7 @@ export const Login = () => {
         !password.match(firebasePassword) ||
         !email.match(firebaseEmail)
       ) {
-        return Alert.alert(en.auth.error.title, en.auth.error.text);
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
@@ -94,7 +95,7 @@ export const Login = () => {
 
       return;
     } catch {
-      return Alert.alert(en.auth.error.title, en.auth.error.text);
+      return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
     }
   };
 
@@ -102,7 +103,7 @@ export const Login = () => {
     try {
       await auth().sendPasswordResetEmail(email);
     } catch {
-      Alert.alert(en.auth.error.title, en.auth.error.text);
+      Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
     }
   };
 
@@ -111,7 +112,9 @@ export const Login = () => {
       <View style={styles.headerContainer}>
         <TouchableOpacity style={styles.headerContainerGlue} onPress={() => setIsLogin(!isLogin)}>
           <MaterialCommunityIcons name="chevron-left" color="#777684" size={20} />
-          <Text style={styles.signUpTextStyle}>{isLogin ? en.auth.signup.title : en.auth.login.title}</Text>
+          <Text style={styles.signUpTextStyle}>
+            {isLogin ? i18next.t('auth:signup:title') : i18next.t('auth:login:title')}
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.rightTopAssetContainer}>
@@ -123,7 +126,9 @@ export const Login = () => {
       </View>
       <View style={styles.contentContainer}>
         <View style={styles.loginTitleContainer}>
-          <Text style={styles.loginTextStyle}>{isLogin ? en.auth.login.title : en.auth.signup.title}</Text>
+          <Text style={styles.loginTextStyle}>
+            {isLogin ? i18next.t('auth:login:title') : i18next.t('auth:signup:title')}
+          </Text>
         </View>
         <View style={styles.textFieldContainer}>
           <AuthTextField placeholder={'john_doe@example.com'} onChangeText={setEmail} />
@@ -132,7 +137,7 @@ export const Login = () => {
           </View>
           {isLogin && (
             <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => passwordReset(email)}>
-              <Text style={styles.forgotPasswordTextStyle}>Forgot password?</Text>
+              <Text style={styles.forgotPasswordTextStyle}>i18next.t('auth:login:forgotPassword')</Text>
             </TouchableOpacity>
           )}
           {!isLogin && (
@@ -148,7 +153,7 @@ export const Login = () => {
         </View>
         <View style={styles.socialButtonsContainer}>
           <SocialButton
-            text={isLogin ? en.auth.login.button : en.auth.signup.title}
+            text={isLogin ? i18next.t('auth:login:button') : i18next.t('auth:signup:title')}
             onPress={() => (isLogin ? onLogin(email, password) : onRegister(email, password, repassword))}
             shadowColor={Colors.pine}
             backgroundColor={Colors.aqua}

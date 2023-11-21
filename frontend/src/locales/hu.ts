@@ -1,0 +1,71 @@
+export default {
+  general: {
+    next: 'Következő',
+    back: 'Vissza',
+    cancel: 'Mégse',
+    delete: 'Törlés',
+    change: 'Módosítás',
+    ok: 'OK',
+  },
+  auth: {
+    login: {
+      title: 'Bejelentkezés',
+      button: 'Főzzünk együtt!',
+      forgotPassword: 'Elfelejtett jelszó?',
+    },
+    signup: {
+      title: 'Regisztráció',
+    },
+    error: {
+      title: 'Hoppá...',
+      text: 'Valami hiba történt',
+    },
+  },
+  recipes: {
+    title: 'Receptek',
+    reset: 'Visszaállítás',
+    search: 'Keresés',
+    searchModalTitle: 'Mit főzzünk ma?',
+    deleteTitle: 'Recept törlése',
+    deleteText: 'Biztosan törölni szeretnéd ezt a receptet?',
+  },
+  favorites: {
+    title: 'Kedvencek',
+  },
+  folders: {
+    title: 'Mappák',
+  },
+  settings: {
+    title: 'Beállítások',
+    logout: 'Kijelentkezés',
+    deleteTitle: 'Fiók törlése',
+    deleteText: 'Biztosan törölni szeretnéd a fiókodat?',
+    logoutTitle: 'Kijelentkezés',
+    logoutText: 'Kattints az OK gombra a kijelentkezéshez!',
+  },
+  recipeDetails: {
+    ingredients: 'Hozzávalók',
+    instructions: 'Lépések',
+    step: 'lépés',
+    startCooking: 'Főzés megkezdése',
+    editTitle: 'Cím szerkesztése',
+    editCategory: 'Kategória szerkesztése',
+    editCuisine: 'Konyha szerkesztése',
+    addToFolder: 'Hozzáadás mappához',
+    newFolder: 'Új mappa',
+    editRating: 'Értékelés módosítása',
+    editCalories: 'Kalóriák módosítása',
+    editYields: 'Adagok szerkesztése',
+    editDifficulty: 'Nehézség szerkesztése',
+    editTotalTime: 'Elkészítési idő módosítása',
+  },
+  cookingMode: {
+    addTimer: 'Időzítő hozzáadása',
+    hour: 'óra',
+    hours: 'óra',
+    minute: 'perc',
+    minutes: 'perc',
+    goBack: 'Vissza',
+    ingredients: 'Hozzávalók',
+  },
+};

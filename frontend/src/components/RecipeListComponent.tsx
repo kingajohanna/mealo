@@ -10,6 +10,7 @@ import { GET_RECIPES } from '../api/queries';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { DELETE_RECIPE, FAVORITE_RECIPE } from '../api/mutations';
+import i18next from 'i18next';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
@@ -46,9 +47,9 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, o
 
     const deleteHandler = () => {
       close();
-      Alert.alert('Delete recipe', 'Do you really want to delete this recipe?', [
+      Alert.alert(i18next.t('recipes:deleteTitle'), i18next.t('recipes:deleteText'), [
         {
-          text: 'Delete',
+          text: i18next.t(`general:delete`),
           onPress: async () => {
             await deleteRecipe({
               variables: { recipeId: recipe.id },
@@ -57,7 +58,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, o
           },
         },
         {
-          text: 'Cancel',
+          text: i18next.t(`general:cancel`),
         },
       ]);
     };

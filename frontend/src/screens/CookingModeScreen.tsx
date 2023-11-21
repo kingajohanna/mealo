@@ -13,6 +13,7 @@ import { CheckableText } from '../components/CheckableText';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import KeepAwake from '@sayem314/react-native-keep-awake';
 import { Timers } from './Timers';
+import i18next from 'i18next';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.COOKINGMODE>;
 
@@ -73,7 +74,7 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
               setInstructionIndex(instructionIndex - 1);
             }}
             disabled={instructionIndex === 0}
-            title={'Back'}
+            title={i18next.t(`general:back`)}
             style={styles.backButton}
             titleStyle={styles.backButtonText}
           />
@@ -82,7 +83,7 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
               setInstructionIndex(instructionIndex + 1);
             }}
             disabled={instructionIndex === recipe.instructions.length - 1}
-            title={'Next'}
+            title={i18next.t(`general:next`)}
             style={styles.nextButton}
             titleStyle={styles.nextButtonText}
           />

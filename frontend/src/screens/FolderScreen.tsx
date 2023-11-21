@@ -11,6 +11,7 @@ import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { Colors } from '../theme/colors';
 import FastImage from 'react-native-fast-image';
+import i18next from 'i18next';
 
 const { width } = Dimensions.get('window');
 const gap = 5;
@@ -87,7 +88,7 @@ export const FolderScreen = () => {
   return (
     <>
       <ScreenBackground>
-        <Header title={Tabs.FOLDERS} />
+        <Header title={i18next.t('folders:title')} />
         <View style={{ marginTop: 25, flex: 1, padding: 5, paddingBottom: 30 }}>
           <FlatList
             data={data?.getRecipes.folders}

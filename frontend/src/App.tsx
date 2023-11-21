@@ -11,9 +11,13 @@ import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { getLocales } from 'react-native-localize';
+import './locales/config';
+import { useTranslation } from 'react-i18next';
 
 export default function App() {
   const { userStore } = useStore();
+  const { t, i18n } = useTranslation();
 
   const httpLink = createUploadLink({
     uri: BACKEND_URL,
@@ -48,6 +52,8 @@ export default function App() {
   auth().onAuthStateChanged(async (user) => {
     userStore.setIsLoggedIn(!!user);
   });
+
+  console.log(t('auth:signup:title'));
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

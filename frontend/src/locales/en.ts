@@ -1,8 +1,17 @@
 export default {
+  general: {
+    next: 'Next',
+    back: 'Back',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    change: 'Change',
+    ok: 'OK',
+  },
   auth: {
     login: {
       title: 'Log in',
       button: "Let's cook!",
+      forgotPassword: 'Forgot password?',
     },
     signup: {
       title: 'Sign up',
@@ -11,5 +20,52 @@ export default {
       title: 'Oops...',
       text: 'Something went wrong',
     },
+  },
+  recipes: {
+    title: 'Recipes',
+    reset: 'Reset',
+    search: 'Search',
+    searchModalTitle: "What's for dinner?",
+    deleteTitle: 'Delete recipe',
+    deleteText: 'Do you really want to delete this recipe?',
+  },
+  favorites: {
+    title: 'Favorites',
+  },
+  folders: {
+    title: 'Folders',
+  },
+  settings: {
+    title: 'Settings',
+    logout: 'Logout',
+    deleteTitle: 'Delete account',
+    deleteText: 'Do you really want to delete your account?',
+    logoutTitle: 'Logout',
+    logoutText: 'Click OK to logout!',
+  },
+  recipeDetails: {
+    ingredients: 'Ingredients',
+    instructions: 'Instructions',
+    step: 'step',
+    startCooking: 'Start cooking',
+    editTitle: 'Edit title',
+    editCategory: 'Edit category',
+    editCuisine: 'Edit cuisine',
+    addToFolder: 'Add to folder',
+    newFolder: 'New folder',
+    editRating: 'Edit rating',
+    editCalories: 'Edit calories',
+    editYields: 'Edit yields',
+    editDifficulty: 'Edit difficulty',
+    editTotalTime: 'Edit total time',
+  },
+  cookingMode: {
+    addTimer: 'Add timer',
+    hour: 'hour',
+    hours: 'hours',
+    minute: 'minute',
+    minutes: 'minutes',
+    goBack: 'Go back',
+    ingredients: 'Ingredients',
   },
 };

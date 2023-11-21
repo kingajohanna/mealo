@@ -11,6 +11,7 @@ import { observer } from 'mobx-react-lite';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ADD_RECIPE } from '../api/mutations';
 import { useApolloClient } from '@apollo/client';
+import i18next from 'i18next';
 
 export const RootNavigation = observer(() => {
   const { userStore } = useStore();
@@ -48,7 +49,7 @@ export const RootNavigation = observer(() => {
     } else {
       Alert.alert('Add recipe', 'Do you want to add this recipe to your collection?', [
         {
-          text: 'Cancel',
+          text: i18next.t(`general:cancel`),
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },

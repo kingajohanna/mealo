@@ -22,6 +22,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../stores';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
+import i18next from 'i18next';
 
 const { width } = Dimensions.get('window');
 
@@ -114,6 +115,9 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       case EditModalTypes.difficulty:
         setEditValue(recipe.difficulty || '');
         break;
+      case EditModalTypes.yields:
+        setEditValue(recipe.yields || '');
+        break;
       default:
         setEditModalType(undefined);
         break;
@@ -150,10 +154,37 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         return {
           difficulty: editValue,
         };
+      case EditModalTypes.yields:
+        return {
+          yields: editValue,
+        };
       default:
         break;
     }
     return;
+  };
+
+  const getEditModalTitle = () => {
+    switch (editModalType) {
+      case EditModalTypes.category:
+        return i18next.t('recipeDetails:editCategory');
+      case EditModalTypes.title:
+        return i18next.t('recipeDetails:editTitle');
+      case EditModalTypes.time:
+        return i18next.t('recipeDetails:editTotalTime');
+      case EditModalTypes.cuisine:
+        return i18next.t('recipeDetails:editCuisine');
+      case EditModalTypes.rating:
+        return i18next.t('recipeDetails:editRating');
+      case EditModalTypes.calories:
+        return i18next.t('recipeDetails:editCalories');
+      case EditModalTypes.difficulty:
+        return i18next.t('recipeDetails:editDifficulty');
+      case EditModalTypes.yields:
+        return i18next.t('recipeDetails:editYields');
+      default:
+        break;
+    }
   };
 
   const MenuItem = ({ onPress, title }: { onPress: () => void; title: string }) => (
@@ -193,25 +224,25 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.title);
         }}
-        title="Edit title"
+        title={i18next.t('recipeDetails:editTitle')}
       />
       <MenuItem
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.category);
         }}
-        title="Edit category"
+        title={i18next.t('recipeDetails:editCategory')}
       />
       <MenuItem
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.cuisine);
         }}
-        title="Edit cuisine"
+        title={i18next.t('recipeDetails:editCuisine')}
       />
       <MenuItem
         onPress={() => {
           setOpenFolderModal(true);
         }}
-        title="Add to folder"
+        title={i18next.t('recipeDetails:addToFolder')}
       />
     </Menu>
   );
@@ -279,7 +310,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
             <List.Accordion
               theme={{ colors: { background: 'transparent', text: Colors.pine } }}
               style={styles.listAccordion}
-              title="Ingredients"
+              title={i18next.t('recipeDetails:ingredients')}
               left={() => (
                 <MaterialCommunityIcons name="chef-hat" color={Colors.pine} size={24} style={styles.listIcon} />
               )}
@@ -305,7 +336,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
             <List.Accordion
               theme={{ colors: { background: 'transparent', text: Colors.pine } }}
               style={styles.listAccordion}
-              title="Instructions"
+              title={i18next.t('recipeDetails:instructions')}
               left={() => <MaterialCommunityIcons name="knife" color={Colors.pine} size={24} style={styles.listIcon} />}
               id="1"
               expanded={openInstructions}
@@ -316,7 +347,9 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
                 {recipe.instructions.map((instruction: string, index: number) => {
                   return (
                     <View key={instruction + index} style={{ paddingRight: 8 }}>
-                      <Text style={styles.textMedium}>{index + 1} step </Text>
+                      <Text style={styles.textMedium}>
+                        {index + 1} {i18next.t('recipeDetails:step')}{' '}
+                      </Text>
                       <View style={styles.ingredientsListContainer}>
                         <View style={styles.verticalLine} />
                         <Text style={styles.text} key={'instruction' + index}>
@@ -343,7 +376,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           style={[styles.smallButton, { borderColor: Colors.pine }]}
         />
         <Button
-          title="Start cooking"
+          title={i18next.t('recipeDetails:startCooking')}
           titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
           style={styles.cookButton}
           onPress={() => navigation.navigate(Tabs.COOKINGMODE, { recipe })}
@@ -351,7 +384,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       </View>
 
       <Dialog.Container visible={openFolderModal}>
-        <Dialog.Title>Add to folder</Dialog.Title>
+        <Dialog.Title>{i18next.t('recipeDetails:addToFolder')}</Dialog.Title>
         <ScrollView>
           {Object.keys(folderValues).map((folder: string) => (
             <Dialog.Switch
@@ -362,16 +395,20 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
             />
           ))}
         </ScrollView>
-        <Dialog.Input placeholder="New folder" onChangeText={(text) => setEditValue(text)} value={editValue} />
+        <Dialog.Input
+          placeholder={i18next.t('recipeDetails:newFolder')}
+          onChangeText={(text) => setEditValue(text)}
+          value={editValue}
+        />
         <Dialog.Button
-          label="Cancel"
+          label={i18next.t('general:cancel')}
           onPress={() => {
             setOpenFolderModal(false);
             setEditValue('');
           }}
         />
         <Dialog.Button
-          label="Change"
+          label={i18next.t('general:change')}
           onPress={async () => {
             setOpenFolderModal(false);
             const trueFolders = Object.keys(folderValues).filter((folder) => folderValues[folder]);
@@ -388,16 +425,16 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         />
       </Dialog.Container>
       <Dialog.Container visible={openEditModal}>
-        <Dialog.Title>Edit {editModalType}</Dialog.Title>
+        <Dialog.Title>{getEditModalTitle()}</Dialog.Title>
         <Dialog.Input placeholder={editModalType} value={editValue} onChangeText={(text) => setEditValue(text)} />
         <Dialog.Button
-          label="Cancel"
+          label={i18next.t('general:cancel')}
           onPress={() => {
             setOpenEditModal(false);
           }}
         />
         <Dialog.Button
-          label="Change"
+          label={i18next.t('general:change')}
           onPress={async () => {
             setOpenEditModal(false);
             editRecipe({

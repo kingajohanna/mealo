@@ -15,6 +15,7 @@ import { RecipeList } from '../components/RecipeList';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import i18next from 'i18next';
 
 export enum Time {
   fast = 'fast',
@@ -101,7 +102,7 @@ export const Recipes = () => {
   return (
     <>
       <ScreenBackground>
-        <Header title={Tabs.RECIPES} />
+        <Header title={i18next.t(`recipes:title`)} />
         <View style={styles.contentContainer}>
           <RecipeList
             data={
