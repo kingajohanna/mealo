@@ -12,14 +12,24 @@ import { useAuthQuery } from '../hooks/useAuthQuery';
 import { Colors } from '../theme/colors';
 import FastImage from 'react-native-fast-image';
 import i18next from 'i18next';
+import { TextInput } from '../components/TextInput';
+import { useEffect } from 'react';
 
 const { width } = Dimensions.get('window');
 const gap = 5;
 
 export const FolderScreen = () => {
   const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [searchText, setSearchText] = React.useState('');
+  const [folders, setFolders] = React.useState<string[]>(data?.getRecipes.folders);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
+
+ useEffect(() => {
+    if (data?.getRecipes.folders) {
+      setFolders(data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())));
+    }
+  }, [searchText]);
 
   const renderImage = (position: number, image: string, lenght?: number) => {
     const getRadius = () => {
@@ -89,9 +99,10 @@ export const FolderScreen = () => {
     <>
       <ScreenBackground>
         <Header title={i18next.t('folders:title')} />
-        <View style={{ marginTop: 25, flex: 1, padding: 5, paddingBottom: 30 }}>
+        <View style={{ marginTop: 30, flex: 1, padding: 5, paddingBottom: 30, width: '100%'}}>
+          <TextInput onChangeText={setSearchText} text={searchText} placeholder={i18next.t(`folders:searchPlaceholder`)} />
           <FlatList
-            data={data?.getRecipes.folders}
+            data={folders}
             numColumns={2}
             keyExtractor={(item) => item}
             renderItem={({ item }) => renderFolder(item)}

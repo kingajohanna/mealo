@@ -6,7 +6,7 @@
     "test": "jest --coverage",
     "dev": "nodemon app.ts",
     "compile": "tsc",
-    "start": "rm -r ./dist && npm run compile && node ./dist/app.js"
+    "start": "npm run compile && node ./dist/app.js"
   },
   "dependencies": {
     "@apollo/server": "^4.9.3",

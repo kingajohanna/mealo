@@ -12,6 +12,8 @@ export default {
       title: 'Bejelentkezés',
       button: 'Főzzünk együtt!',
       forgotPassword: 'Elfelejtett jelszó?',
+      forgotPasswordErrorTitle: "Hoppá...",
+      forgotPasswordErrorText: 'Kitöltötted az email mezőt?',
     },
     signup: {
       title: 'Regisztráció',
@@ -34,6 +36,7 @@ export default {
   },
   folders: {
     title: 'Mappák',
+    searchPlaceholder: 'Mappák keresése',
   },
   settings: {
     title: 'Beállítások',

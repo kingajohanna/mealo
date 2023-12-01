@@ -103,7 +103,7 @@ export const Login = () => {
     try {
       await auth().sendPasswordResetEmail(email);
     } catch {
-      Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
+      Alert.alert(i18next.t('auth:login:forgotPasswordErrorTitle'), i18next.t('auth:login:forgotPasswordErrorText'));
     }
   };
 
@@ -137,7 +137,7 @@ export const Login = () => {
           </View>
           {isLogin && (
             <TouchableOpacity style={styles.forgotPasswordContainer} onPress={() => passwordReset(email)}>
-              <Text style={styles.forgotPasswordTextStyle}>i18next.t('auth:login:forgotPassword')</Text>
+              <Text style={styles.forgotPasswordTextStyle}>{i18next.t('auth:login:forgotPassword')}</Text>
             </TouchableOpacity>
           )}
           {!isLogin && (
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
   },
   signUpTextStyle: {
     fontSize: 16,
-
     color: '#777684',
   },
   loginTitleContainer: {

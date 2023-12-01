@@ -12,6 +12,8 @@ export default {
       title: 'Log in',
       button: "Let's cook!",
       forgotPassword: 'Forgot password?',
+      forgotPasswordErrorTitle: "Oops...",
+      forgotPasswordErrorText: 'Have you filled email address field?',
     },
     signup: {
       title: 'Sign up',
@@ -34,6 +36,7 @@ export default {
   },
   folders: {
     title: 'Folders',
+    searchPlaceholder: 'Search folders',
   },
   settings: {
     title: 'Settings',

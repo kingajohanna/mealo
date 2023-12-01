@@ -26,7 +26,7 @@ const SocialButton = (props: ISocialButtonProps) => {
     text,
     component,
     height = 85,
-    width = '50%',
+    width = '55%',
     loginButtonTextStyle,
     backgroundColor = '#69bc4c',
     isSpinner = false,
