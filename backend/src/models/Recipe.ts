@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+interface Meal {
+  meal: string;
+  day: string;
+  id: string;
+}
+
 export interface IRecipe {
   id: number;
   uid: string;
@@ -27,6 +33,7 @@ export interface IRecipe {
   calories: string;
   difficulty: string;
   folders: string[];
+  meals: Meal[];
 }
 
 const recipeSchema = new mongoose.Schema({
@@ -66,6 +73,7 @@ const recipeSchema = new mongoose.Schema({
   calories: { type: String, default: null },
   difficulty: { type: String, default: null },
   folders: { type: Array, default: null },
+  meals: { type: Array, default: null },
 });
 
 export const Recipe = mongoose.model<IRecipe>(

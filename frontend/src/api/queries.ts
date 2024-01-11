@@ -23,6 +23,11 @@ export const GET_RECIPES = gql`
         calories
         ratings
         folders
+        meals {
+          meal
+          day
+          id
+        }
       }
     }
   }

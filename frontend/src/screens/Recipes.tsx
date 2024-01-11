@@ -26,7 +26,7 @@ export enum Time {
 export const all = 'All';
 
 export const Recipes = () => {
-  const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [data] = useAuthQuery(GET_RECIPES);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 

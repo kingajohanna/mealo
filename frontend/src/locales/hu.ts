@@ -6,13 +6,14 @@ export default {
     delete: 'Törlés',
     change: 'Módosítás',
     ok: 'OK',
+    add: 'Hozzáadás',
   },
   auth: {
     login: {
       title: 'Bejelentkezés',
       button: 'Főzzünk együtt!',
       forgotPassword: 'Elfelejtett jelszó?',
-      forgotPasswordErrorTitle: "Hoppá...",
+      forgotPasswordErrorTitle: 'Hoppá...',
       forgotPasswordErrorText: 'Kitöltötted az email mezőt?',
     },
     signup: {
@@ -70,5 +71,29 @@ export default {
     minutes: 'perc',
     goBack: 'Vissza',
     ingredients: 'Hozzávalók',
+  },
+  calendar: {
+    title: 'Heti tervező',
+    menu: {
+      breakfast: 'Reggeli',
+      lunch: 'Ebéd',
+      dinner: 'Vacsora',
+      whatsfor: 'Mi legyen a ',
+    },
+    days: ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'],
+    months: [
+      'Január',
+      'Február',
+      'Március',
+      'Április',
+      'Május',
+      'Június',
+      'Július',
+      'Augusztus',
+      'Szeptember',
+      'Október',
+      'November',
+      'December',
+    ],
   },
 };

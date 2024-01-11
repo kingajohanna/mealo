@@ -7,6 +7,9 @@ export enum Tabs {
   FOLDERSTACK = 'FolderStack',
   FOLDERS = 'Folders',
   RECIPEFOLDER = 'RecipeFolder',
+  CALENDAR = 'Planner',
+
+  ADDMEAL = 'Add Meal',
 
   // details
   RECIPE = 'Recipe',

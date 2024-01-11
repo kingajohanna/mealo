@@ -20,7 +20,7 @@ type ScreenBackgroundProps = {
 export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, onPress }) => {
   const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
   const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
-  const [refetch] = useAuthQuery(GET_RECIPES);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
 
   const swipeableRef = useRef<Swipeable | null>(null);
 

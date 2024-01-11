@@ -14,5 +14,5 @@ export const useAuthQuery = (query: DocumentNode) => {
     }
   }, [data, loading, error, refetch]);
 
-  return [refetch, data, client, error, loading];
+  return [data, refetch, client, error, loading];
 };

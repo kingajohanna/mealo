@@ -6,13 +6,14 @@ export default {
     delete: 'Delete',
     change: 'Change',
     ok: 'OK',
+    add: 'Add',
   },
   auth: {
     login: {
       title: 'Log in',
       button: "Let's cook!",
       forgotPassword: 'Forgot password?',
-      forgotPasswordErrorTitle: "Oops...",
+      forgotPasswordErrorTitle: 'Oops...',
       forgotPasswordErrorText: 'Have you filled email address field?',
     },
     signup: {
@@ -70,5 +71,29 @@ export default {
     minutes: 'minutes',
     goBack: 'Go back',
     ingredients: 'Ingredients',
+  },
+  calendar: {
+    title: 'Weekly planner',
+    menu: {
+      breakfast: 'Breakfast',
+      lunch: 'Lunch',
+      dinner: 'Dinner',
+      whatsfor: "What's for ",
+    },
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    months: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
   },
 };

@@ -19,6 +19,13 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from 
 import { Timers } from '../screens/Timers';
 import { FolderScreen } from '../screens/FolderScreen';
 import { RecipeFolderScreen } from '../screens/RecipeFolderScreen';
+import { CalendarScreen } from '../screens/Calendar';
+import { LoadingOverlay } from '../components/LoadingOverlay';
+import { useStore } from '../stores';
+import { observer } from 'mobx-react-lite';
+import moment from 'moment';
+import { Meals } from '../components/CalendarDay';
+import { AddMeal } from '../screens/AddMeal';
 
 export type RecipeStackParamList = {
   Recipes: undefined;
@@ -29,6 +36,7 @@ export type RecipeStackParamList = {
   [Tabs.TIMERS]: { recipe: Recipe };
   [Tabs.FOLDERS]: undefined;
   [Tabs.RECIPEFOLDER]: { filter: string };
+  [Tabs.ADDMEAL]: { date: string; mealType: Meals };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -42,6 +50,14 @@ function RecipeNavigator() {
       initialRouteName={Tabs.RECIPENAVIGATOR}
       barStyle={styles.tabBar}
     >
+      <Tab.Screen
+        name={Tabs.CALENDAR}
+        component={CalendarScreen}
+        options={{
+          tabBarLabel: Tabs.CALENDAR,
+          tabBarIcon: ({ color }) => <IonIcon name="calendar" color={color} size={26} />,
+        }}
+      />
       <Tab.Screen
         name={Tabs.RECIPEFAVNAVIGATOR}
         component={Favourites}
@@ -87,7 +103,8 @@ const FolderNavigator = () => {
   );
 };
 
-export const AppNavigator = () => {
+export const AppNavigator = observer(() => {
+  const { userStore } = useStore();
   return (
     <SafeAreaProvider style={styles.container}>
       <BottomSheetModalProvider>
@@ -101,11 +118,17 @@ export const AppNavigator = () => {
             component={AddRecipe}
             options={{ headerShown: false, presentation: 'modal' }}
           />
+          <Stack.Screen
+            name={Tabs.ADDMEAL}
+            component={AddMeal}
+            options={{ headerShown: false, presentation: 'modal' }}
+          />
         </Stack.Navigator>
       </BottomSheetModalProvider>
+      {userStore.loading && <LoadingOverlay />}
     </SafeAreaProvider>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

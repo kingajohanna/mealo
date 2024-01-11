@@ -3,10 +3,17 @@ import { Recipe } from "../models/Recipe";
 import { User } from "../models/User";
 import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
+import { v4 as uuidv4 } from "uuid";
 import { deleteFile, storeFile } from "../utils/filesave";
 
 export const recipeType = `
     scalar Upload
+
+    input MealInput {
+      meal: String
+      day: String
+    }
+
     input RecipeInput {
         host: String
         canonical_url: String
@@ -32,6 +39,13 @@ export const recipeType = `
         calories: String
         difficulty: String
         folders: [String]
+        meals: [MealInput]
+    }
+
+    type Meal {
+      meal: String
+      day: String
+      id: String
     }
 
     type Recipe {
@@ -61,6 +75,7 @@ export const recipeType = `
         calories: String
         difficulty: String
         folders: [String]
+        meals: [Meal]
     }
 
     type Recipes {
@@ -81,6 +96,8 @@ export const recipeType = `
         deleteRecipe( recipeId: Int! ): Recipe
         favoriteRecipe( recipeId: Int! ): Recipe
         folderRecipe( recipeId: Int!, folders: [String] ): Recipe
+        addMeal( recipeId: Int!, meal: MealInput ): Recipe
+        removeMeal( recipeId: Int!, mealId: String ): Recipe
     }
 `;
 
@@ -89,6 +106,7 @@ export const recipeQuery = {
     const { uid } = context;
 
     const recipes = await Recipe.find({ uid }).lean();
+
     const categories: string[] = ["All"];
     const cuisines: string[] = ["All"];
     const folders: string[] = [];
@@ -233,6 +251,47 @@ export const recipeMutation = {
     return await Recipe.findOneAndUpdate(
       { id: recipeId },
       { folders },
+      { new: true }
+    );
+  },
+
+  addMeal: async (
+    parent: any,
+    args: { recipeId: number; meal: any },
+    context: ContextType
+  ) => {
+    const { recipeId, meal } = args;
+
+    let recipe = await Recipe.findOne({ id: recipeId });
+
+    if (!recipe) return;
+    console.log(meal);
+
+    return await Recipe.findOneAndUpdate(
+      { id: recipeId },
+      { meals: [...recipe.meals, { ...meal, id: uuidv4() }] },
+      { new: true }
+    );
+  },
+
+  removeMeal: async (
+    parent: any,
+    args: { recipeId: number; mealId: String },
+    context: ContextType
+  ) => {
+    const { recipeId, mealId } = args;
+
+    let recipe = await Recipe.findOne({ id: recipeId });
+
+    if (recipe?.meals)
+      recipe.meals = recipe?.meals.filter((m: any) => m?.id !== mealId);
+
+    console.log(recipe?.meals);
+
+    if (!recipe) return;
+    return await Recipe.findOneAndUpdate(
+      { id: recipeId },
+      { meals: recipe?.meals },
       { new: true }
     );
   },

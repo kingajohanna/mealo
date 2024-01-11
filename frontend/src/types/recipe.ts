@@ -1,3 +1,5 @@
+export type Meal = { meal: string; day: string; id: string };
+
 export type Recipe = {
   title: string;
   totalTime: string | undefined;
@@ -24,5 +26,6 @@ export type Recipe = {
   calories?: string;
   difficulty?: string;
   folders?: string[];
-  [key: string]: string | undefined | boolean | string[];
+  meals?: Meal[];
+  [key: string]: string | undefined | boolean | string[] | Meal[];
 };
