@@ -13,7 +13,6 @@ i18n.use(initReactI18next).init({
   resources,
   lng: getLocales()[0].languageCode,
   fallbackLng: 'en',
-  debug: true,
   interpolation: {
     escapeValue: false,
   },

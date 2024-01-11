@@ -24,10 +24,6 @@ export const AddRecipe = () => {
   const [text, setText] = useState('');
   const [recipe, setRecipe] = useState<Partial<Recipe>>({});
 
-  useEffect(() => {
-    console.log(recipe);
-  }, [recipe]);
-
   const props = {
     text,
     setText,

@@ -48,7 +48,6 @@ export const CalendarMealComponent: React.FC<Props> = ({ recipe }) => {
         userStore.setLoading(true);
 
         close();
-        console.log(recipe.recipe?.id, recipe.meal?.id);
 
         await removeMeal({
           variables: { recipeId: recipe.recipe?.id, mealId: recipe.meal?.id },

@@ -50,7 +50,7 @@ export const RootNavigation = observer(() => {
       Alert.alert('Add recipe', 'Do you want to add this recipe to your collection?', [
         {
           text: i18next.t(`general:cancel`),
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {},
           style: 'cancel',
         },
         {

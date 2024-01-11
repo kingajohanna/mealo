@@ -58,8 +58,6 @@ export default function App() {
     userStore.setIsLoggedIn(!!user);
   });
 
-  console.log(t('auth:signup:title'));
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={baseTheme}>
