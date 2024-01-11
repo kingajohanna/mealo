@@ -40,7 +40,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   reset,
   search,
 }) => {
-  const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [data] = useAuthQuery(GET_RECIPES);
 
   const getColor = (rule: boolean) => {
     return rule ? Colors.green : Colors.pine;

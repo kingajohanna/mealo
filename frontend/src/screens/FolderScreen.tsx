@@ -19,15 +19,17 @@ const { width } = Dimensions.get('window');
 const gap = 5;
 
 export const FolderScreen = () => {
-  const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [data] = useAuthQuery(GET_RECIPES);
   const [searchText, setSearchText] = React.useState('');
   const [folders, setFolders] = React.useState<string[]>(data?.getRecipes.folders);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
- useEffect(() => {
+  useEffect(() => {
     if (data?.getRecipes.folders) {
-      setFolders(data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())));
+      setFolders(
+        data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
+      );
     }
   }, [searchText]);
 
@@ -99,8 +101,12 @@ export const FolderScreen = () => {
     <>
       <ScreenBackground>
         <Header title={i18next.t('folders:title')} />
-        <View style={{ marginTop: 30, flex: 1, padding: 5, paddingBottom: 30, width: '100%'}}>
-          <TextInput onChangeText={setSearchText} text={searchText} placeholder={i18next.t(`folders:searchPlaceholder`)} />
+        <View style={styles.container}>
+          <TextInput
+            onChangeText={setSearchText}
+            text={searchText}
+            placeholder={i18next.t(`folders:searchPlaceholder`)}
+          />
           <FlatList
             data={folders}
             numColumns={2}
@@ -114,6 +120,13 @@ export const FolderScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 30,
+    flex: 1,
+    padding: 5,
+    paddingBottom: 30,
+    width: '100%',
+  },
   fab: {
     position: 'absolute',
     margin: 8,

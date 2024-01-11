@@ -10,4 +10,6 @@ export const Colors = {
   grey: '#9B9B9B',
   textDark: '#01161E',
   textLight: '#EEEEEE',
+  pineOp: '#0c8a751A',
+  salmonOp: '#fa80721A',
 };

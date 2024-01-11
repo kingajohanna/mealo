@@ -21,7 +21,7 @@ const SPEED = ['fast', 'moderate', 'slow'];
 
 export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
   const [addOcrRecipe] = useAuthMutation(ADD_OCR_RECIPE);
-  const [refetch] = useAuthQuery(GET_RECIPES);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
   const navigation = useNavigation();
 
   const [prepTime, setPreptime] = useState('');

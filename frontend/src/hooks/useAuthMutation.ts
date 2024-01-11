@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 
 const MAXTRY = 5;
 
-export const useAuthMutation = (mutation: DocumentNode) => {
-  const [runMutation, { data, loading, error, client }] = useMutation(mutation);
+export const useAuthMutation = (mutation: DocumentNode, refetchQueries?: DocumentNode[]) => {
+  const [runMutation, { data, loading, error, client }] = useMutation(mutation, {
+    refetchQueries,
+  });
   const [tryCount, setTryCount] = useState(0);
 
   useEffect(() => {

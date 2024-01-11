@@ -18,8 +18,6 @@ import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../components/RecipeDetailInfoBubble';
 import { Button } from '../components/Button';
-import { observer } from 'mobx-react-lite';
-import { useStore } from '../stores';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
 import i18next from 'i18next';
@@ -40,7 +38,7 @@ enum EditModalTypes {
 }
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
-  const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
 
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
   const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
@@ -187,10 +185,6 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
-  const MenuItem = ({ onPress, title }: { onPress: () => void; title: string }) => (
-    <Menu.Item onPress={onPress} style={styles.menu} title={title} />
-  );
-
   const setOpenMenuAndEdit = (type: EditModalTypes) => {
     setOpenMenu(false);
     onOpenEditModal(type);
@@ -220,25 +214,29 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         />
       }
     >
-      <MenuItem
+      <Menu.Item
+        style={styles.menu}
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.title);
         }}
         title={i18next.t('recipeDetails:editTitle')}
       />
-      <MenuItem
+      <Menu.Item
+        style={styles.menu}
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.category);
         }}
         title={i18next.t('recipeDetails:editCategory')}
       />
-      <MenuItem
+      <Menu.Item
+        style={styles.menu}
         onPress={() => {
           setOpenMenuAndEdit(EditModalTypes.cuisine);
         }}
         title={i18next.t('recipeDetails:editCuisine')}
       />
-      <MenuItem
+      <Menu.Item
+        style={styles.menu}
         onPress={() => {
           setOpenFolderModal(true);
         }}
@@ -385,7 +383,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 
       <Dialog.Container visible={openFolderModal}>
         <Dialog.Title>{i18next.t('recipeDetails:addToFolder')}</Dialog.Title>
-        <ScrollView>
+        <ScrollView style={{ height: 500 }}>
           {Object.keys(folderValues).map((folder: string) => (
             <Dialog.Switch
               label={folder}

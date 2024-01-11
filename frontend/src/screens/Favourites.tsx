@@ -13,7 +13,7 @@ import { useAuthQuery } from '../hooks/useAuthQuery';
 import i18next from 'i18next';
 
 export const Favourites = () => {
-  const [refetch, data] = useAuthQuery(GET_RECIPES);
+  const [data] = useAuthQuery(GET_RECIPES);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
