@@ -27,9 +27,10 @@ export const FolderScreen = () => {
 
   useEffect(() => {
     if (data?.getRecipes.folders) {
-      setFolders(
-        data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
-      );
+      setFolders([
+        i18next.t('folders:favorites'),
+        ...data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
+      ]);
     }
   }, [searchText]);
 
@@ -68,10 +69,13 @@ export const FolderScreen = () => {
   };
 
   const renderFolder = (filter: string) => {
-    const recipes = data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.folders?.includes(filter));
+    const recipes =
+      filter === i18next.t('folders:favorites')
+        ? data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.is_favorite)
+        : data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.folders?.includes(filter));
 
     return (
-      <Pressable style={styles.gridItem} onPress={() => navigation.navigate(Tabs.RECIPEFOLDER, { filter: filter })}>
+      <Pressable style={styles.gridItem} onPress={() => navigation.navigate(Tabs.RECIPEFOLDER, { filter, recipes })}>
         <View style={{ flexDirection: 'row' }}>
           {renderImage(1, recipes[0]?.image || '')}
           {renderImage(2, recipes[1]?.image || '')}

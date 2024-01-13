@@ -32,12 +32,15 @@ export default {
     deleteTitle: 'Delete recipe',
     deleteText: 'Do you really want to delete this recipe?',
   },
-  favorites: {
-    title: 'Favorites',
+  shoppingList: {
+    title: 'Shopping List',
+    addTitle: 'Ingredient name',
+    addText: 'Amount of ingredient',
   },
   folders: {
     title: 'Folders',
     searchPlaceholder: 'Search folders',
+    favorites: 'Favorites',
   },
   settings: {
     title: 'Settings',

@@ -11,7 +11,7 @@ import { Recipe } from '../types/recipe';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { RecipeDetails } from '../screens/RecipeDetails';
-import { Favourites } from '../screens/Favourites';
+import { ShoppingList } from '../screens/ShoppingList';
 import { Settings } from '../screens/Settings';
 import { AddRecipe } from '../screens/AddRecipe';
 import { CookingMode } from '../screens/CookingModeScreen';
@@ -28,14 +28,14 @@ import { Meals } from '../components/CalendarDay';
 import { AddMeal } from '../screens/AddMeal';
 
 export type RecipeStackParamList = {
-  Recipes: undefined;
-  Favourites: undefined;
-  Recipe: { recipe: Recipe };
+  [Tabs.RECIPES]: undefined;
+  [Tabs.SHOPPINGLIST]: undefined;
+  [Tabs.RECIPE]: { recipe: Recipe };
   [Tabs.READ_OCR]: undefined;
   [Tabs.COOKINGMODE]: { recipe: Recipe };
   [Tabs.TIMERS]: { recipe: Recipe };
   [Tabs.FOLDERS]: undefined;
-  [Tabs.RECIPEFOLDER]: { filter: string };
+  [Tabs.RECIPEFOLDER]: { filter: string; recipes: Recipe[] };
   [Tabs.ADDMEAL]: { date: string; mealType: Meals };
 };
 
@@ -59,11 +59,11 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
-        name={Tabs.RECIPEFAVNAVIGATOR}
-        component={Favourites}
+        name={Tabs.SHOPPINGLIST}
+        component={ShoppingList}
         options={{
-          tabBarLabel: Tabs.FAVOURITES,
-          tabBarIcon: ({ color }) => <IonIcon name="heart" color={color} size={28} />,
+          tabBarLabel: Tabs.SHOPPINGLIST,
+          tabBarIcon: ({ color }) => <IonIcon name="list" color={color} size={28} />,
         }}
       />
       <Tab.Screen

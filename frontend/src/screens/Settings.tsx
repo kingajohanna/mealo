@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { ScreenBackground } from '../components/Background';
 import { Tabs } from '../navigation/tabs';
@@ -14,9 +14,12 @@ import { useAuthMutation } from '../hooks/useAuthMutation';
 import { useApolloClient } from '@apollo/client';
 import { Button } from '../components/Button';
 import i18next from 'i18next';
+import { Divider, List, Switch, Text } from 'react-native-paper';
+import { observer } from 'mobx-react-lite';
 
-export const Settings = () => {
+export const Settings = observer(() => {
   const { userStore } = useStore();
+  const { showCompletedTasks } = userStore;
 
   const client = useApolloClient();
 
@@ -74,19 +77,44 @@ export const Settings = () => {
   return (
     <ScreenBackground style={{ paddingTop: 70 }}>
       <Header title={i18next.t('settings:title')} />
-      <Button
-        onPress={onSignout}
-        icon={<SimpleLineIcons name="logout" size={20} />}
-        title={i18next.t('settings:logout')}
-      />
-      <Button
-        onPress={onDelete}
-        icon={<Icon name="person-remove-outline" size={24} color={Colors.beige} />}
-        style={{ backgroundColor: Colors.red }}
-        iconStyle={{ transform: [{ scaleX: -1 }] }}
-        title={i18next.t('settings:deleteTitle')}
-        titleStyle={{ color: Colors.beige }}
-      />
+      <ScrollView style={styles.container}>
+        <Button
+          onPress={onSignout}
+          style={{ width: '100%', height: 50 }}
+          icon={<SimpleLineIcons name="logout" size={20} />}
+          title={i18next.t('settings:logout')}
+        />
+        <Button
+          onPress={onDelete}
+          icon={<Icon name="person-remove-outline" size={24} color={Colors.beige} />}
+          style={{ backgroundColor: Colors.red, height: 50, width: '100%' }}
+          iconStyle={{ transform: [{ scaleX: -1 }] }}
+          title={i18next.t('settings:deleteTitle')}
+          titleStyle={{ color: Colors.beige }}
+        />
+
+        <List.Section>
+          <List.Subheader>App Settings</List.Subheader>
+
+          <List.Item
+            title="Show checked Shopping items"
+            description="Toggle to show/hide checked items"
+            left={() => (
+              <Switch value={showCompletedTasks} onValueChange={(value) => userStore.setShowCompletedTasks(value)} />
+            )}
+          />
+          <Divider />
+        </List.Section>
+      </ScrollView>
     </ScreenBackground>
   );
-};
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  button: {
+    marginTop: 16,
+  },
+});

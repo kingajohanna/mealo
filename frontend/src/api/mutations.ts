@@ -101,3 +101,33 @@ export const REMOVE_MEAL = gql`
     }
   }
 `;
+
+export const ADD_LIST = gql`
+  mutation AddToList($name: String!, $amount: String!) {
+    addToList(name: $name, amount: $amount) {
+      id
+      uid
+      list {
+        id
+        name
+        amount
+        completed
+      }
+    }
+  }
+`;
+
+export const COMPLETE_TASK = gql`
+  mutation CompleteTask($id: String!, $currentCompleted: Boolean!) {
+    completeTask(id: $id, currentCompleted: $currentCompleted) {
+      id
+      uid
+      list {
+        id
+        name
+        amount
+        completed
+      }
+    }
+  }
+`;

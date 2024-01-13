@@ -32,12 +32,13 @@ export default {
     deleteTitle: 'Recept törlése',
     deleteText: 'Biztosan törölni szeretnéd ezt a receptet?',
   },
-  favorites: {
-    title: 'Kedvencek',
+  shoppingList: {
+    title: 'Bevásárló lista',
   },
   folders: {
     title: 'Mappák',
     searchPlaceholder: 'Mappák keresése',
+    favorites: 'Kedvencek',
   },
   settings: {
     title: 'Beállítások',

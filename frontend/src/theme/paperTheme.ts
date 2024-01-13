@@ -5,6 +5,7 @@ export const baseTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
+    primary: Colors.pine,
     primaryContainer: Colors.salmon,
     secondaryContainer: 'transparent',
     backgroundColor: Colors.beige,
