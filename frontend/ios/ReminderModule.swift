@@ -214,4 +214,46 @@ class ReminderModule: NSObject {
           }
       }
   }
+  
+  @objc func removeReminder(_ identifier: String, resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
+      let eventStore = EKEventStore()
+      eventStore.requestAccess(to: .reminder) { (granted, error) in
+          var mealoCalendar: EKCalendar?
+          let calendars = eventStore.calendars(for: .reminder)
+
+          for calendar in calendars {
+              if calendar.title == "Mealo" {
+                  mealoCalendar = calendar
+                  break
+              }
+          }
+
+          guard let mealoCalendar = mealoCalendar else {
+              return reject("reminder_add_error", "Error adding reminder", error)
+          }
+
+          let predicate = eventStore.predicateForReminders(in: [mealoCalendar])
+          eventStore.fetchReminders(matching: predicate) { (reminders) in
+              guard let reminders = reminders else {
+                  return reject("reminder_fetch_error", "Error fetching reminders", error)
+              }
+
+              for reminder in reminders {
+                  if reminder.calendarItemIdentifier == identifier {
+            
+
+                      do {
+                        try eventStore.remove(reminder, commit: true)
+                          resolve("Reminder deleted successfully")
+                      } catch let saveError as NSError {
+                          reject("reminder_delete_error", "Error deleting reminder", saveError)
+                      }
+                      return
+                  }
+              }
+
+              reject("reminder_not_found", "Reminder not found", nil)
+          }
+      }
+  }
 }

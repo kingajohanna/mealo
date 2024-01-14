@@ -19,7 +19,7 @@ import { observer } from 'mobx-react-lite';
 
 export const Settings = observer(() => {
   const { userStore } = useStore();
-  const { showCompletedTasks } = userStore;
+  const { showCompletedTasks, addIngredientsAutomatically } = userStore;
 
   const client = useApolloClient();
 
@@ -101,6 +101,17 @@ export const Settings = observer(() => {
             description={i18next.t('settings:checkedListItemsText')}
             left={() => (
               <Switch value={showCompletedTasks} onValueChange={(value) => userStore.setShowCompletedTasks(value)} />
+            )}
+          />
+          <Divider />
+          <List.Item
+            title={i18next.t('settings:addIngredientsAutomaticallyTitle')}
+            description={i18next.t('settings:addIngredientsAutomaticallyText')}
+            left={() => (
+              <Switch
+                value={addIngredientsAutomatically}
+                onValueChange={(value) => userStore.setAddIngredientsAutomatically(value)}
+              />
             )}
           />
           <Divider />

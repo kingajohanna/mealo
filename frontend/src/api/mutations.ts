@@ -146,3 +146,18 @@ export const CHANGE_TASKS = gql`
     }
   }
 `;
+
+export const DELETE_TASK = gql`
+  mutation deleteTask($id: String!) {
+    deleteTask(id: $id) {
+      id
+      uid
+      list {
+        id
+        name
+        amount
+        completed
+      }
+    }
+  }
+`;

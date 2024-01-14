@@ -28,7 +28,7 @@ export const createCalendar = async (): Promise<string | undefined> => {
     }
 };
 
-export const addReminder = async (title: string, note: string): Promise<Reminder | undefined> => {
+export const addReminder = async (title: string, note: string = ''): Promise<Reminder | undefined> => {
   if (Platform.OS === 'ios')
     try {
       return await ReminderModule.addReminder(title, note);
@@ -41,6 +41,15 @@ export const setReminderCompleted = async (id: string, completed: number): Promi
   if (Platform.OS === 'ios')
     try {
       return await ReminderModule.completeReminder(id, completed);
+    } catch (error: any) {
+      throw new Error('Error adding reminder: ' + error.message);
+    }
+};
+
+export const removeReminder = async (id: string): Promise<Reminder | undefined> => {
+  if (Platform.OS === 'ios')
+    try {
+      return await ReminderModule.removeReminder(id);
     } catch (error: any) {
       throw new Error('Error adding reminder: ' + error.message);
     }

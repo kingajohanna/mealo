@@ -34,4 +34,8 @@ RCT_EXTERN_METHOD(completeReminder:(NSString *)identifier
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(removeReminder:(NSString *)identifier
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 @end

@@ -31,6 +31,7 @@ export const listType = `
     addToList(name: String!, amount: String!, id: String, completed: Boolean): List
     completeTask(id: String!, completed: Boolean!): List
     changeTasks(tasks: [ListItemInput]!): List
+    deleteTask(id: String!): List
   }
 `;
 
@@ -108,6 +109,26 @@ export const listMutation = {
     const updatedList = await List.findOneAndUpdate(
       { uid: uid },
       { $set: { list: tasks } },
+      { new: true }
+    );
+
+    return updatedList;
+  },
+  deleteTask: async (
+    parent: any,
+    args: {
+      id: string;
+    },
+    context: ContextType
+  ) => {
+    const { uid } = context;
+    const { id } = args;
+
+    const list = await List.findOne({ uid });
+
+    const updatedList = await List.findOneAndUpdate(
+      { uid: uid },
+      { $set: { list: list?.list.filter((l) => l.id !== id) } },
       { new: true }
     );
 

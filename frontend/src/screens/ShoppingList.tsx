@@ -7,7 +7,7 @@ import { useAuthQuery } from '../hooks/useAuthQuery';
 import i18next from 'i18next';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ListItem } from '../types/list';
-import { ADD_LIST, COMPLETE_TASK } from '../api/mutations';
+import { ADD_LIST, COMPLETE_TASK, DELETE_TASK } from '../api/mutations';
 import { Checkbox, FAB, List } from 'react-native-paper';
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../theme/colors';
@@ -16,6 +16,7 @@ import { useStore } from '../stores';
 import { observer } from 'mobx-react-lite';
 import { addReminder, fetchReminders, setReminderCompleted } from '../nativeModules/ReminderModule';
 import { useIsFocused } from '@react-navigation/native';
+import { ListItemComponent } from '../components/ListItemComponent';
 
 export const ShoppingList = observer(() => {
   const { userStore } = useStore();
@@ -25,6 +26,7 @@ export const ShoppingList = observer(() => {
   const [data, refetch] = useAuthQuery(GET_LIST);
   const [addToList] = useAuthMutation(ADD_LIST);
   const [setCompleted] = useAuthMutation(COMPLETE_TASK);
+  const [deleteTask] = useAuthMutation(DELETE_TASK);
 
   const scrollViewRef = useRef<ScrollView | null>(null);
   const amountInputRef = useRef<TextInput | null>(null);
@@ -58,16 +60,6 @@ export const ShoppingList = observer(() => {
     refetch();
   };
 
-  const complete = async (id: string, completed: boolean) => {
-    await setCompleted({
-      variables: {
-        id,
-        completed: completed ? false : true,
-      },
-    });
-    await setReminderCompleted(id, completed ? 0 : 1);
-  };
-
   const checkList = async () => {
     const reminders = await fetchReminders();
     const list = await data?.getList?.list;
@@ -93,6 +85,10 @@ export const ShoppingList = observer(() => {
             },
           });
         }
+      }
+      for (const item of list) {
+        const reminder = reminders.find((reminder) => reminder.id === item.id);
+        if (!reminder) await deleteTask({ variables: { id: item.id } });
       }
       await refetch();
     }
@@ -122,28 +118,7 @@ export const ShoppingList = observer(() => {
         >
           <Pressable style={styles.container} onPress={() => setShowAddToList(!showAddToList)}>
             {orderedList?.map((item: ListItem) => (
-              <List.Item
-                key={item.id}
-                title={item.name}
-                description={item.amount}
-                left={() => (
-                  <>
-                    {Platform.OS === 'ios' ? (
-                      <View style={styles.checkboxIos}>
-                        <Checkbox
-                          status={item.completed ? 'checked' : 'unchecked'}
-                          onPress={() => complete(item.id, item.completed)}
-                        />
-                      </View>
-                    ) : (
-                      <Checkbox
-                        status={item.completed ? 'checked' : 'unchecked'}
-                        onPress={() => complete(item.id, item.completed)}
-                      />
-                    )}
-                  </>
-                )}
-              />
+              <ListItemComponent item={item} key={item.id} />
             ))}
 
             {showAddToList && (
@@ -206,11 +181,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0,
     color: Colors.pine,
-  },
-  checkboxIos: {
-    borderRadius: 24,
-    borderColor: Colors.pine,
-    borderWidth: 1,
   },
   fab: {
     position: 'absolute',

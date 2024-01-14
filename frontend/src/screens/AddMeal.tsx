@@ -10,13 +10,14 @@ import { useEffect, useState } from 'react';
 import { Recipe } from '../types/recipe';
 import FastImage from 'react-native-fast-image';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { ADD_MEAL } from '../api/mutations';
+import { ADD_LIST, ADD_MEAL } from '../api/mutations';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Tabs } from '../navigation/tabs';
 import { useStore } from '../stores';
 import { Meals } from '../components/CalendarDay';
 import { TextInput } from '../components/TextInput';
+import { addReminder } from '../nativeModules/ReminderModule';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.ADDMEAL>;
 
@@ -26,6 +27,7 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
   const { userStore } = useStore();
   const [addMeal] = useAuthMutation(ADD_MEAL);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
+  const [addToList] = useAuthMutation(ADD_LIST);
   const [searchText, onChangeText] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>(data.getRecipes?.recipes);
 
@@ -50,6 +52,18 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
     await addMeal({
       variables: body,
     });
+
+    if (userStore.addIngredientsAutomatically)
+      recipe.ingredients.map(async (ingredient) => {
+        const reminder = await addReminder(ingredient);
+        await addToList({
+          variables: {
+            name: ingredient,
+            amount: '',
+            id: reminder?.id,
+          },
+        });
+      });
 
     await refetch();
     userStore.setLoading(false);

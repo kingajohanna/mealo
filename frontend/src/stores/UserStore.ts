@@ -10,6 +10,7 @@ export default class UserStore {
   user: FirebaseAuthTypes.User | undefined = undefined;
   loading = false;
   showCompletedTasks = true;
+  addIngredientsAutomatically = false;
 
   setIsLoggedIn(login: boolean) {
     this.isLoggedIn = login;
@@ -26,5 +27,9 @@ export default class UserStore {
 
   setShowCompletedTasks(value: boolean) {
     this.showCompletedTasks = value;
+  }
+
+  setAddIngredientsAutomatically(value: boolean) {
+    this.addIngredientsAutomatically = value;
   }
 }

@@ -286,8 +286,6 @@ export const recipeMutation = {
     if (recipe?.meals)
       recipe.meals = recipe?.meals.filter((m: any) => m?.id !== mealId);
 
-    console.log(recipe?.meals);
-
     if (!recipe) return;
     return await Recipe.findOneAndUpdate(
       { id: recipeId },

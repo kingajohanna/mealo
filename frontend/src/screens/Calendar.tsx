@@ -46,7 +46,7 @@ export const CalendarScreen = () => {
               numColumns={1}
               keyExtractor={(item) => item.toDate().toString()}
               renderItem={({ item }) => (
-                <CalendarDay date={item} recipes={data.getRecipes?.recipes} key={item.toString()} />
+                <CalendarDay date={item} recipes={data?.getRecipes?.recipes} key={item.toString()} />
               )}
             />
           </View>
