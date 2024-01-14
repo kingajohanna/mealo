@@ -26,6 +26,7 @@ import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import { Meals } from '../components/CalendarDay';
 import { AddMeal } from '../screens/AddMeal';
+import i18next from 'i18next';
 
 export type RecipeStackParamList = {
   [Tabs.RECIPES]: undefined;
@@ -54,7 +55,7 @@ function RecipeNavigator() {
         name={Tabs.CALENDAR}
         component={CalendarScreen}
         options={{
-          tabBarLabel: Tabs.CALENDAR,
+          tabBarLabel: i18next.t('tabs:planner'),
           tabBarIcon: ({ color }) => <IonIcon name="calendar" color={color} size={26} />,
         }}
       />
@@ -62,7 +63,7 @@ function RecipeNavigator() {
         name={Tabs.SHOPPINGLIST}
         component={ShoppingList}
         options={{
-          tabBarLabel: Tabs.SHOPPINGLIST,
+          tabBarLabel: i18next.t('tabs:list'),
           tabBarIcon: ({ color }) => <IonIcon name="list" color={color} size={28} />,
         }}
       />
@@ -70,7 +71,7 @@ function RecipeNavigator() {
         name={Tabs.RECIPENAVIGATOR}
         component={Recipes}
         options={{
-          tabBarLabel: Tabs.RECIPES,
+          tabBarLabel: i18next.t('tabs:recipes'),
           tabBarIcon: ({ color }) => <MaterialIcon name="book" color={color} size={26} />,
         }}
       />
@@ -78,7 +79,7 @@ function RecipeNavigator() {
         name={Tabs.FOLDERSTACK}
         component={FolderNavigator}
         options={{
-          tabBarLabel: Tabs.FOLDERS,
+          tabBarLabel: i18next.t('tabs:folders'),
           tabBarIcon: ({ color }) => <IonIcon name="folder-open" color={color} size={26} />,
         }}
       />
@@ -86,7 +87,7 @@ function RecipeNavigator() {
         name={Tabs.SETTINGS}
         component={Settings}
         options={{
-          tabBarLabel: Tabs.SETTINGS,
+          tabBarLabel: i18next.t('tabs:settings'),
           tabBarIcon: ({ color }) => <IonIcon name="ios-settings" color={color} size={26} />,
         }}
       />

@@ -3,6 +3,13 @@ import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
 export const listType = `
+  input ListItemInput {
+    id: String
+    name: String
+    amount: String
+    completed: Boolean
+  }
+
   type ListItem {
     id: String
     name: String
@@ -21,8 +28,9 @@ export const listType = `
   }
 
   type Mutation {
-    addToList(name: String!, amount: String!): List
-    completeTask(id: String!, currentCompleted: Boolean!): List
+    addToList(name: String!, amount: String!, id: String, completed: Boolean): List
+    completeTask(id: String!, completed: Boolean!): List
+    changeTasks(tasks: [ListItemInput]!): List
   }
 `;
 
@@ -30,6 +38,13 @@ export const listQuery = {
   getList: async (parent: any, args: any, context: ContextType) => {
     const { uid } = context;
     const list = await List.findOne({ uid: uid }).exec();
+
+    const temp =
+      list?.list?.sort((x, y) =>
+        x.completed === y.completed ? 0 : x.completed ? 1 : -1
+      ) ?? [];
+    console.log("temp", temp);
+    list!.list = temp;
     return list;
   },
 };
@@ -37,7 +52,7 @@ export const listQuery = {
 export const listMutation = {
   addToList: async (
     parent: any,
-    args: { name: string; amount: string },
+    args: { name: string; amount: string; id: string; completed: boolean },
     context: ContextType
   ) => {
     const { uid } = context;
@@ -48,10 +63,10 @@ export const listMutation = {
         {
           $push: {
             list: {
-              id: uuidv4(),
+              id: args.id ? args.id : uuidv4(),
               name: args.name,
               amount: args.amount,
-              completed: false,
+              completed: args.completed ? args.completed : false,
             },
           },
         },
@@ -66,18 +81,36 @@ export const listMutation = {
   },
   completeTask: async (
     parent: any,
-    args: { id: string; currentCompleted: boolean },
+    args: { id: string; completed: boolean },
     context: ContextType
   ) => {
     const { uid } = context;
-    const { id, currentCompleted } = args;
+    const { id, completed } = args;
 
     const updatedItem = await List.findOneAndUpdate(
       { uid: uid, "list.id": id },
-      { $set: { "list.$.completed": !currentCompleted } },
+      { $set: { "list.$.completed": completed } },
       { new: true }
     );
 
     return updatedItem;
+  },
+  changeTasks: async (
+    parent: any,
+    args: {
+      tasks: { id: string; name: string; amount: string; completed: boolean }[];
+    },
+    context: ContextType
+  ) => {
+    const { uid } = context;
+    const { tasks } = args;
+
+    const updatedList = await List.findOneAndUpdate(
+      { uid: uid },
+      { $set: { list: tasks } },
+      { new: true }
+    );
+
+    return updatedList;
   },
 };

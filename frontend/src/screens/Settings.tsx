@@ -97,8 +97,8 @@ export const Settings = observer(() => {
           <List.Subheader>App Settings</List.Subheader>
 
           <List.Item
-            title="Show checked Shopping items"
-            description="Toggle to show/hide checked items"
+            title={i18next.t('settings:checkedListItemsTitle')}
+            description={i18next.t('settings:checkedListItemsText')}
             left={() => (
               <Switch value={showCompletedTasks} onValueChange={(value) => userStore.setShowCompletedTasks(value)} />
             )}

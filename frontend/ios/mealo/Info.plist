@@ -58,6 +58,12 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<key>NSCameraUsageDescription</key>
 	<string></string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+  	<string>For shopping list sync</string>
+  	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+  	<string>For shopping list sync</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>For shopping list sync</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>

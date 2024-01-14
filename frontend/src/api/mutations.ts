@@ -103,8 +103,8 @@ export const REMOVE_MEAL = gql`
 `;
 
 export const ADD_LIST = gql`
-  mutation AddToList($name: String!, $amount: String!) {
-    addToList(name: $name, amount: $amount) {
+  mutation AddToList($name: String!, $amount: String!, $id: String, $completed: Boolean) {
+    addToList(name: $name, amount: $amount, id: $id, completed: $completed) {
       id
       uid
       list {
@@ -118,8 +118,23 @@ export const ADD_LIST = gql`
 `;
 
 export const COMPLETE_TASK = gql`
-  mutation CompleteTask($id: String!, $currentCompleted: Boolean!) {
-    completeTask(id: $id, currentCompleted: $currentCompleted) {
+  mutation CompleteTask($id: String!, $completed: Boolean!) {
+    completeTask(id: $id, completed: $completed) {
+      id
+      uid
+      list {
+        id
+        name
+        amount
+        completed
+      }
+    }
+  }
+`;
+
+export const CHANGE_TASKS = gql`
+  mutation ChangeTasks($tasks: [ListItemInput]!) {
+    changeTasks(tasks: $tasks) {
       id
       uid
       list {
