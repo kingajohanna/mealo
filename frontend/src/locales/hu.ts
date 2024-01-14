@@ -8,6 +8,13 @@ export default {
     ok: 'OK',
     add: 'Hozzáadás',
   },
+  tabs: {
+    planner: 'Tervező',
+    list: 'Lista',
+    recipes: 'Receptek',
+    folders: 'Mappák',
+    settings: 'Beállítások',
+  },
   auth: {
     login: {
       title: 'Bejelentkezés',
@@ -32,12 +39,13 @@ export default {
     deleteTitle: 'Recept törlése',
     deleteText: 'Biztosan törölni szeretnéd ezt a receptet?',
   },
-  favorites: {
-    title: 'Kedvencek',
+  shoppingList: {
+    title: 'Bevásárló lista',
   },
   folders: {
     title: 'Mappák',
     searchPlaceholder: 'Mappák keresése',
+    favorites: 'Kedvencek',
   },
   settings: {
     title: 'Beállítások',
@@ -46,6 +54,8 @@ export default {
     deleteText: 'Biztosan törölni szeretnéd a fiókodat?',
     logoutTitle: 'Kijelentkezés',
     logoutText: 'Kattints az OK gombra a kijelentkezéshez!',
+    checkedListItemsTitle: 'Megvásárolt elemek mutatása',
+    checkedListItemsText: 'Rejtsd el/ jelenítsd meg a listelemeket',
   },
   recipeDetails: {
     ingredients: 'Hozzávalók',

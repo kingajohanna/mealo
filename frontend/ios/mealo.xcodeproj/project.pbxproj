@@ -26,6 +26,8 @@
 		727E5E9F750FC32D761946E7 /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54CFD5191C601BBD247620D9 /* libPods-ShareExtension.a */; };
 		7699B88040F8A987B510C191 /* libPods-mealo-mealoTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-mealo-mealoTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		9E547A3C2B52C82500EE2800 /* ReminderModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E547A3B2B52C82500EE2800 /* ReminderModule.swift */; };
+		9E547A3E2B52C83900EE2800 /* ReminderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E547A3D2B52C83900EE2800 /* ReminderModule.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +109,9 @@
 		89C6BE57DB24E9ADA2F236DE /* Pods-mealo-mealoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-mealo-mealoTests.release.xcconfig"; path = "Target Support Files/Pods-mealo-mealoTests/Pods-mealo-mealoTests.release.xcconfig"; sourceTree = "<group>"; };
 		994E6F071C3EEA1819FEC293 /* libPods-shareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C3F2D20AB7C016AB4621A41 /* Pods-shareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shareExtension.debug.xcconfig"; path = "Target Support Files/Pods-shareExtension/Pods-shareExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		9E547A3A2B52C82500EE2800 /* mealo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "mealo-Bridging-Header.h"; sourceTree = "<group>"; };
+		9E547A3B2B52C82500EE2800 /* ReminderModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderModule.swift; sourceTree = "<group>"; };
+		9E547A3D2B52C83900EE2800 /* ReminderModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReminderModule.m; sourceTree = "<group>"; };
 		D07BFA87C4561D5803130A36 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -167,6 +172,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				9E547A3B2B52C82500EE2800 /* ReminderModule.swift */,
+				9E547A3A2B52C82500EE2800 /* mealo-Bridging-Header.h */,
+				9E547A3D2B52C83900EE2800 /* ReminderModule.m */,
 			);
 			name = mealo;
 			sourceTree = "<group>";
@@ -353,7 +361,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1510;
 					};
 					291CAD8F29C234F9009E83D9 = {
 						CreatedOnToolsVersion = 14.2;
@@ -650,6 +658,8 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				9E547A3C2B52C82500EE2800 /* ReminderModule.swift in Sources */,
+				9E547A3E2B52C83900EE2800 /* ReminderModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-mealo-mealoTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -721,6 +732,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-mealo-mealoTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = mealoTests/Info.plist;
@@ -769,6 +781,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao;
 				PRODUCT_NAME = mealo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "mealo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -802,6 +815,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mealo.mao;
 				PRODUCT_NAME = mealo;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "mealo-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

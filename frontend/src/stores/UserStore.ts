@@ -9,6 +9,7 @@ export default class UserStore {
   isLoggedIn = false;
   user: FirebaseAuthTypes.User | undefined = undefined;
   loading = false;
+  showCompletedTasks = true;
 
   setIsLoggedIn(login: boolean) {
     this.isLoggedIn = login;
@@ -21,5 +22,9 @@ export default class UserStore {
 
   setLoading(loading: boolean) {
     this.loading = loading;
+  }
+
+  setShowCompletedTasks(value: boolean) {
+    this.showCompletedTasks = value;
   }
 }

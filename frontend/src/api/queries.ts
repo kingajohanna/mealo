@@ -32,3 +32,18 @@ export const GET_RECIPES = gql`
     }
   }
 `;
+
+export const GET_LIST = gql`
+  query GetList {
+    getList {
+      id
+      uid
+      list {
+        id
+        name
+        amount
+        completed
+      }
+    }
+  }
+`;

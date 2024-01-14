@@ -8,6 +8,13 @@ export default {
     ok: 'OK',
     add: 'Add',
   },
+  tabs: {
+    planner: 'Planner',
+    list: 'List',
+    recipes: 'Recipes',
+    folders: 'Folders',
+    settings: 'Settings',
+  },
   auth: {
     login: {
       title: 'Log in',
@@ -32,12 +39,15 @@ export default {
     deleteTitle: 'Delete recipe',
     deleteText: 'Do you really want to delete this recipe?',
   },
-  favorites: {
-    title: 'Favorites',
+  shoppingList: {
+    title: 'Shopping List',
+    addTitle: 'Ingredient name',
+    addText: 'Amount of ingredient',
   },
   folders: {
     title: 'Folders',
     searchPlaceholder: 'Search folders',
+    favorites: 'Favorites',
   },
   settings: {
     title: 'Settings',
@@ -46,6 +56,8 @@ export default {
     deleteText: 'Do you really want to delete your account?',
     logoutTitle: 'Logout',
     logoutText: 'Click OK to logout!',
+    checkedListItemsTitle: 'Show checked shopping items',
+    checkedListItemsText: 'Toggle to show/hide checked items',
   },
   recipeDetails: {
     ingredients: 'Ingredients',

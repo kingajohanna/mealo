@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 15,
     marginHorizontal: 8,
+    marginBottom: 8,
     borderColor: Colors.pine,
     backgroundColor: Colors.beige,
   },

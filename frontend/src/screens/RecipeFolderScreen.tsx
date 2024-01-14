@@ -7,16 +7,12 @@ import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Tabs } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
 import { RecipeList } from '../components/RecipeList';
-import { GET_RECIPES } from '../api/queries';
-import { useAuthQuery } from '../hooks/useAuthQuery';
 import { Colors } from '../theme/colors';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPEFOLDER>;
 
 export const RecipeFolderScreen: React.FC<Props> = ({ route, navigation }) => {
-  const [data] = useAuthQuery(GET_RECIPES);
-
   const accessPage = (recipe: Recipe) => navigation.navigate(Tabs.RECIPE, { recipe });
 
   const renderBack = (
@@ -27,10 +23,7 @@ export const RecipeFolderScreen: React.FC<Props> = ({ route, navigation }) => {
     <ScreenBackground>
       <Header title={route.params.filter} leftAction={renderBack} />
       <View style={styles.container}>
-        <RecipeList
-          data={data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.folders?.includes(route.params.filter))}
-          onPress={accessPage}
-        />
+        <RecipeList data={route.params.recipes} onPress={accessPage} searchEnabled />
       </View>
     </ScreenBackground>
   );
@@ -40,5 +33,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     flex: 1,
+    paddingTop: 40,
   },
 });
