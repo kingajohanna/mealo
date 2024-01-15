@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Platform, Pressable } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -14,7 +14,7 @@ import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE } from '../api/mutations';
+import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../components/RecipeDetailInfoBubble';
 import { Button } from '../components/Button';
@@ -43,12 +43,14 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
   const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
   const [editFavoriteRecipe, fav_data] = useAuthMutation(FAVORITE_RECIPE);
+  const [share] = useAuthMutation(SHARE_RECIPE);
   const [recipe, setRecipe] = useState(route.params.recipe);
   const [openIngredients, setOpenIngredients] = useState(true);
   const [openInstructions, setOpenInstructions] = useState(true);
   const [openMenu, setOpenMenu] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openFolderModal, setOpenFolderModal] = useState(false);
+  const [openShareModal, setOpenShareModal] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
 
@@ -299,9 +301,18 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           </View>
 
           <View style={styles.siteDataContainer}>
-            {/* name={Platform.OS === 'android' ? 'share-social' : 'share-outline'} */}
-            <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
-            <Text style={styles.siteText}>{recipe.siteName}</Text>
+            <Pressable style={styles.rowContainer} onPress={() => setOpenShareModal(true)}>
+              <IonIcon
+                name={Platform.OS === 'android' ? 'share-social' : 'share-outline'}
+                color={Colors.pine}
+                size={28}
+              />
+              <Text style={styles.siteText}>{i18next.t('recipeDetails:share')}</Text>
+            </Pressable>
+            <View style={styles.rowContainer}>
+              <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
+              <Text style={styles.siteText}>{recipe.siteName}</Text>
+            </View>
           </View>
 
           <View style={styles.listBorder}>
@@ -441,11 +452,42 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           }}
         />
       </Dialog.Container>
+      <Dialog.Container visible={openShareModal}>
+        <Dialog.Title>{i18next.t('recipeDetails:share')}</Dialog.Title>
+        <Dialog.Input
+          placeholder={i18next.t('recipeDetails:shareModalPlaceholder')}
+          value={editValue}
+          onChangeText={(text) => setEditValue(text)}
+        />
+        <Dialog.Button
+          label={i18next.t('general:cancel')}
+          onPress={() => {
+            setEditValue('');
+            setOpenShareModal(false);
+          }}
+        />
+        <Dialog.Button
+          label={i18next.t('recipeDetails:share')}
+          onPress={async () => {
+            setOpenShareModal(false);
+            share({
+              variables: { recipeId: recipe.id, email: editValue.toLowerCase() },
+            });
+            setEditValue('');
+          }}
+        />
+      </Dialog.Container>
     </ScreenBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  rowContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -553,8 +595,6 @@ const styles = StyleSheet.create({
   siteDataContainer: {
     paddingLeft: 12,
     paddingTop: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   siteText: {
     paddingLeft: 12,

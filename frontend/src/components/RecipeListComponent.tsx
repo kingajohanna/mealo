@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable, Animated, Alert } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -17,7 +17,7 @@ type ScreenBackgroundProps = {
   onPress: () => void;
 };
 
-export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, onPress }) => {
+export const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ recipe, onPress }) => {
   const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
   const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
@@ -110,7 +110,7 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = ({ recipe, o
       </Pressable>
     </Swipeable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   background: {

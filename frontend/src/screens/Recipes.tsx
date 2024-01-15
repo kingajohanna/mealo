@@ -16,6 +16,7 @@ import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import i18next from 'i18next';
+import { useIsFocused } from '@react-navigation/native';
 
 export enum Time {
   fast = 'fast',
@@ -26,9 +27,10 @@ export enum Time {
 export const all = 'All';
 
 export const Recipes = () => {
-  const [data] = useAuthQuery(GET_RECIPES);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
+  const isFocused = useIsFocused();
 
   const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes.recipes);
   const [text, setText] = useState('');
@@ -38,6 +40,14 @@ export const Recipes = () => {
 
   const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  useEffect(() => {
+    if (isFocused) {
+      (async () => {
+        await refetch();
+      })();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     if (data?.getRecipes.recipes) {

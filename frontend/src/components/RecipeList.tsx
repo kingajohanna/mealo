@@ -75,7 +75,7 @@ export const RecipeList: FC<Props> = (props) => {
       <FlatList
         data={recipes || props.data}
         renderItem={({ item, index }) => renderItem(item, index)}
-        keyExtractor={(item, index) => item.id + index.toString()}
+        keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             onLayout={(e) => console.log(e.nativeEvent)}

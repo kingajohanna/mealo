@@ -58,6 +58,11 @@ export default {
     logoutText: 'Click OK to logout!',
     checkedListItemsTitle: 'Show checked shopping items',
     checkedListItemsText: 'Toggle to show/hide checked items',
+    addIngredientsAutomaticallyTitle: 'Add ingredients to list',
+    addIngredientsAutomaticallyText: 'Toggle to enable',
+    appSettings: 'App settings',
+    shares: 'Shared recipes',
+    shareHelp: 'Accept or reject this recipe on the left',
   },
   recipeDetails: {
     ingredients: 'Ingredients',
@@ -74,6 +79,8 @@ export default {
     editYields: 'Edit yields',
     editDifficulty: 'Edit difficulty',
     editTotalTime: 'Edit total time',
+    share: 'Share',
+    shareModalPlaceholder: 'Email address of the person...',
   },
   cookingMode: {
     addTimer: 'Add timer',

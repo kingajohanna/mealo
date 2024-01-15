@@ -87,6 +87,7 @@ export const recipeType = `
 
     type Query {
         getRecipes: Recipes
+        getRecipe(recipeId: Int!): Recipe
     }
 
     type Mutation {
@@ -130,6 +131,15 @@ export const recipeQuery = {
 
     return { recipes, categories, cuisines, folders };
   },
+  getRecipe: async (
+    parent: any,
+    args: { recipeId: number },
+    context: ContextType
+  ) => {
+    const { recipeId } = args;
+
+    return await Recipe.findOne({ id: recipeId }).lean();
+  },
 };
 
 export const recipeMutation = {
@@ -142,13 +152,11 @@ export const recipeMutation = {
     const { uid } = context;
 
     const recipeId = hashCode(url + uid);
-    const user = await User.findOne({ id: uid });
+    const user = await User.findOne({ id: uid }).lean();
 
     const response = await axios.post(process.env.SCRAPER_URL as string, {
       url,
     });
-
-    console.log(response.data);
 
     if (response && user) {
       const newRecipe = new Recipe({
@@ -187,15 +195,9 @@ export const recipeMutation = {
 
   editRecipe: async (parent: any, args: { recipeId: number; body: any }) => {
     const { recipeId, body } = args;
-
-    console.log(body);
-
-    const rec = await Recipe.findOneAndUpdate({ id: recipeId }, body, {
+    return await Recipe.findOneAndUpdate({ id: recipeId }, body, {
       new: true,
-    });
-    console.log(rec);
-
-    return rec;
+    }).lean();
   },
 
   deleteRecipe: async (
@@ -205,12 +207,12 @@ export const recipeMutation = {
   ) => {
     const { recipeId } = args;
 
-    const recipe = await Recipe.findOne({ id: recipeId });
+    const recipe = await Recipe.findOne({ id: recipeId }).lean();
     const imageName = recipe?.image?.split("/").pop();
 
     deleteFile(imageName as string);
 
-    return await Recipe.findOneAndDelete({ id: recipeId });
+    return await Recipe.findOneAndDelete({ id: recipeId }).lean();
   },
 
   favoriteRecipe: async (
@@ -227,12 +229,12 @@ export const recipeMutation = {
           { id: recipeId },
           { is_favorite: false },
           { new: true }
-        )
+        ).lean()
       : await Recipe.findOneAndUpdate(
           { id: recipeId },
           { is_favorite: true },
           { new: true }
-        );
+        ).lean();
   },
 
   folderRecipe: async (
@@ -245,14 +247,12 @@ export const recipeMutation = {
 
     let recipe = await Recipe.findOne({ id: recipeId });
 
-    console.log(folders);
-
     if (!recipe) return;
     return await Recipe.findOneAndUpdate(
       { id: recipeId },
       { folders },
       { new: true }
-    );
+    ).lean();
   },
 
   addMeal: async (
@@ -262,16 +262,15 @@ export const recipeMutation = {
   ) => {
     const { recipeId, meal } = args;
 
-    let recipe = await Recipe.findOne({ id: recipeId });
+    let recipe = await Recipe.findOne({ id: recipeId }).lean();
 
     if (!recipe) return;
-    console.log(meal);
 
     return await Recipe.findOneAndUpdate(
       { id: recipeId },
       { meals: [...recipe.meals, { ...meal, id: uuidv4() }] },
       { new: true }
-    );
+    ).lean();
   },
 
   removeMeal: async (
@@ -281,7 +280,7 @@ export const recipeMutation = {
   ) => {
     const { recipeId, mealId } = args;
 
-    let recipe = await Recipe.findOne({ id: recipeId });
+    let recipe = await Recipe.findOne({ id: recipeId }).lean();
 
     if (recipe?.meals)
       recipe.meals = recipe?.meals.filter((m: any) => m?.id !== mealId);
@@ -291,6 +290,6 @@ export const recipeMutation = {
       { id: recipeId },
       { meals: recipe?.meals },
       { new: true }
-    );
+    ).lean();
   },
 };

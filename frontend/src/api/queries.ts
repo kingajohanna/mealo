@@ -47,3 +47,45 @@ export const GET_LIST = gql`
     }
   }
 `;
+
+export const GET_USER = gql`
+  query GetUser {
+    getUser {
+      id
+      email
+      share {
+        id
+        recipe
+        from
+      }
+    }
+  }
+`;
+
+export const GET_RECIPE = gql`
+  query GetRecipe($recipeId: Int!) {
+    getRecipe(recipeId: $recipeId) {
+      id
+      title
+      category
+      speed
+      totalTime
+      yields
+      image
+      ingredients
+      instructions
+      cuisine
+      is_favorite
+      siteName
+      difficulty
+      calories
+      ratings
+      folders
+      meals {
+        meal
+        day
+        id
+      }
+    }
+  }
+`;

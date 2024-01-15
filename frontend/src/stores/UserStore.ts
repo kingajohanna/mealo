@@ -1,9 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
 
 export default class UserStore {
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
+    makeAutoObservable(this);
+
+    makePersistable(this, {
+      name: 'UserStore',
+      properties: ['showCompletedTasks', 'addIngredientsAutomatically'],
+      storage: AsyncStorage,
+    });
   }
 
   isLoggedIn = false;

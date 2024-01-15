@@ -56,6 +56,11 @@ export default {
     logoutText: 'Kattints az OK gombra a kijelentkezéshez!',
     checkedListItemsTitle: 'Megvásárolt elemek mutatása',
     checkedListItemsText: 'Rejtsd el/ jelenítsd meg a listelemeket',
+    addIngredientsAutomaticallyTitle: 'Összetevők listához adása',
+    addIngredientsAutomaticallyText: 'Csúsztasd el az engedélyezéshez',
+    appSettings: 'Alkalmazás beállításai',
+    shares: 'Megosztások',
+    shareHelp: 'Fogadd el vagy töröld a megosztást',
   },
   recipeDetails: {
     ingredients: 'Hozzávalók',
@@ -72,6 +77,8 @@ export default {
     editYields: 'Adagok szerkesztése',
     editDifficulty: 'Nehézség szerkesztése',
     editTotalTime: 'Elkészítési idő módosítása',
+    share: 'Megosztás',
+    shareModalPlaceholder: 'Add meg az email címét...',
   },
   cookingMode: {
     addTimer: 'Időzítő hozzáadása',

@@ -13,6 +13,7 @@ export enum Tabs {
 
   // details
   RECIPE = 'Recipe',
+  SHARE = 'Share',
 
   COOKINGMODE = 'CookingMode',
   TIMERS = 'Timers',

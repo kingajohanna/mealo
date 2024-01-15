@@ -161,3 +161,26 @@ export const DELETE_TASK = gql`
     }
   }
 `;
+
+export const SHARE_RECIPE = gql`
+  mutation shareRecipe($recipeId: Int!, $email: String!) {
+    shareRecipe(recipeId: $recipeId, email: $email) {
+      recipe
+      from
+    }
+  }
+`;
+
+export const MANAGE_SHARE = gql`
+  mutation manageShare($shareId: String!, $id: Int!, $accept: Boolean!) {
+    manageShare(shareId: $shareId, id: $id, accept: $accept) {
+      id
+      email
+      share {
+        id
+        recipe
+        from
+      }
+    }
+  }
+`;
