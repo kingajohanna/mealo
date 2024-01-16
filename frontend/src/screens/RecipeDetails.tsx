@@ -8,34 +8,26 @@ import { Colors } from '../theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { CheckableText } from '../components/CheckableText';
-import { List, Menu } from 'react-native-paper';
+import { List, TextInput, ToggleButton } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-import Dialog from 'react-native-dialog';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
 import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../components/RecipeDetailInfoBubble';
 import { Button } from '../components/Button';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
 import i18next from 'i18next';
+import { ShareModal } from '../components/RecipeDetails/ShareModal';
+import { EditModal, EditModalTypes } from '../components/RecipeDetails/EditModal';
+import { FolderModal } from '../components/RecipeDetails/FolderModal';
+import { InfoBubbles } from '../components/RecipeDetails/InfoBubbles';
+import { HeaderMenu } from '../components/RecipeDetails/HeaderMenu';
 
 const { width } = Dimensions.get('window');
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
-
-enum EditModalTypes {
-  title = 'title',
-  category = 'category',
-  time = 'total time',
-  cuisine = 'cuisine',
-  rating = 'rating',
-  calories = 'calories',
-  difficulty = 'difficulty',
-  yields = 'yields',
-}
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
@@ -53,6 +45,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [openShareModal, setOpenShareModal] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
+  const [yields, setYields] = useState(recipe.yields || '1 serving');
 
   const initialFolderValues = Object.fromEntries(
     data?.getRecipes.folders
@@ -164,29 +157,6 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     return;
   };
 
-  const getEditModalTitle = () => {
-    switch (editModalType) {
-      case EditModalTypes.category:
-        return i18next.t('recipeDetails:editCategory');
-      case EditModalTypes.title:
-        return i18next.t('recipeDetails:editTitle');
-      case EditModalTypes.time:
-        return i18next.t('recipeDetails:editTotalTime');
-      case EditModalTypes.cuisine:
-        return i18next.t('recipeDetails:editCuisine');
-      case EditModalTypes.rating:
-        return i18next.t('recipeDetails:editRating');
-      case EditModalTypes.calories:
-        return i18next.t('recipeDetails:editCalories');
-      case EditModalTypes.difficulty:
-        return i18next.t('recipeDetails:editDifficulty');
-      case EditModalTypes.yields:
-        return i18next.t('recipeDetails:editYields');
-      default:
-        break;
-    }
-  };
-
   const setOpenMenuAndEdit = (type: EditModalTypes) => {
     setOpenMenu(false);
     onOpenEditModal(type);
@@ -199,107 +169,88 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     }));
   };
 
-  const renderMenu = (
-    <Menu
-      contentStyle={styles.menu}
-      visible={openMenu}
-      onDismiss={() => {
-        setOpenMenu(false);
-        onOpenEditModal(undefined);
-      }}
-      anchor={
-        <MaterialCommunityIcons
-          name="dots-vertical"
-          color={Colors.beige}
-          size={28}
-          onPress={() => setOpenMenu(!openMenu)}
-        />
-      }
-    >
-      <Menu.Item
-        style={styles.menu}
-        onPress={() => {
-          setOpenMenuAndEdit(EditModalTypes.title);
-        }}
-        title={i18next.t('recipeDetails:editTitle')}
-      />
-      <Menu.Item
-        style={styles.menu}
-        onPress={() => {
-          setOpenMenuAndEdit(EditModalTypes.category);
-        }}
-        title={i18next.t('recipeDetails:editCategory')}
-      />
-      <Menu.Item
-        style={styles.menu}
-        onPress={() => {
-          setOpenMenuAndEdit(EditModalTypes.cuisine);
-        }}
-        title={i18next.t('recipeDetails:editCuisine')}
-      />
-      <Menu.Item
-        style={styles.menu}
-        onPress={() => {
-          setOpenFolderModal(true);
-        }}
-        title={i18next.t('recipeDetails:addToFolder')}
-      />
-    </Menu>
-  );
+  const increaseServings = () => {
+    const firstWord = yields.split(' ')[0];
+    if (/^\d+$/.test(firstWord)) {
+      const newServings = parseFloat(firstWord) + 1;
 
-  const renderBack = (
-    <SimpleLineIcons name="arrow-left" size={25} color={Colors.beige} onPress={() => navigation.goBack()} />
-  );
+      const ratio = newServings / parseFloat(firstWord);
 
-  const renderImage = () => {
-    return (
-      <View>
-        <FastImage
-          style={{ height: 300 }}
-          source={{
-            uri: recipe.image,
-            priority: FastImage.priority.normal,
-          }}
-        />
-        <View style={styles.imageOverlay} />
-      </View>
-    );
+      setYields(`${newServings} servings`);
+
+      const newIngredients = recipe.ingredients.map((ingredient: string) => {
+        const firstWord = ingredient.split(' ')[0];
+        if (/^\d+(\.\d+)?$/.test(firstWord)) {
+          const newAmount = Math.round(parseFloat(firstWord) * ratio * 100) / 100;
+          return newAmount.toString() + ' ' + ingredient.split(' ')?.slice(1, undefined)?.join(' ');
+        }
+        return ingredient;
+      });
+
+      setRecipe({ ...recipe, ingredients: newIngredients });
+    }
+  };
+
+  const decreaseServings = () => {
+    const firstWord = yields.split(' ')[0];
+    if (/^\d+$/.test(firstWord)) {
+      if (parseFloat(firstWord) === 1) return;
+
+      const newServings = parseFloat(firstWord) - 1;
+
+      const ratio = newServings / parseFloat(firstWord);
+      console.log(ratio);
+
+      setYields(`${newServings} servings`);
+
+      const newIngredients = recipe.ingredients.map((ingredient: string) => {
+        const firstWord = ingredient.split(' ')[0];
+        if (/^\d+(\.\d+)?$/.test(firstWord)) {
+          console.log(parseFloat(firstWord));
+
+          const newAmount = Math.round(parseFloat(firstWord) * ratio * 100) / 100;
+          console.log('n', newAmount);
+
+          return newAmount.toString() + ' ' + ingredient.split(' ')?.slice(1, undefined)?.join(' ');
+        }
+        return ingredient;
+      });
+
+      setRecipe({ ...recipe, ingredients: newIngredients });
+    }
   };
 
   return (
     <ScreenBackground fullscreen>
-      <Header title={recipe.title} rightAction={renderMenu} leftAction={renderBack} />
+      <Header
+        title={recipe.title}
+        rightAction={
+          <HeaderMenu
+            setOpenMenu={setOpenMenu}
+            openMenu={openMenu}
+            onOpenEditModal={onOpenEditModal}
+            setOpenMenuAndEdit={setOpenMenuAndEdit}
+            setOpenFolderModal={setOpenFolderModal}
+          />
+        }
+        leftAction={
+          <SimpleLineIcons name="arrow-left" size={25} color={Colors.beige} onPress={() => navigation.goBack()} />
+        }
+      />
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {renderImage()}
-        <View style={styles.contentContainer}>
-          <View style={styles.infoBubbles}>
-            <RecipeDetailInfoBubble
-              data={recipe.ratings?.toString()}
-              type={RecipeDetailInfoBubbleType.RATING}
-              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.rating)}
-            />
-            <RecipeDetailInfoBubble
-              data={recipe.calories?.toString()}
-              type={RecipeDetailInfoBubbleType.CALORIES}
-              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.calories)}
-            />
-            <RecipeDetailInfoBubble
-              data={recipe.yields?.split(' ')[0].toString()}
-              type={RecipeDetailInfoBubbleType.SERVING}
-              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.yields)}
-            />
-            <RecipeDetailInfoBubble
-              data={recipe.difficulty?.toString()}
-              type={RecipeDetailInfoBubbleType.DIFFICULTY}
-              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.difficulty)}
-            />
-            <RecipeDetailInfoBubble
-              data={recipe.totalTime?.toString()}
-              type={RecipeDetailInfoBubbleType.TIME}
-              onLongPress={() => setOpenMenuAndEdit(EditModalTypes.time)}
-            />
-          </View>
+        <View>
+          <FastImage
+            style={{ height: 300 }}
+            source={{
+              uri: recipe.image,
+              priority: FastImage.priority.normal,
+            }}
+          />
+          <View style={styles.imageOverlay} />
+        </View>
 
+        <View style={styles.contentContainer}>
+          <InfoBubbles recipe={recipe} setOpenMenuAndEdit={setOpenMenuAndEdit} />
           <View style={styles.siteDataContainer}>
             <Pressable style={styles.rowContainer} onPress={() => setOpenShareModal(true)}>
               <IonIcon
@@ -313,6 +264,31 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
               <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
               <Text style={styles.siteText}>{recipe.siteName}</Text>
             </View>
+          </View>
+          <View style={styles.servingContainer}>
+            <ToggleButton.Row onValueChange={() => {}} value={''}>
+              <ToggleButton
+                icon="minus"
+                value="accept"
+                onPress={() => {
+                  decreaseServings();
+                }}
+                iconColor={Colors.salmon}
+                rippleColor={Colors.salmonOp}
+                style={styles.toggleButtonStyle}
+              />
+              <TextInput label={yields} disabled mode="outlined" style={{ backgroundColor: Colors.beige }} />
+              <ToggleButton
+                icon="plus"
+                value="cancel"
+                onPress={() => {
+                  increaseServings();
+                }}
+                iconColor={Colors.salmon}
+                rippleColor={Colors.salmonOp}
+                style={styles.toggleButtonStyle}
+              />
+            </ToggleButton.Row>
           </View>
 
           <View style={styles.listBorder}>
@@ -392,91 +368,61 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         />
       </View>
 
-      <Dialog.Container visible={openFolderModal}>
-        <Dialog.Title>{i18next.t('recipeDetails:addToFolder')}</Dialog.Title>
-        <ScrollView style={{ height: 500 }}>
-          {Object.keys(folderValues).map((folder: string) => (
-            <Dialog.Switch
-              label={folder}
-              value={folderValues[folder]}
-              onChange={() => handleSwitchChange(folder)}
-              key={'key' + folder}
-            />
-          ))}
-        </ScrollView>
-        <Dialog.Input
-          placeholder={i18next.t('recipeDetails:newFolder')}
-          onChangeText={(text) => setEditValue(text)}
-          value={editValue}
-        />
-        <Dialog.Button
-          label={i18next.t('general:cancel')}
-          onPress={() => {
-            setOpenFolderModal(false);
-            setEditValue('');
-          }}
-        />
-        <Dialog.Button
-          label={i18next.t('general:change')}
-          onPress={async () => {
-            setOpenFolderModal(false);
-            const trueFolders = Object.keys(folderValues).filter((folder) => folderValues[folder]);
-            if (editValue !== '') trueFolders.push(editValue);
-            await editFolders({
-              variables: {
-                recipeId: recipe.id,
-                folders: trueFolders,
-              },
-            });
-            setEditValue('');
-            refetch();
-          }}
-        />
-      </Dialog.Container>
-      <Dialog.Container visible={openEditModal}>
-        <Dialog.Title>{getEditModalTitle()}</Dialog.Title>
-        <Dialog.Input placeholder={editModalType} value={editValue} onChangeText={(text) => setEditValue(text)} />
-        <Dialog.Button
-          label={i18next.t('general:cancel')}
-          onPress={() => {
-            setOpenEditModal(false);
-          }}
-        />
-        <Dialog.Button
-          label={i18next.t('general:change')}
-          onPress={async () => {
-            setOpenEditModal(false);
-            editRecipe({
-              variables: { recipeId: recipe.id, body: getEditContent() },
-            });
-          }}
-        />
-      </Dialog.Container>
-      <Dialog.Container visible={openShareModal}>
-        <Dialog.Title>{i18next.t('recipeDetails:share')}</Dialog.Title>
-        <Dialog.Input
-          placeholder={i18next.t('recipeDetails:shareModalPlaceholder')}
-          value={editValue}
-          onChangeText={(text) => setEditValue(text)}
-        />
-        <Dialog.Button
-          label={i18next.t('general:cancel')}
-          onPress={() => {
-            setEditValue('');
-            setOpenShareModal(false);
-          }}
-        />
-        <Dialog.Button
-          label={i18next.t('recipeDetails:share')}
-          onPress={async () => {
-            setOpenShareModal(false);
-            share({
-              variables: { recipeId: recipe.id, email: editValue.toLowerCase() },
-            });
-            setEditValue('');
-          }}
-        />
-      </Dialog.Container>
+      <FolderModal
+        isOpen={openFolderModal}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        onCancel={() => {
+          setOpenFolderModal(false);
+          setEditValue('');
+        }}
+        onEdit={async () => {
+          setOpenFolderModal(false);
+          const trueFolders = Object.keys(folderValues).filter((folder) => folderValues[folder]);
+          if (editValue !== '') trueFolders.push(editValue);
+          await editFolders({
+            variables: {
+              recipeId: recipe.id,
+              folders: trueFolders,
+            },
+          });
+          setEditValue('');
+          refetch();
+        }}
+        folderValues={folderValues}
+        handleSwitchChange={handleSwitchChange}
+      />
+      <EditModal
+        isOpen={openEditModal}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        editModalType={editModalType}
+        onCancel={() => {
+          setOpenEditModal(false);
+        }}
+        onEdit={async () => {
+          setOpenEditModal(false);
+          editRecipe({
+            variables: { recipeId: recipe.id, body: getEditContent() },
+          });
+        }}
+      />
+      <ShareModal
+        isOpen={openShareModal}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        onShare={async () => {
+          setOpenShareModal(false);
+          share({
+            variables: { recipeId: recipe.id, email: editValue.toLowerCase() },
+          });
+          setEditValue('');
+        }}
+        onCancel={() => {
+          setEditValue('');
+          setOpenShareModal(false);
+        }}
+      />
     </ScreenBackground>
   );
 };
@@ -559,11 +505,14 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 18,
   },
-  infoBubbles: {
-    flexDirection: 'row',
-    width: '80%',
-    justifyContent: 'space-between',
+  servingContainer: {
     alignSelf: 'center',
+  },
+  toggleButtonStyle: {
+    height: 50,
+    marginTop: 6,
+    marginLeft: -1,
+    backgroundColor: Colors.salmonOp,
   },
   ingredientsContainer: {
     backgroundColor: Colors.beige,
@@ -576,13 +525,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 0,
     borderTopColor: Colors.grey,
   },
-  menu: {
-    backgroundColor: Colors.beige,
-    paddingVertical: 0,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
+
   scrollView: {
     width: '100%',
   },
