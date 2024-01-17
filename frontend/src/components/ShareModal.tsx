@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
 
-import {ShareMenuReactView} from 'react-native-share-menu';
+import { ShareMenuReactView } from 'react-native-share-menu';
 import Dialog from 'react-native-dialog';
+import { useStore } from '../stores';
 
 const Share = () => {
   const [sharedData, setSharedData] = useState('');
 
   useEffect(() => {
-    ShareMenuReactView.data().then(({data}) => {
+    ShareMenuReactView.data().then(({ data }) => {
       setSharedData(data);
     });
   }, []);
@@ -17,9 +18,7 @@ const Share = () => {
     <View>
       <Dialog.Container visible={true}>
         <Dialog.Title>Add recipe</Dialog.Title>
-        <Dialog.Description>
-          Do you want to add this recipe to your collection?
-        </Dialog.Description>
+        <Dialog.Description>Do you want to add this recipe to your collection?</Dialog.Description>
         <Dialog.Button
           label="Dismiss"
           onPress={() => {
@@ -29,7 +28,7 @@ const Share = () => {
         <Dialog.Button
           label="Add"
           onPress={() => {
-            ShareMenuReactView.continueInApp({sharedData});
+            ShareMenuReactView.continueInApp({ sharedData });
           }}
         />
       </Dialog.Container>

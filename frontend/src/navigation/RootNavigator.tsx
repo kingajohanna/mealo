@@ -12,11 +12,14 @@ import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ADD_RECIPE } from '../api/mutations';
 import { useApolloClient } from '@apollo/client';
 import i18next from 'i18next';
+import { useAuthQuery } from '../hooks/useAuthQuery';
+import { GET_RECIPES } from '../api/queries';
 
 export const RootNavigation = observer(() => {
   const { userStore } = useStore();
 
   const [addRecipe] = useAuthMutation(ADD_RECIPE);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
   const client = useApolloClient();
 
   useEffect(() => {
@@ -28,11 +31,13 @@ export const RootNavigation = observer(() => {
   }, []);
 
   const addRecipeWrapper = async (url: string) => {
+    userStore.setLoading(true);
     await addRecipe({
       variables: { url },
     });
 
-    await client.refetchQueries({ include: ['GetRecipes'] });
+    await refetch();
+    userStore.setLoading(false);
   };
 
   const handleShare: ShareCallback = useCallback((share?: ShareData) => {

@@ -24,12 +24,19 @@ import { EditModal, EditModalTypes } from '../components/RecipeDetails/EditModal
 import { FolderModal } from '../components/RecipeDetails/FolderModal';
 import { InfoBubbles } from '../components/RecipeDetails/InfoBubbles';
 import { HeaderMenu } from '../components/RecipeDetails/HeaderMenu';
+import { PDFDocument, PDFImage, StandardFonts } from 'pdf-lib';
+import * as fontkit from '@pdf-lib/fontkit';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+import { fontBase64, pdfBase64 } from '../assets/form';
+import Share from 'react-native-share';
+import { useStore } from '../stores';
 
 const { width } = Dimensions.get('window');
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
+  const { userStore } = useStore();
   const [data, refetch] = useAuthQuery(GET_RECIPES);
 
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
@@ -46,6 +53,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
   const [yields, setYields] = useState(recipe.yields || '1 serving');
+  const [demoimage, setdemoimage] = useState(recipe.image);
 
   const initialFolderValues = Object.fromEntries(
     data?.getRecipes.folders
@@ -199,17 +207,13 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       const newServings = parseFloat(firstWord) - 1;
 
       const ratio = newServings / parseFloat(firstWord);
-      console.log(ratio);
 
       setYields(`${newServings} servings`);
 
       const newIngredients = recipe.ingredients.map((ingredient: string) => {
         const firstWord = ingredient.split(' ')[0];
         if (/^\d+(\.\d+)?$/.test(firstWord)) {
-          console.log(parseFloat(firstWord));
-
           const newAmount = Math.round(parseFloat(firstWord) * ratio * 100) / 100;
-          console.log('n', newAmount);
 
           return newAmount.toString() + ' ' + ingredient.split(' ')?.slice(1, undefined)?.join(' ');
         }
@@ -218,6 +222,59 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 
       setRecipe({ ...recipe, ingredients: newIngredients });
     }
+  };
+
+  const sendPdf = async () => {
+    userStore.setLoading(true);
+    const pdfDoc = await PDFDocument.load(pdfBase64);
+
+    pdfDoc.registerFontkit(fontkit);
+    const custom = await pdfDoc.embedFont(fontBase64);
+
+    const form = pdfDoc.getForm();
+
+    const title = form.getTextField('title');
+    const time = form.getTextField('time');
+    const yields = form.getTextField('yields');
+    const ingredients = form.getTextField('ingredients');
+    const instructions = form.getTextField('instructions');
+    const ingredientsTitle = form.getTextField('ingredientsTitle');
+    const instructionsTitle = form.getTextField('instructionsTitle');
+    const image = form.getButton('image');
+
+    title.setText(recipe.title);
+
+    time.setText(recipe.totalTime || '');
+    yields.setText(recipe.yields || '');
+    ingredientsTitle.setText(i18next.t('recipeDetails:ingredients'));
+
+    instructionsTitle.setText(i18next.t('recipeDetails:instructions'));
+
+    ingredients.setText(recipe.ingredients.map((ingredient) => `- ${ingredient}`).join('\n'));
+    instructions.setText(
+      recipe.instructions.map((instruction: string, index: number) => `  ${index + 1}.   ${instruction}`).join('\n'),
+    );
+
+    const imgBase64 = (await ReactNativeBlobUtil.fetch('GET', recipe.image)).base64() as string;
+    let pdfImage: PDFImage;
+    if (recipe.image.includes('png')) pdfImage = await pdfDoc.embedJpg(imgBase64);
+    else pdfImage = await pdfDoc.embedJpg(imgBase64);
+    image.setImage(pdfImage);
+
+    form.updateFieldAppearances(custom);
+    form.flatten();
+
+    const uri = await pdfDoc.saveAsBase64({ dataUri: true });
+    console.log(uri);
+    userStore.setLoading(false);
+
+    Share.open({ type: 'application/pdf', url: uri, filename: recipe.title + '.pdf' })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        err && console.log(err);
+      });
   };
 
   return (
@@ -242,7 +299,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           <FastImage
             style={{ height: 300 }}
             source={{
-              uri: recipe.image,
+              uri: demoimage,
               priority: FastImage.priority.normal,
             }}
           />
@@ -252,6 +309,10 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.contentContainer}>
           <InfoBubbles recipe={recipe} setOpenMenuAndEdit={setOpenMenuAndEdit} />
           <View style={styles.siteDataContainer}>
+            <Pressable style={styles.rowContainer} onPress={async () => await sendPdf()}>
+              <IonIcon name="print" color={Colors.pine} size={28} />
+              <Text style={styles.siteText}>{i18next.t('recipeDetails:print')}</Text>
+            </Pressable>
             <Pressable style={styles.rowContainer} onPress={() => setOpenShareModal(true)}>
               <IonIcon
                 name={Platform.OS === 'android' ? 'share-social' : 'share-outline'}

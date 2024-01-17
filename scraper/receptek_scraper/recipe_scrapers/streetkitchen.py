@@ -42,9 +42,13 @@ class StreetKitchen(AbstractScraper):
         return ingredients
 
     def instructions(self):
-        instructions = self.soup.find("div", {"class": "the-content-div"}).findAll("p")[
-            :-1
-        ]  # the last paragraph is advertisement, not instructions
+        def is_valid_paragraph(tag):
+            return 'Ha tetszett' not in tag.text and not tag.find('a')
+
+        content_div = self.soup.find("div", {"class": "the-content-div"})
+        content_p = content_div.find_all("p", recursive=False)
+        instructions = [p for p in content_p if is_valid_paragraph(p)]
+
         instructions_arr = []
         for instruction in instructions:
             instructions_arr.append(instruction.get_text())

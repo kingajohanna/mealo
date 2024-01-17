@@ -64,7 +64,7 @@ export default {
   },
   recipeDetails: {
     ingredients: 'Hozzávalók',
-    instructions: 'Lépések',
+    instructions: 'Elkészítés',
     step: 'lépés',
     startCooking: 'Főzés megkezdése',
     editTitle: 'Cím szerkesztése',
@@ -78,6 +78,7 @@ export default {
     editDifficulty: 'Nehézség szerkesztése',
     editTotalTime: 'Elkészítési idő módosítása',
     share: 'Megosztás',
+    print: 'Nyomtatás',
     shareModalPlaceholder: 'Add meg az email címét...',
   },
   cookingMode: {

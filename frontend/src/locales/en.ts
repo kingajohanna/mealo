@@ -80,6 +80,7 @@ export default {
     editDifficulty: 'Edit difficulty',
     editTotalTime: 'Edit total time',
     share: 'Share',
+    print: 'Print',
     shareModalPlaceholder: 'Email address of the person...',
   },
   cookingMode: {

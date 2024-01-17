@@ -17,7 +17,7 @@ type ScreenBackgroundProps = {
   onPress: () => void;
 };
 
-export const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ recipe, onPress }) => {
+const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ recipe, onPress }) => {
   const [editFavoriteRecipe] = useAuthMutation(FAVORITE_RECIPE);
   const [deleteRecipe] = useAuthMutation(DELETE_RECIPE);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
@@ -111,6 +111,8 @@ export const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ reci
     </Swipeable>
   );
 });
+
+export const RecipeListComponentMemoized = React.memo(RecipeListComponent);
 
 const styles = StyleSheet.create({
   background: {

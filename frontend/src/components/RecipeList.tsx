@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { Recipe } from '../types/recipe';
 import { FlatList, RefreshControl, View } from 'react-native';
-import { RecipeListComponent } from './RecipeListComponent';
+import { RecipeListComponentMemoized } from './RecipeListComponent';
 import LottieView from 'lottie-react-native';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
@@ -34,7 +34,7 @@ export const RecipeList: FC<Props> = (props) => {
 
     return (
       <View style={{ paddingTop, paddingBottom }}>
-        <RecipeListComponent recipe={item} onPress={() => props.onPress(item)} />
+        <RecipeListComponentMemoized recipe={item} onPress={() => props.onPress(item)} />
       </View>
     );
   };
@@ -52,23 +52,25 @@ export const RecipeList: FC<Props> = (props) => {
     setIsRefreshing(false);
   };
 
+  const loadingAnimation = isRefreshing ? (
+    <LottieView
+      style={{
+        height: refreshingHeight,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+      }}
+      ref={lottieViewRef}
+      source={require('../assets/anim/loading.json')}
+      loop
+      autoPlay
+    />
+  ) : null;
+
   return (
     <>
-      {isRefreshing ? (
-        <LottieView
-          style={{
-            height: refreshingHeight,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-          }}
-          ref={lottieViewRef}
-          source={require('../assets/anim/loading.json')}
-          loop
-          autoPlay
-        />
-      ) : null}
+      {loadingAnimation}
       {props.searchEnabled && (
         <TextInput onChangeText={onChangeText} text={searchText} placeholder={i18next.t(`recipes:searchModalTitle`)} />
       )}

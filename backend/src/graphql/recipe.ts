@@ -158,6 +158,8 @@ export const recipeMutation = {
       url,
     });
 
+    console.log(response);
+
     if (response && user) {
       const newRecipe = new Recipe({
         id: recipeId,
