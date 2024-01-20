@@ -8,12 +8,12 @@ import { Colors } from '../theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { CheckableText } from '../components/CheckableText';
-import { List, TextInput, ToggleButton } from 'react-native-paper';
+import { List, ToggleButton, TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
+import { ADD_LIST, EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { Button } from '../components/Button';
 import { useAuthQuery } from '../hooks/useAuthQuery';
@@ -30,6 +30,9 @@ import ReactNativeBlobUtil from 'react-native-blob-util';
 import { fontBase64, pdfBase64 } from '../assets/form';
 import Share from 'react-native-share';
 import { useStore } from '../stores';
+import { TextInput as DescriptionInput } from '../components/TextInput';
+import { set } from 'mobx';
+import { addReminder } from '../nativeModules/ReminderModule';
 
 const { width } = Dimensions.get('window');
 
@@ -38,11 +41,12 @@ type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const { userStore } = useStore();
   const [data, refetch] = useAuthQuery(GET_RECIPES);
-
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
   const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
   const [editFavoriteRecipe, fav_data] = useAuthMutation(FAVORITE_RECIPE);
   const [share] = useAuthMutation(SHARE_RECIPE);
+  const [addToList] = useAuthMutation(ADD_LIST);
+
   const [recipe, setRecipe] = useState(route.params.recipe);
   const [openIngredients, setOpenIngredients] = useState(true);
   const [openInstructions, setOpenInstructions] = useState(true);
@@ -53,7 +57,8 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
   const [yields, setYields] = useState(recipe.yields || '1 serving');
-  const [demoimage, setdemoimage] = useState(recipe.image);
+  const [openEditDescription, setOpenEditDescription] = useState(false);
+  const [description, setDescription] = useState(recipe.description || '');
 
   const initialFolderValues = Object.fromEntries(
     data?.getRecipes.folders
@@ -177,6 +182,20 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     }));
   };
 
+  const addToShoppingList = async () => {
+    recipe.ingredients.map(async (ingredient) => {
+      const reminder = await addReminder(ingredient);
+      await addToList({
+        variables: {
+          name: ingredient,
+          amount: '',
+          id: reminder?.id,
+        },
+      });
+    });
+    setOpenMenu(false);
+  };
+
   const increaseServings = () => {
     const firstWord = yields.split(' ')[0];
     if (/^\d+$/.test(firstWord)) {
@@ -252,7 +271,8 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 
     ingredients.setText(recipe.ingredients.map((ingredient) => `- ${ingredient}`).join('\n'));
     instructions.setText(
-      recipe.instructions.map((instruction: string, index: number) => `  ${index + 1}.   ${instruction}`).join('\n'),
+      recipe.instructions.map((instruction: string, index: number) => `  ${index + 1}.   ${instruction}`).join('\n') ||
+        recipe.description,
     );
 
     const imgBase64 = (await ReactNativeBlobUtil.fetch('GET', recipe.image)).base64() as string;
@@ -288,6 +308,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
             onOpenEditModal={onOpenEditModal}
             setOpenMenuAndEdit={setOpenMenuAndEdit}
             setOpenFolderModal={setOpenFolderModal}
+            addToList={addToShoppingList}
           />
         }
         leftAction={
@@ -299,7 +320,7 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           <FastImage
             style={{ height: 300 }}
             source={{
-              uri: demoimage,
+              uri: recipe.image,
               priority: FastImage.priority.normal,
             }}
           />
@@ -352,62 +373,127 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
             </ToggleButton.Row>
           </View>
 
-          <View style={styles.listBorder}>
-            <List.Accordion
-              theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-              style={styles.listAccordion}
-              title={i18next.t('recipeDetails:ingredients')}
-              left={() => (
-                <MaterialCommunityIcons name="chef-hat" color={Colors.pine} size={24} style={styles.listIcon} />
-              )}
-              id="1"
-              expanded={openIngredients}
-              onPress={() => setOpenIngredients(!openIngredients)}
-              titleStyle={styles.listAccordionTitle}
-            >
-              <View style={styles.ingredientsContainer}>
-                {recipe.ingredients.map((ingredient: string, index: number) => {
-                  return (
-                    <CheckableText checkedStyle={styles.checkedText} key={'ingredient' + index} style={styles.text}>
-                      <Text style={styles.text}>• </Text>
-                      <Text style={styles.text}>{ingredient}</Text>
-                    </CheckableText>
-                  );
-                })}
-              </View>
-            </List.Accordion>
-          </View>
-
-          <View style={styles.listBorder}>
-            <List.Accordion
-              theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-              style={styles.listAccordion}
-              title={i18next.t('recipeDetails:instructions')}
-              left={() => <MaterialCommunityIcons name="knife" color={Colors.pine} size={24} style={styles.listIcon} />}
-              id="1"
-              expanded={openInstructions}
-              onPress={() => setOpenInstructions(!openInstructions)}
-              titleStyle={styles.listAccordionTitle}
-            >
-              <View style={styles.ingredientsContainer}>
-                {recipe.instructions.map((instruction: string, index: number) => {
-                  return (
-                    <View key={instruction + index} style={{ paddingRight: 8 }}>
-                      <Text style={styles.textMedium}>
-                        {index + 1} {i18next.t('recipeDetails:step')}{' '}
-                      </Text>
-                      <View style={styles.ingredientsListContainer}>
-                        <View style={styles.verticalLine} />
-                        <Text style={styles.text} key={'instruction' + index}>
-                          {instruction}
-                        </Text>
+          {recipe.description && (
+            <View style={styles.listBorder}>
+              <List.Accordion
+                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
+                style={styles.listAccordion}
+                title={i18next.t('recipeDetails:description')}
+                left={() => <IonIcon name="clipboard-outline" color={Colors.pine} size={24} style={styles.listIcon} />}
+                id="1"
+                right={() => (
+                  <MaterialCommunityIcons
+                    name="lead-pencil"
+                    color={Colors.pine}
+                    size={24}
+                    onPress={() => setOpenEditDescription(true)}
+                  />
+                )}
+                expanded={true}
+                onLongPress={() => setOpenEditDescription(true)}
+                titleStyle={styles.listAccordionTitle}
+              >
+                <View style={styles.instructionContainer}>
+                  {openEditDescription ? (
+                    <>
+                      <DescriptionInput
+                        multiline
+                        scrollEnabled={false}
+                        onChangeText={setDescription}
+                        text={description}
+                        style={{ width: '100%' }}
+                      />
+                      <View style={styles.buttonContainer}>
+                        <Button
+                          titleStyle={{ textAlign: 'center', color: Colors.pine }}
+                          style={styles.cancelButton}
+                          title={i18next.t('recipeDetails:cancel')}
+                          onPress={() => setOpenEditDescription(false)}
+                        />
+                        <Button
+                          titleStyle={{ textAlign: 'center', color: Colors.beige }}
+                          style={styles.saveButton}
+                          title={i18next.t('recipeDetails:save')}
+                          onPress={async () => {
+                            await editRecipe({
+                              variables: { recipeId: recipe.id, body: { description } },
+                            });
+                            refetch();
+                            setOpenEditDescription(false);
+                          }}
+                        />
                       </View>
-                    </View>
-                  );
-                })}
-              </View>
-            </List.Accordion>
-          </View>
+                    </>
+                  ) : (
+                    <Text style={styles.text}>{description}</Text>
+                  )}
+                </View>
+              </List.Accordion>
+            </View>
+          )}
+
+          {recipe.ingredients.length > 0 && (
+            <View style={styles.listBorder}>
+              <List.Accordion
+                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
+                style={styles.listAccordion}
+                title={i18next.t('recipeDetails:ingredients')}
+                left={() => (
+                  <MaterialCommunityIcons name="chef-hat" color={Colors.pine} size={24} style={styles.listIcon} />
+                )}
+                id="2"
+                expanded={openIngredients}
+                onPress={() => setOpenIngredients(!openIngredients)}
+                titleStyle={styles.listAccordionTitle}
+              >
+                <View style={styles.ingredientsContainer}>
+                  {recipe.ingredients.map((ingredient: string, index: number) => {
+                    return (
+                      <CheckableText checkedStyle={styles.checkedText} key={'ingredient' + index} style={styles.text}>
+                        <Text style={styles.text}>• </Text>
+                        <Text style={styles.text}>{ingredient}</Text>
+                      </CheckableText>
+                    );
+                  })}
+                </View>
+              </List.Accordion>
+            </View>
+          )}
+
+          {recipe.instructions.length > 0 && (
+            <View style={styles.listBorder}>
+              <List.Accordion
+                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
+                style={styles.listAccordion}
+                title={i18next.t('recipeDetails:instructions')}
+                left={() => (
+                  <MaterialCommunityIcons name="knife" color={Colors.pine} size={24} style={styles.listIcon} />
+                )}
+                id="3"
+                expanded={openInstructions}
+                onPress={() => setOpenInstructions(!openInstructions)}
+                titleStyle={styles.listAccordionTitle}
+              >
+                <View style={styles.ingredientsContainer}>
+                  {recipe.instructions.map((instruction: string, index: number) => {
+                    return (
+                      <View key={instruction + index} style={{ paddingRight: 8 }}>
+                        <Text style={styles.textMedium}>
+                          {index + 1} {i18next.t('recipeDetails:step')}{' '}
+                        </Text>
+                        <View style={styles.ingredientsListContainer}>
+                          <View style={styles.verticalLine} />
+                          <Text style={styles.text} key={'instruction' + index}>
+                            {instruction}
+                          </Text>
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </List.Accordion>
+            </View>
+          )}
         </View>
       </ScrollView>
 
@@ -417,14 +503,17 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
           style={[styles.smallButton, { borderColor: Colors.grey }]}
           onPress={favHandler}
         />
-        <Button
-          icon={<IonIcon name="play" color={Colors.pine} size={32} />}
-          style={[styles.smallButton, { borderColor: Colors.pine }]}
-        />
+        {recipe.video && (
+          <Button
+            icon={<IonIcon name="play" color={Colors.pine} size={32} />}
+            style={[styles.smallButton, { borderColor: Colors.pine }]}
+            onPress={() => navigation.navigate(Tabs.VIDEO, { recipe })}
+          />
+        )}
         <Button
           title={i18next.t('recipeDetails:startCooking')}
           titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
-          style={styles.cookButton}
+          style={[styles.cookButton, { width: recipe.video ? width - 54 - 54 - 60 : width - 54 - 60 }]}
           onPress={() => navigation.navigate(Tabs.COOKINGMODE, { recipe })}
         />
       </View>
@@ -514,6 +603,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     paddingLeft: 20,
     color: Colors.textDark,
+    width: '100%',
   },
   checkedText: {
     textDecorationLine: 'line-through',
@@ -542,7 +632,7 @@ const styles = StyleSheet.create({
   },
   listIcon: {
     paddingLeft: 12,
-    paddingTop: 6,
+    paddingTop: 4,
   },
   textOverlay: {
     position: 'absolute',
@@ -586,7 +676,6 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 0,
     borderTopColor: Colors.grey,
   },
-
   scrollView: {
     width: '100%',
   },
@@ -594,7 +683,18 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: Colors.pine,
     borderColor: Colors.pine,
-    width: width - 54 - 54 - 60,
+  },
+  saveButton: {
+    borderWidth: 2,
+    width: 100,
+    backgroundColor: Colors.pine,
+    borderColor: Colors.pine,
+  },
+  cancelButton: {
+    borderWidth: 2,
+    width: 100,
+    borderColor: Colors.pine,
+    marginRight: 16,
   },
   siteDataContainer: {
     paddingLeft: 12,
@@ -635,6 +735,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   verticalLine: {
     height: '95%',

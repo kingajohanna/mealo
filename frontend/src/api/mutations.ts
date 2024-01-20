@@ -1,24 +1,5 @@
 import { gql } from '@apollo/client';
-
-const requiredData = `
-      id
-      title
-      category
-      speed
-      totalTime
-      yields
-      image
-      ingredients
-      instructions
-      cuisine
-      is_favorite
-      folders
-      meals {
-        meal
-        day
-        id
-      }
-      `;
+import { requiredData } from './queries';
 
 export const EDIT_RECIPE = gql`
   mutation EditRecipe($recipeId: Int!, $body: RecipeInput!) {

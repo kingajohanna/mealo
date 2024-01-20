@@ -23,7 +23,9 @@ async def create_recipe(req: Request,  url: URL):
         doc_parsed = await scrape_me(url.url)
     except Exception:
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    print(doc_parsed)
+    print('szar')
+    print(doc_parsed.title)
+    print('szar')
     recipe_model = jsonable_encoder(utils.convert_scraper_to_model(doc_parsed))
     print(recipe_model)
 

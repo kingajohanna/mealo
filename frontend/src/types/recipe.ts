@@ -27,5 +27,6 @@ export type Recipe = {
   difficulty?: string;
   folders?: string[];
   meals?: Meal[];
+  video?: string;
   [key: string]: string | undefined | boolean | string[] | Meal[];
 };

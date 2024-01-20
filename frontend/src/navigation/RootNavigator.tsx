@@ -32,6 +32,8 @@ export const RootNavigation = observer(() => {
 
   const addRecipeWrapper = async (url: string) => {
     userStore.setLoading(true);
+    console.log(url);
+
     await addRecipe({
       variables: { url },
     });

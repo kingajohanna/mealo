@@ -1,5 +1,6 @@
 import { Recipe } from "../models/Recipe";
 import { User } from "../models/User";
+import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -102,7 +103,7 @@ export const userMutation = {
 
         const copiedRecipe = {
           ...cleanedRecipe,
-          id: Math.floor(cleanedRecipe.id / 2),
+          id: hashCode(cleanedRecipe.canonical_url + uid),
           uid: uid,
           meals: [],
           folders: [],

@@ -53,6 +53,9 @@ class SchemaScraperFactory:
         def difficulty(self):
             return self.schema.difficulty()
 
+        def video(self):
+            return self.schema.video()
+
     @classmethod
     def generate(cls, url, **options):
         return cls.SchemaScraper(url, **options)

@@ -1,4 +1,4 @@
-import { StyleProp, StyleSheet, TextStyle } from 'react-native';
+import { StyleProp, StyleSheet, TextInputProps, TextStyle } from 'react-native';
 import { Colors } from '../theme/colors';
 import { TextInput as TextInputBase } from 'react-native';
 
@@ -8,11 +8,12 @@ type Props = {
   placeholder?: string;
   style?: StyleProp<TextStyle>;
   disabled?: boolean;
-};
+} & TextInputProps;
 
 export const TextInput: React.FC<Props> = (props) => {
   return (
     <TextInputBase
+      {...props}
       style={[styles.titleText, props.style]}
       placeholderTextColor={Colors.pine}
       onChangeText={props.onChangeText}

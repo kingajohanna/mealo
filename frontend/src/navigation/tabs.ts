@@ -15,6 +15,7 @@ export enum Tabs {
   RECIPE = 'Recipe',
   SHARE = 'Share',
 
+  VIDEO = 'Video',
   COOKINGMODE = 'CookingMode',
   TIMERS = 'Timers',
 

@@ -64,3 +64,12 @@ class StreetKitchen(AbstractScraper):
 
     def difficulty(self):
         return self.schema.difficulty()
+
+    def video(self):
+        iframe_tags = self.soup.find_all('iframe', {'frameborder': '0'})
+        video = None
+        for iframe in iframe_tags:
+            if 'youtube' in iframe.get('src'):
+                print(iframe.get('src'))
+                video = iframe.get('src')
+        return video

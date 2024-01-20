@@ -27,6 +27,7 @@ import moment from 'moment';
 import { Meals } from '../components/CalendarDay';
 import { AddMeal } from '../screens/AddMeal';
 import i18next from 'i18next';
+import { RecipeVideo } from '../screens/RecipeVideo';
 
 export type RecipeStackParamList = {
   [Tabs.RECIPES]: undefined;
@@ -38,6 +39,7 @@ export type RecipeStackParamList = {
   [Tabs.FOLDERS]: undefined;
   [Tabs.RECIPEFOLDER]: { filter: string; recipes: Recipe[] };
   [Tabs.ADDMEAL]: { date: string; mealType: Meals };
+  [Tabs.VIDEO]: { recipe: Recipe };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -114,6 +116,11 @@ export const AppNavigator = observer(() => {
           <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />
+          <Stack.Screen
+            name={Tabs.VIDEO}
+            component={RecipeVideo}
+            options={{ headerShown: false, presentation: 'modal' }}
+          />
           <Stack.Screen
             name={Tabs.READ_OCR}
             component={AddRecipe}

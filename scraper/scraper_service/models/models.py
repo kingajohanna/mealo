@@ -54,6 +54,7 @@ class RecipeModel(BaseModel):
     siteName: str = Field(...)
     calories: Optional[str]
     difficulty: Optional[str]
+    video: Optional[str]
 
     class Config:
         json_encoders = {ObjectId: str}
@@ -79,7 +80,8 @@ class RecipeModel(BaseModel):
                 "reviews": "",
                 "siteName": "deliciousfood",
                 "calories": "1000",
-                "difficulty": "easy"
+                "difficulty": "easy",
+                "video": ""
             }
         }
 

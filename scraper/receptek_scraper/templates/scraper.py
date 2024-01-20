@@ -46,3 +46,6 @@ class Template(AbstractScraper):
 
     def difficulty(self):
         return self.schema.difficulty()
+
+    def video(self):
+        return self.schema.video()

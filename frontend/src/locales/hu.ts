@@ -7,6 +7,7 @@ export default {
     change: 'Módosítás',
     ok: 'OK',
     add: 'Hozzáadás',
+    save: 'Mentés',
   },
   tabs: {
     planner: 'Tervező',
@@ -65,12 +66,14 @@ export default {
   recipeDetails: {
     ingredients: 'Hozzávalók',
     instructions: 'Elkészítés',
+    description: 'Leírás',
     step: 'lépés',
     startCooking: 'Főzés megkezdése',
     editTitle: 'Cím szerkesztése',
     editCategory: 'Kategória szerkesztése',
     editCuisine: 'Konyha szerkesztése',
     addToFolder: 'Hozzáadás mappához',
+    addToShoppingList: 'Hozzáadás a bevásárló listához',
     newFolder: 'Új mappa',
     editRating: 'Értékelés módosítása',
     editCalories: 'Kalóriák módosítása',

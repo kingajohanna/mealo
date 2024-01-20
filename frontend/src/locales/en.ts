@@ -7,6 +7,7 @@ export default {
     change: 'Change',
     ok: 'OK',
     add: 'Add',
+    save: 'Save',
   },
   tabs: {
     planner: 'Planner',
@@ -67,12 +68,14 @@ export default {
   recipeDetails: {
     ingredients: 'Ingredients',
     instructions: 'Instructions',
+    description: 'Description',
     step: 'step',
     startCooking: 'Start cooking',
     editTitle: 'Edit title',
     editCategory: 'Edit category',
     editCuisine: 'Edit cuisine',
     addToFolder: 'Add to folder',
+    addToShoppingList: 'Add to shopping list',
     newFolder: 'New folder',
     editRating: 'Edit rating',
     editCalories: 'Edit calories',

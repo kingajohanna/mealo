@@ -34,6 +34,7 @@ export interface IRecipe {
   difficulty: string;
   folders: string[];
   meals: Meal[];
+  video: string;
 }
 
 const recipeSchema = new mongoose.Schema({
@@ -74,6 +75,7 @@ const recipeSchema = new mongoose.Schema({
   difficulty: { type: String, default: null },
   folders: { type: Array, default: null },
   meals: { type: Array, default: null },
+  video: { type: String, default: null },
 });
 
 export const Recipe = mongoose.model<IRecipe>(

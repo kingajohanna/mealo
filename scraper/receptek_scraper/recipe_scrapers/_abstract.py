@@ -195,3 +195,6 @@ class AbstractScraper:
     def site_name(self):
         meta = self.soup.find("meta", property="og:site_name")
         return meta.get("content") if meta else None
+
+    def video(self):
+        return None

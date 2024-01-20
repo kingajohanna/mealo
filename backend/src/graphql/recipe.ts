@@ -40,6 +40,7 @@ export const recipeType = `
         difficulty: String
         folders: [String]
         meals: [MealInput]
+        video: String
     }
 
     type Meal {
@@ -76,6 +77,7 @@ export const recipeType = `
         difficulty: String
         folders: [String]
         meals: [Meal]
+        video: String
     }
 
     type Recipes {
@@ -153,10 +155,52 @@ export const recipeMutation = {
 
     const recipeId = hashCode(url + uid);
     const user = await User.findOne({ id: uid }).lean();
+    const recipe = await Recipe.findOne({ id: recipeId }).lean();
 
-    const response = await axios.post(process.env.SCRAPER_URL as string, {
-      url,
-    });
+    if (recipe) return recipe;
+
+    const apiKey = process.env.YOUTUBE_API_KEY;
+
+    let response;
+
+    if (url?.includes("youtube")) {
+      const videoId = url?.match(/[?&]v=([^?&]+)/)![1];
+      const requestUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
+      const data = (await axios.get(requestUrl)).data.items[0].snippet;
+      console.log(data);
+
+      response = {
+        data: {
+          title: data.title || "",
+          image: data.thumbnails.high.url || "",
+          video: url || "",
+          ingredients: [],
+          instructions: [],
+          host: "youtube.com",
+          canonical_url: url || "",
+          category: null,
+          speed: null,
+          totalTime: null,
+          cookTime: null,
+          prepTime: null,
+          yields: null,
+          nutrients: null,
+          language: null,
+          ratings: null,
+          author: data.channelTitle || "",
+          cuisine: null,
+          description: data.description || "",
+          reviews: null,
+          siteName: "Youtube",
+          calories: null,
+          difficulty: null,
+        },
+      };
+    } else {
+      response = await axios.post(process.env.SCRAPER_URL as string, {
+        url,
+      });
+    }
 
     console.log(response);
 

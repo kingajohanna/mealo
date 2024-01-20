@@ -11,6 +11,7 @@ type Props = {
   onOpenEditModal: (editModalType: EditModalTypes | undefined) => void;
   setOpenMenuAndEdit: (editModalType: EditModalTypes) => void;
   setOpenFolderModal: (open: boolean) => void;
+  addToList: () => void;
 };
 
 export const HeaderMenu: React.FC<Props> = (props) => {
@@ -58,6 +59,13 @@ export const HeaderMenu: React.FC<Props> = (props) => {
           props.setOpenFolderModal(true);
         }}
         title={i18next.t('recipeDetails:addToFolder')}
+      />
+      <Menu.Item
+        style={styles.menu}
+        onPress={() => {
+          props.addToList();
+        }}
+        title={i18next.t('recipeDetails:addToShoppingList')}
       />
     </Menu>
   );

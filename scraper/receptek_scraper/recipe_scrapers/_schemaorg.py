@@ -270,3 +270,10 @@ class SchemaOrg:
         if difficulty is None:
             raise SchemaOrgException("No difficulty data in SchemaOrg.")
         return difficulty
+    
+    def video(self):
+        print(self.data)
+        video = self.data.get("video")
+        if video is None:
+            return None
+        return video.get("embedUrl")
