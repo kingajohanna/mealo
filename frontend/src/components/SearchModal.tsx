@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../theme/colors';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -9,9 +9,8 @@ import { Button } from 'react-native-paper';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { TextInput } from './TextInput';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import i18next from 'i18next';
-const { height } = Dimensions.get('window');
 
 interface SearchModalProps {
   refRBSheet: React.MutableRefObject<any>;
@@ -41,6 +40,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   search,
 }) => {
   const [data] = useAuthQuery(GET_RECIPES);
+  const [categories, setCategories] = React.useState<string[]>([i18next.t(`recipes:all`)]);
+  const [cuisines, setCuisines] = React.useState<string[]>([i18next.t(`recipes:all`)]);
+
+  useEffect(() => {
+    if (data?.getRecipes.categories) {
+      setCategories([i18next.t(`recipes:all`), ...data?.getRecipes.categories]);
+    }
+    if (data?.getRecipes.cuisines) {
+      setCuisines([i18next.t(`recipes:all`), ...data?.getRecipes.cuisines]);
+    }
+  }, [data]);
 
   const getColor = (rule: boolean) => {
     return rule ? Colors.green : Colors.pine;
@@ -90,7 +100,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     <BottomSheetModal
       ref={refRBSheet}
       index={0}
-      snapPoints={['50%']}
+      snapPoints={['55%']}
       backdropComponent={renderBackdrop}
       backgroundStyle={styles.bottomSheetBackground}
     >
@@ -101,24 +111,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         {renderTimeIcon(Time.slow)}
       </View>
       <View style={styles.rowContainer}>
-        {data?.getRecipes.categories && (
-          <Picker
-            style={styles.halfWidth}
-            selectedValue={category}
-            onValueChange={(itemValue) => setCategory(itemValue)}
-          >
-            {data?.getRecipes.categories.map((cat: string | undefined, index: any) => (
-              <Picker.Item label={cat} value={cat} key={`category${index}`} />
-            ))}
-          </Picker>
-        )}
-        {data?.getRecipes.cuisines && (
-          <Picker style={styles.halfWidth} selectedValue={cuisine} onValueChange={(itemValue) => setCuisine(itemValue)}>
-            {data?.getRecipes.cuisines.map((cui: string | undefined, index: any) => (
-              <Picker.Item label={cui} value={cui} key={`cuisine${index}`} />
-            ))}
-          </Picker>
-        )}
+        <Picker style={styles.halfWidth} selectedValue={category} onValueChange={(itemValue) => setCategory(itemValue)}>
+          {categories.map((cat: string | undefined, index: any) => (
+            <Picker.Item label={cat} value={cat} key={`category${index}`} />
+          ))}
+        </Picker>
+
+        <Picker style={styles.halfWidth} selectedValue={cuisine} onValueChange={(itemValue) => setCuisine(itemValue)}>
+          {cuisines.map((cui: string | undefined, index: any) => (
+            <Picker.Item label={cui} value={cui} key={`cuisine${index}`} />
+          ))}
+        </Picker>
       </View>
       <View style={styles.buttonContainer}>
         <Button style={styles.button} textColor={Colors.textLight} onPress={reset}>

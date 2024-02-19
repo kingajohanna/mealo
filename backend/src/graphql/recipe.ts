@@ -110,8 +110,8 @@ export const recipeQuery = {
 
     const recipes = await Recipe.find({ uid }).lean();
 
-    const categories: string[] = ["All"];
-    const cuisines: string[] = ["All"];
+    const categories: string[] = [];
+    const cuisines: string[] = [];
     const folders: string[] = [];
 
     recipes?.forEach((recipe: any) => {

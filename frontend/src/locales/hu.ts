@@ -36,6 +36,7 @@ export default {
     title: 'Receptek',
     reset: 'Visszaállítás',
     search: 'Keresés',
+    all: 'Összes',
     searchModalTitle: 'Mit főzzünk ma?',
     deleteTitle: 'Recept törlése',
     deleteText: 'Biztosan törölni szeretnéd ezt a receptet?',
@@ -47,6 +48,7 @@ export default {
     title: 'Mappák',
     searchPlaceholder: 'Mappák keresése',
     favorites: 'Kedvencek',
+    all: 'Összes',
   },
   settings: {
     title: 'Beállítások',

@@ -36,6 +36,7 @@ export default {
     title: 'Recipes',
     reset: 'Reset',
     search: 'Search',
+    all: 'All',
     searchModalTitle: "What's for dinner?",
     deleteTitle: 'Delete recipe',
     deleteText: 'Do you really want to delete this recipe?',
@@ -49,6 +50,7 @@ export default {
     title: 'Folders',
     searchPlaceholder: 'Search folders',
     favorites: 'Favorites',
+    all: 'All',
   },
   settings: {
     title: 'Settings',

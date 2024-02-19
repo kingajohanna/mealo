@@ -24,7 +24,7 @@ export enum Time {
   slow = 'slow',
 }
 
-export const all = 'All';
+export const all = i18next.t(`recipes:all`);
 
 export const Recipes = () => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
@@ -38,7 +38,6 @@ export const Recipes = () => {
   const [cuisine, setCuisine] = useState(all);
   const [time, setTime] = useState<Time | undefined>(undefined);
 
-  const refRBSheet = useRef() as React.MutableRefObject<RBSheet>;
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
@@ -65,7 +64,12 @@ export const Recipes = () => {
 
   useEffect(() => {
     if (data?.getRecipes.recipes.length) {
-      if (category === all && cuisine === all && text === '' && time === undefined) {
+      if (
+        category === i18next.t(`recipes:all`) &&
+        cuisine === i18next.t(`recipes:all`) &&
+        text === '' &&
+        time === undefined
+      ) {
         return setFilteredRecipes(data?.getRecipes.recipes);
       }
 

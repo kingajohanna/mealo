@@ -1,38 +1,50 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as React from 'react';
-import { Dimensions, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { Header } from '../components/Header';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Tabs } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
+import LottieView from 'lottie-react-native';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { Colors } from '../theme/colors';
 import FastImage from 'react-native-fast-image';
 import i18next from 'i18next';
 import { TextInput } from '../components/TextInput';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const { width } = Dimensions.get('window');
 const gap = 5;
+const refreshingHeight = 130;
 
 export const FolderScreen = () => {
-  const [data] = useAuthQuery(GET_RECIPES);
-  const [searchText, setSearchText] = React.useState('');
-  const [folders, setFolders] = React.useState<string[]>(data?.getRecipes.folders);
+  const [data, refetch] = useAuthQuery(GET_RECIPES);
+  const lottieViewRef = useRef<LottieView>(null);
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [folders, setFolders] = useState<string[]>(data?.getRecipes.folders);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
   useEffect(() => {
     if (data?.getRecipes.folders) {
       setFolders([
+        i18next.t('folders:all'),
         i18next.t('folders:favorites'),
         ...data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
+        ...data?.getRecipes.cuisines.filter((cuisine: string) =>
+          cuisine.toLowerCase().includes(searchText.toLowerCase()),
+        ),
+        ...data?.getRecipes.categories.filter((categories: string) =>
+          categories.toLowerCase().includes(searchText.toLowerCase()),
+        ),
       ]);
     }
-  }, [searchText]);
+  }, [searchText, data]);
 
   const renderImage = (position: number, image: string, lenght?: number) => {
     const getRadius = () => {
@@ -69,10 +81,21 @@ export const FolderScreen = () => {
   };
 
   const renderFolder = (filter: string) => {
-    const recipes =
-      filter === i18next.t('folders:favorites')
-        ? data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.is_favorite)
-        : data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.folders?.includes(filter));
+    let recipes: Recipe[] = [];
+    switch (filter) {
+      case i18next.t('folders:all'):
+        recipes = data?.getRecipes.recipes;
+        break;
+      case i18next.t('folders:favorites'):
+        recipes = data?.getRecipes.recipes.filter((recipe: Recipe) => recipe.is_favorite);
+        break;
+      default:
+        recipes = data?.getRecipes.recipes.filter(
+          (recipe: Recipe) =>
+            recipe.category === filter || recipe.cuisine === filter || recipe.folders?.includes(filter),
+        );
+        break;
+    }
 
     return (
       <Pressable style={styles.gridItem} onPress={() => navigation.navigate(Tabs.RECIPEFOLDER, { filter, recipes })}>
@@ -101,6 +124,35 @@ export const FolderScreen = () => {
     );
   };
 
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 700);
+    });
+    await refetch();
+
+    setIsRefreshing(false);
+  };
+
+  const loadingAnimation = isRefreshing ? (
+    <LottieView
+      style={{
+        height: refreshingHeight,
+        position: 'absolute',
+        top: 10,
+        left: 0,
+        right: 0,
+      }}
+      ref={lottieViewRef}
+      source={require('../assets/anim/loading.json')}
+      loop
+      autoPlay
+    />
+  ) : null;
+
   return (
     <>
       <ScreenBackground>
@@ -111,11 +163,22 @@ export const FolderScreen = () => {
             text={searchText}
             placeholder={i18next.t(`folders:searchPlaceholder`)}
           />
+          {loadingAnimation}
           <FlatList
             data={folders}
             numColumns={2}
             keyExtractor={(item) => item}
             renderItem={({ item }) => renderFolder(item)}
+            refreshControl={
+              <RefreshControl
+                onLayout={(e) => console.log(e.nativeEvent)}
+                tintColor="transparent"
+                colors={['transparent']}
+                style={{ backgroundColor: 'transparent' }}
+                refreshing={isRefreshing}
+                onRefresh={() => onRefresh()}
+              />
+            }
           />
         </View>
       </ScreenBackground>
