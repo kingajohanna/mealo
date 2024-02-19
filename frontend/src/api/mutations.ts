@@ -165,3 +165,11 @@ export const MANAGE_SHARE = gql`
     }
   }
 `;
+
+export const ANALYZE_RECIPE = gql`
+  mutation analyzeRecipe($recipeId: Int!) {
+    analyzeRecipe(recipeId: $recipeId) {
+      ${requiredData}
+    }
+  }
+`;

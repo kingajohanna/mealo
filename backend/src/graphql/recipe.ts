@@ -5,6 +5,7 @@ import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { deleteFile, storeFile } from "../utils/filesave";
+import { getCategory, getCuisine } from "../utils/predictions";
 
 export const recipeType = `
     scalar Upload
@@ -101,6 +102,7 @@ export const recipeType = `
         folderRecipe( recipeId: Int!, folders: [String] ): Recipe
         addMeal( recipeId: Int!, meal: MealInput ): Recipe
         removeMeal( recipeId: Int!, mealId: String ): Recipe
+        analyzeRecipe( recipeId: Int! ): Recipe
     }
 `;
 
@@ -167,7 +169,6 @@ export const recipeMutation = {
       const videoId = url?.match(/[?&]v=([^?&]+)/)![1];
       const requestUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
       const data = (await axios.get(requestUrl)).data.items[0].snippet;
-      console.log(data);
 
       response = {
         data: {
@@ -201,8 +202,6 @@ export const recipeMutation = {
         url,
       });
     }
-
-    console.log(response);
 
     if (response && user) {
       const newRecipe = new Recipe({
@@ -337,5 +336,53 @@ export const recipeMutation = {
       { meals: recipe?.meals },
       { new: true }
     ).lean();
+  },
+
+  analyzeRecipe: async (
+    parent: any,
+    args: { recipeId: number },
+    context: ContextType
+  ) => {
+    const { recipeId } = args;
+
+    let recipe = await Recipe.findOne({ id: recipeId });
+
+    const response = await axios.post(process.env.ML_URL as string, {
+      title: recipe?.title,
+      ingredients: recipe?.ingredients,
+      lang: recipe?.language || "en",
+    });
+
+    if (response.data) {
+      console.log(response.data.category, response.data.cuisine);
+
+      recipe = await Recipe.findOneAndUpdate(
+        { id: recipeId },
+        {
+          category: getCategory(response.data.category),
+          cuisine: getCuisine(response.data.cuisine),
+        },
+        { new: true }
+      ).lean();
+
+      await User.findOneAndUpdate(
+        { id: context.uid },
+        {
+          $push: {
+            "suggestions.category": {
+              id: response.data.category,
+              date: new Date(),
+            },
+            "suggestions.cuisine": {
+              id: response.data.cuisine,
+              date: new Date(),
+            },
+          },
+        },
+        { new: true }
+      ).lean();
+    }
+
+    return recipe;
   },
 };

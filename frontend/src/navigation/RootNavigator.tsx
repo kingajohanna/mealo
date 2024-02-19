@@ -9,7 +9,8 @@ import { Alert, Platform } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 import { observer } from 'mobx-react-lite';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { ADD_RECIPE } from '../api/mutations';
+import { ADD_RECIPE, ANALYZE_RECIPE } from '../api/mutations';
+import { useApolloClient } from '@apollo/client';
 import i18next from 'i18next';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
@@ -18,6 +19,7 @@ export const RootNavigation = observer(() => {
   const { userStore } = useStore();
 
   const [addRecipe] = useAuthMutation(ADD_RECIPE);
+  const [analizeRecipe] = useAuthMutation(ANALYZE_RECIPE);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
 
   useEffect(() => {
@@ -31,8 +33,14 @@ export const RootNavigation = observer(() => {
   const addRecipeWrapper = async (url: string) => {
     userStore.setLoading(true);
 
-    await addRecipe({
+    const recipe_data = await addRecipe({
       variables: { url },
+    });
+
+    console.log(recipe_data.data.addRecipe.id);
+
+    analizeRecipe({
+      variables: { recipeId: recipe_data?.data.addRecipe.id },
     });
 
     await refetch();
