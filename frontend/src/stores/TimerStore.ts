@@ -8,7 +8,7 @@ import moment from 'moment';
 */
 
 export type RecipeTimer = {
-  id: string;
+  id: number;
   endDate: moment.Moment;
   duration: number;
   title: string;
@@ -30,7 +30,7 @@ export default class TimerStore {
     this.timers.push(timer);
   }
 
-  removeTimer(id: string) {
+  removeTimer(id: number) {
     this.timers = this.timers.filter((timer) => timer.id !== id);
   }
 }

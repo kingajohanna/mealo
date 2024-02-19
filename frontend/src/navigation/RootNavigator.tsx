@@ -10,7 +10,6 @@ import RNBootSplash from 'react-native-bootsplash';
 import { observer } from 'mobx-react-lite';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ADD_RECIPE } from '../api/mutations';
-import { useApolloClient } from '@apollo/client';
 import i18next from 'i18next';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
@@ -20,7 +19,6 @@ export const RootNavigation = observer(() => {
 
   const [addRecipe] = useAuthMutation(ADD_RECIPE);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
-  const client = useApolloClient();
 
   useEffect(() => {
     ShareMenu.getInitialShare(handleShare);
@@ -32,7 +30,6 @@ export const RootNavigation = observer(() => {
 
   const addRecipeWrapper = async (url: string) => {
     userStore.setLoading(true);
-    console.log(url);
 
     await addRecipe({
       variables: { url },

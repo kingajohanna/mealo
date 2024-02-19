@@ -1,64 +1,44 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions, Platform, Pressable } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { Colors } from '../theme/colors';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import { CheckableText } from '../components/CheckableText';
-import { List, ToggleButton, TextInput } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { ADD_LIST, EDIT_RECIPE, FAVORITE_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
+import { EDIT_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
-import { Button } from '../components/Button';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
-import i18next from 'i18next';
 import { ShareModal } from '../components/RecipeDetails/ShareModal';
 import { EditModal, EditModalTypes } from '../components/RecipeDetails/EditModal';
 import { FolderModal } from '../components/RecipeDetails/FolderModal';
 import { InfoBubbles } from '../components/RecipeDetails/InfoBubbles';
-import { HeaderMenu } from '../components/RecipeDetails/HeaderMenu';
-import { PDFDocument, PDFImage, StandardFonts } from 'pdf-lib';
-import * as fontkit from '@pdf-lib/fontkit';
-import ReactNativeBlobUtil from 'react-native-blob-util';
-import { fontBase64, pdfBase64 } from '../assets/form';
-import Share from 'react-native-share';
-import { useStore } from '../stores';
-import { TextInput as DescriptionInput } from '../components/TextInput';
-import { set } from 'mobx';
-import { addReminder } from '../nativeModules/ReminderModule';
-
-const { width } = Dimensions.get('window');
+import { RecipeDetailsHeaderMenu } from '../components/RecipeDetails/RecipeDetailsHeaderMenu';
+import { BottomButtonContainer } from '../components/RecipeDetails/BottomButtonContainer';
+import { DescriptionComponent } from '../components/RecipeDetails/DescriptionComponent';
+import { IngredientsComponent } from '../components/RecipeDetails/IngredientsComponent';
+import { InstructionsComponent } from '../components/RecipeDetails/InstructionsComponent';
+import { OtherActionContainer } from '../components/RecipeDetails/OtherActionContainer';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
-  const { userStore } = useStore();
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
   const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
-  const [editFavoriteRecipe, fav_data] = useAuthMutation(FAVORITE_RECIPE);
   const [share] = useAuthMutation(SHARE_RECIPE);
-  const [addToList] = useAuthMutation(ADD_LIST);
 
   const [recipe, setRecipe] = useState(route.params.recipe);
-  const [openIngredients, setOpenIngredients] = useState(true);
-  const [openInstructions, setOpenInstructions] = useState(true);
   const [openMenu, setOpenMenu] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openFolderModal, setOpenFolderModal] = useState(false);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [editModalType, setEditModalType] = useState<EditModalTypes>();
   const [editValue, setEditValue] = useState('');
-  const [yields, setYields] = useState(recipe.yields || '1 serving');
-  const [openEditDescription, setOpenEditDescription] = useState(false);
-  const [description, setDescription] = useState(recipe.description || '');
 
   const initialFolderValues = Object.fromEntries(
     data?.getRecipes.folders
@@ -80,55 +60,8 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   }, [folder_data]);
 
   useEffect(() => {
-    if (fav_data?.favorite_recipe) {
-      setRecipe(fav_data.favoriteRecipe);
-    }
-  }, [fav_data]);
-
-  useEffect(() => {
     setFolderValues(initialFolderValues);
   }, [data.getRecipes.folders]);
-
-  const favHandler = () => {
-    setRecipe({ ...recipe, is_favorite: !recipe.is_favorite });
-    editFavoriteRecipe({
-      variables: { recipeId: recipe.id },
-    });
-  };
-
-  const onOpenEditModal = (type: EditModalTypes | undefined) => {
-    setOpenEditModal(type !== undefined);
-    setEditModalType(type);
-    switch (type) {
-      case EditModalTypes.title:
-        setEditValue(recipe.title || '');
-        break;
-      case EditModalTypes.category:
-        setEditValue(recipe.category || '');
-        break;
-      case EditModalTypes.cuisine:
-        setEditValue(recipe.cuisine || '');
-        break;
-      case EditModalTypes.time:
-        setEditValue(recipe.totalTime || '');
-        break;
-      case EditModalTypes.rating:
-        setEditValue(recipe.ratings || '');
-        break;
-      case EditModalTypes.calories:
-        setEditValue(recipe.calories || '');
-        break;
-      case EditModalTypes.difficulty:
-        setEditValue(recipe.difficulty || '');
-        break;
-      case EditModalTypes.yields:
-        setEditValue(recipe.yields || '');
-        break;
-      default:
-        setEditModalType(undefined);
-        break;
-    }
-  };
 
   const getEditContent = () => {
     switch (editModalType) {
@@ -170,11 +103,6 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     return;
   };
 
-  const setOpenMenuAndEdit = (type: EditModalTypes) => {
-    setOpenMenu(false);
-    onOpenEditModal(type);
-  };
-
   const handleSwitchChange = (folder: string) => {
     setFolderValues((prevValues: any) => ({
       ...prevValues,
@@ -182,133 +110,19 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     }));
   };
 
-  const addToShoppingList = async () => {
-    recipe.ingredients.map(async (ingredient) => {
-      const reminder = await addReminder(ingredient);
-      await addToList({
-        variables: {
-          name: ingredient,
-          amount: '',
-          id: reminder?.id,
-        },
-      });
-    });
-    setOpenMenu(false);
-  };
-
-  const increaseServings = () => {
-    const firstWord = yields.split(' ')[0];
-    if (/^\d+$/.test(firstWord)) {
-      const newServings = parseFloat(firstWord) + 1;
-
-      const ratio = newServings / parseFloat(firstWord);
-
-      setYields(`${newServings} servings`);
-
-      const newIngredients = recipe.ingredients.map((ingredient: string) => {
-        const firstWord = ingredient.split(' ')[0];
-        if (/^\d+(\.\d+)?$/.test(firstWord)) {
-          const newAmount = Math.round(parseFloat(firstWord) * ratio * 100) / 100;
-          return newAmount.toString() + ' ' + ingredient.split(' ')?.slice(1, undefined)?.join(' ');
-        }
-        return ingredient;
-      });
-
-      setRecipe({ ...recipe, ingredients: newIngredients });
-    }
-  };
-
-  const decreaseServings = () => {
-    const firstWord = yields.split(' ')[0];
-    if (/^\d+$/.test(firstWord)) {
-      if (parseFloat(firstWord) === 1) return;
-
-      const newServings = parseFloat(firstWord) - 1;
-
-      const ratio = newServings / parseFloat(firstWord);
-
-      setYields(`${newServings} servings`);
-
-      const newIngredients = recipe.ingredients.map((ingredient: string) => {
-        const firstWord = ingredient.split(' ')[0];
-        if (/^\d+(\.\d+)?$/.test(firstWord)) {
-          const newAmount = Math.round(parseFloat(firstWord) * ratio * 100) / 100;
-
-          return newAmount.toString() + ' ' + ingredient.split(' ')?.slice(1, undefined)?.join(' ');
-        }
-        return ingredient;
-      });
-
-      setRecipe({ ...recipe, ingredients: newIngredients });
-    }
-  };
-
-  const sendPdf = async () => {
-    userStore.setLoading(true);
-    const pdfDoc = await PDFDocument.load(pdfBase64);
-
-    pdfDoc.registerFontkit(fontkit);
-    const custom = await pdfDoc.embedFont(fontBase64);
-
-    const form = pdfDoc.getForm();
-
-    const title = form.getTextField('title');
-    const time = form.getTextField('time');
-    const yields = form.getTextField('yields');
-    const ingredients = form.getTextField('ingredients');
-    const instructions = form.getTextField('instructions');
-    const ingredientsTitle = form.getTextField('ingredientsTitle');
-    const instructionsTitle = form.getTextField('instructionsTitle');
-    const image = form.getButton('image');
-
-    title.setText(recipe.title);
-
-    time.setText(recipe.totalTime || '');
-    yields.setText(recipe.yields || '');
-    ingredientsTitle.setText(i18next.t('recipeDetails:ingredients'));
-
-    instructionsTitle.setText(i18next.t('recipeDetails:instructions'));
-
-    ingredients.setText(recipe.ingredients.map((ingredient) => `- ${ingredient}`).join('\n'));
-    instructions.setText(
-      recipe.instructions.map((instruction: string, index: number) => `  ${index + 1}.   ${instruction}`).join('\n') ||
-        recipe.description,
-    );
-
-    const imgBase64 = (await ReactNativeBlobUtil.fetch('GET', recipe.image)).base64() as string;
-    let pdfImage: PDFImage;
-    if (recipe.image.includes('png')) pdfImage = await pdfDoc.embedJpg(imgBase64);
-    else pdfImage = await pdfDoc.embedJpg(imgBase64);
-    image.setImage(pdfImage);
-
-    form.updateFieldAppearances(custom);
-    form.flatten();
-
-    const uri = await pdfDoc.saveAsBase64({ dataUri: true });
-    console.log(uri);
-    userStore.setLoading(false);
-
-    Share.open({ type: 'application/pdf', url: uri, filename: recipe.title + '.pdf' })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        err && console.log(err);
-      });
-  };
-
   return (
     <ScreenBackground fullscreen>
       <Header
         title={recipe.title}
         rightAction={
-          <HeaderMenu
+          <RecipeDetailsHeaderMenu
             setOpenMenu={setOpenMenu}
             openMenu={openMenu}
-            onOpenEditModal={onOpenEditModal}
-            setOpenMenuAndEdit={setOpenMenuAndEdit}
             setOpenFolderModal={setOpenFolderModal}
-            addToList={addToShoppingList}
+            recipe={recipe}
+            setOpenEditModal={setOpenEditModal}
+            setEditModalType={setEditModalType}
+            setEditValue={setEditValue}
           />
         }
         leftAction={
@@ -328,195 +142,24 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         </View>
 
         <View style={styles.contentContainer}>
-          <InfoBubbles recipe={recipe} setOpenMenuAndEdit={setOpenMenuAndEdit} />
-          <View style={styles.siteDataContainer}>
-            <Pressable style={styles.rowContainer} onPress={async () => await sendPdf()}>
-              <IonIcon name="print" color={Colors.pine} size={28} />
-              <Text style={styles.siteText}>{i18next.t('recipeDetails:print')}</Text>
-            </Pressable>
-            <Pressable style={styles.rowContainer} onPress={() => setOpenShareModal(true)}>
-              <IonIcon
-                name={Platform.OS === 'android' ? 'share-social' : 'share-outline'}
-                color={Colors.pine}
-                size={28}
-              />
-              <Text style={styles.siteText}>{i18next.t('recipeDetails:share')}</Text>
-            </Pressable>
-            <View style={styles.rowContainer}>
-              <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
-              <Text style={styles.siteText}>{recipe.siteName}</Text>
-            </View>
-          </View>
-          <View style={styles.servingContainer}>
-            <ToggleButton.Row onValueChange={() => {}} value={''}>
-              <ToggleButton
-                icon="minus"
-                value="accept"
-                onPress={() => {
-                  decreaseServings();
-                }}
-                iconColor={Colors.salmon}
-                rippleColor={Colors.salmonOp}
-                style={styles.toggleButtonStyle}
-              />
-              <TextInput label={yields} disabled mode="outlined" style={{ backgroundColor: Colors.beige }} />
-              <ToggleButton
-                icon="plus"
-                value="cancel"
-                onPress={() => {
-                  increaseServings();
-                }}
-                iconColor={Colors.salmon}
-                rippleColor={Colors.salmonOp}
-                style={styles.toggleButtonStyle}
-              />
-            </ToggleButton.Row>
-          </View>
+          <InfoBubbles
+            recipe={recipe}
+            setEditModalType={setEditModalType}
+            setEditValue={setEditValue}
+            setOpenEditModal={setOpenEditModal}
+          />
 
-          {recipe.description && (
-            <View style={styles.listBorder}>
-              <List.Accordion
-                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-                style={styles.listAccordion}
-                title={i18next.t('recipeDetails:description')}
-                left={() => <IonIcon name="clipboard-outline" color={Colors.pine} size={24} style={styles.listIcon} />}
-                id="1"
-                right={() => (
-                  <MaterialCommunityIcons
-                    name="lead-pencil"
-                    color={Colors.pine}
-                    size={24}
-                    onPress={() => setOpenEditDescription(true)}
-                  />
-                )}
-                expanded={true}
-                onLongPress={() => setOpenEditDescription(true)}
-                titleStyle={styles.listAccordionTitle}
-              >
-                <View style={styles.instructionContainer}>
-                  {openEditDescription ? (
-                    <>
-                      <DescriptionInput
-                        multiline
-                        scrollEnabled={false}
-                        onChangeText={setDescription}
-                        text={description}
-                        style={{ width: '100%' }}
-                      />
-                      <View style={styles.buttonContainer}>
-                        <Button
-                          titleStyle={{ textAlign: 'center', color: Colors.pine }}
-                          style={styles.cancelButton}
-                          title={i18next.t('recipeDetails:cancel')}
-                          onPress={() => setOpenEditDescription(false)}
-                        />
-                        <Button
-                          titleStyle={{ textAlign: 'center', color: Colors.beige }}
-                          style={styles.saveButton}
-                          title={i18next.t('recipeDetails:save')}
-                          onPress={async () => {
-                            await editRecipe({
-                              variables: { recipeId: recipe.id, body: { description } },
-                            });
-                            refetch();
-                            setOpenEditDescription(false);
-                          }}
-                        />
-                      </View>
-                    </>
-                  ) : (
-                    <Text style={styles.text}>{description}</Text>
-                  )}
-                </View>
-              </List.Accordion>
-            </View>
-          )}
+          <OtherActionContainer recipe={recipe} setRecipe={setRecipe} setOpenShareModal={setOpenShareModal} />
 
-          {recipe.ingredients.length > 0 && (
-            <View style={styles.listBorder}>
-              <List.Accordion
-                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-                style={styles.listAccordion}
-                title={i18next.t('recipeDetails:ingredients')}
-                left={() => (
-                  <MaterialCommunityIcons name="chef-hat" color={Colors.pine} size={24} style={styles.listIcon} />
-                )}
-                id="2"
-                expanded={openIngredients}
-                onPress={() => setOpenIngredients(!openIngredients)}
-                titleStyle={styles.listAccordionTitle}
-              >
-                <View style={styles.ingredientsContainer}>
-                  {recipe.ingredients.map((ingredient: string, index: number) => {
-                    return (
-                      <CheckableText checkedStyle={styles.checkedText} key={'ingredient' + index} style={styles.text}>
-                        <Text style={styles.text}>• </Text>
-                        <Text style={styles.text}>{ingredient}</Text>
-                      </CheckableText>
-                    );
-                  })}
-                </View>
-              </List.Accordion>
-            </View>
-          )}
+          {recipe.description && <DescriptionComponent description={recipe.description} recipeId={recipe.id} />}
 
-          {recipe.instructions.length > 0 && (
-            <View style={styles.listBorder}>
-              <List.Accordion
-                theme={{ colors: { background: 'transparent', text: Colors.pine } }}
-                style={styles.listAccordion}
-                title={i18next.t('recipeDetails:instructions')}
-                left={() => (
-                  <MaterialCommunityIcons name="knife" color={Colors.pine} size={24} style={styles.listIcon} />
-                )}
-                id="3"
-                expanded={openInstructions}
-                onPress={() => setOpenInstructions(!openInstructions)}
-                titleStyle={styles.listAccordionTitle}
-              >
-                <View style={styles.ingredientsContainer}>
-                  {recipe.instructions.map((instruction: string, index: number) => {
-                    return (
-                      <View key={instruction + index} style={{ paddingRight: 8 }}>
-                        <Text style={styles.textMedium}>
-                          {index + 1} {i18next.t('recipeDetails:step')}{' '}
-                        </Text>
-                        <View style={styles.ingredientsListContainer}>
-                          <View style={styles.verticalLine} />
-                          <Text style={styles.text} key={'instruction' + index}>
-                            {instruction}
-                          </Text>
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-              </List.Accordion>
-            </View>
-          )}
+          {recipe.ingredients.length > 0 && <IngredientsComponent ingredients={recipe.ingredients} />}
+
+          {recipe.instructions.length > 0 && <InstructionsComponent instructions={recipe.instructions} />}
         </View>
       </ScrollView>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          icon={<IonIcon name={recipe.is_favorite ? 'heart' : 'heart-outline'} color={Colors.grey} size={32} />}
-          style={[styles.smallButton, { borderColor: Colors.grey }]}
-          onPress={favHandler}
-        />
-        {recipe.video && (
-          <Button
-            icon={<IonIcon name="play" color={Colors.pine} size={32} />}
-            style={[styles.smallButton, { borderColor: Colors.pine }]}
-            onPress={() => navigation.navigate(Tabs.VIDEO, { recipe })}
-          />
-        )}
-        <Button
-          title={i18next.t('recipeDetails:startCooking')}
-          titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
-          style={[styles.cookButton, { width: recipe.video ? width - 54 - 54 - 60 : width - 54 - 60 }]}
-          onPress={() => navigation.navigate(Tabs.COOKINGMODE, { recipe })}
-        />
-      </View>
+      <BottomButtonContainer recipe={recipe} setRecipe={setRecipe} navigation={navigation} route={route} />
 
       <FolderModal
         isOpen={openFolderModal}
@@ -578,37 +221,13 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  rowContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
   title: {
     fontSize: 18,
     lineHeight: 56,
     color: Colors.pine,
     paddingLeft: 15,
   },
-  textMedium: {
-    fontSize: 18,
-    lineHeight: 24,
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 22,
-    paddingLeft: 20,
-    color: Colors.textDark,
-    width: '100%',
-  },
-  checkedText: {
-    textDecorationLine: 'line-through',
-    textDecorationStyle: 'solid',
-  },
+
   imageOverlay: {
     position: 'absolute',
     top: 0,
@@ -617,22 +236,6 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: 'black',
     opacity: 0.3,
-  },
-  ingredientsListContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 8,
-  },
-  listBorder: {
-    borderWidth: 2,
-    borderRadius: 15,
-    paddingBottom: 5,
-    marginTop: 10,
-    borderColor: Colors.grey,
-  },
-  listIcon: {
-    paddingLeft: 12,
-    paddingTop: 4,
   },
   textOverlay: {
     position: 'absolute',
@@ -656,62 +259,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 18,
   },
-  servingContainer: {
-    alignSelf: 'center',
-  },
-  toggleButtonStyle: {
-    height: 50,
-    marginTop: 6,
-    marginLeft: -1,
-    backgroundColor: Colors.salmonOp,
-  },
-  ingredientsContainer: {
-    backgroundColor: Colors.beige,
-    borderRadius: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingStart: 16,
-    borderTopWidth: 2,
-    borderTopStartRadius: 0,
-    borderTopEndRadius: 0,
-    borderTopColor: Colors.grey,
-  },
+
   scrollView: {
     width: '100%',
   },
-  cookButton: {
-    borderWidth: 2,
-    backgroundColor: Colors.pine,
-    borderColor: Colors.pine,
-  },
-  saveButton: {
-    borderWidth: 2,
-    width: 100,
-    backgroundColor: Colors.pine,
-    borderColor: Colors.pine,
-  },
-  cancelButton: {
-    borderWidth: 2,
-    width: 100,
-    borderColor: Colors.pine,
-    marginRight: 16,
-  },
-  siteDataContainer: {
-    paddingLeft: 12,
-    paddingTop: 24,
-  },
-  siteText: {
-    paddingLeft: 12,
-    fontSize: 16,
-    color: Colors.pine,
-  },
-  smallButton: {
-    borderWidth: 2,
-    width: 54,
-    paddingHorizontal: 0,
-    justifyContent: 'center',
-    marginRight: 8,
-  },
+
   contentContainer: {
     backgroundColor: Colors.beige,
     marginTop: -50,
@@ -719,27 +271,5 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-  },
-  listAccordion: {
-    backgroundColor: 'transparent',
-  },
-  listAccordionTitle: {
-    color: Colors.pine,
-    fontSize: 18,
-    alignItems: 'center',
-  },
-  instructionContainer: {
-    backgroundColor: Colors.beige,
-    borderRadius: 10,
-    padding: 10,
-    paddingLeft: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  verticalLine: {
-    height: '95%',
-    width: 3,
-    backgroundColor: Colors.grey,
   },
 });
