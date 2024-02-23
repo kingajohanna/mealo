@@ -41,6 +41,8 @@ export default function App() {
         await auth()
           .currentUser?.getIdToken()
           .then((token) => {
+            console.log(token);
+
             success({
               headers: {
                 'Apollo-Require-Preflight': 'true',

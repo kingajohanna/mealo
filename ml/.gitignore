@@ -1,3 +1,4 @@
 venv/
 models/category/model.safetensors
 models/cuisine/model.safetensors
+models/dish/model.safetensors

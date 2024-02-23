@@ -72,3 +72,27 @@ export const GET_RECIPE = gql`
     }
   }
 `;
+
+export const GET_SUGGESTIONS = gql`
+  query GetSuggestions {
+    getSuggestions {
+      recipes {
+        id
+        title
+        category
+        speed
+        totalTime
+        yields
+        image
+        ingredients
+        instructions
+        cuisine
+        is_favorite
+        description
+        folders
+        video
+        siteName
+      }
+    }
+  }
+`;

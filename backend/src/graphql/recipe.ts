@@ -5,7 +5,12 @@ import { hashCode } from "../utils/hash";
 import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { deleteFile, storeFile } from "../utils/filesave";
-import { getCategory, getCuisine } from "../utils/predictions";
+import { getCategory, getCuisine, getDish } from "../utils/predictions";
+import { IRecipeList, RecipeList } from "../models/RecipeList";
+
+type Recipes = {
+  [key: number]: IRecipeList[];
+};
 
 export const recipeType = `
     scalar Upload
@@ -88,9 +93,20 @@ export const recipeType = `
       folders: [String]
     }
 
+    type Predict {
+      key: Int
+      recipes: [Recipe]
+    }
+
+    type RecipeListResponse {
+      cuisine: [Predict]
+      dish: [Predict]
+    }
+
     type Query {
         getRecipes: Recipes
         getRecipe(recipeId: Int!): Recipe
+        getSuggestions: RecipeListResponse
     }
 
     type Mutation {
@@ -143,6 +159,86 @@ export const recipeQuery = {
     const { recipeId } = args;
 
     return await Recipe.findOne({ id: recipeId }).lean();
+  },
+  getSuggestions: async (parent: any, args: any, context: ContextType) => {
+    const { uid } = context;
+
+    const PREDICT = 5;
+
+    const user = await User.findOne({ id: uid }).lean();
+
+    if (user) {
+      const sortedCuisine = user.suggestions.cuisine.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      const sortedCategory = user.suggestions.category.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      const sortedDish = user.suggestions.dish.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      const cuisine = sortedCuisine.slice(0, PREDICT).map((s) => s.id);
+      const category = sortedCategory.slice(0, PREDICT).map((s) => s.id);
+      const dish = sortedDish.slice(0, PREDICT).map((s) => s.id);
+
+      type PredictType = {
+        key: number;
+        recipes: any[];
+      };
+
+      let cuisineArray: PredictType[] = [];
+      let dishArray: PredictType[] = [];
+      await Promise.all(
+        cuisine.map(async (c) => {
+          const r = await RecipeList.find(
+            { "predict.cuisine": c, "predict.category": { $in: category } },
+            null,
+            {
+              limit: 10,
+            }
+          ).lean();
+
+          const existingEntryIndex = cuisineArray.findIndex(
+            (entry) => entry.key === c
+          );
+
+          if (existingEntryIndex !== -1) {
+            cuisineArray[existingEntryIndex].recipes.push(...r);
+          } else {
+            const entry: PredictType = { key: c, recipes: r };
+            cuisineArray.push(entry);
+          }
+        })
+      );
+
+      await Promise.all(
+        dish.map(async (d) => {
+          const r = await RecipeList.find(
+            {
+              "predict.dish": dish,
+              "predict.category": { $in: category },
+            },
+            null,
+            { limit: 1 }
+          ).lean();
+          const existingEntryIndex = dishArray.findIndex(
+            (entry) => entry.key === d
+          );
+
+          if (existingEntryIndex !== -1) {
+            dishArray[existingEntryIndex].recipes.push(...r);
+          } else {
+            const entry: PredictType = { key: d, recipes: r };
+            dishArray.push(entry);
+          }
+        })
+      );
+
+      console.log(dishArray);
+
+      return { cuisine: cuisineArray, dish: dishArray };
+    }
   },
 };
 
@@ -354,13 +450,15 @@ export const recipeMutation = {
     });
 
     if (response.data) {
-      console.log(response.data.category, response.data.cuisine);
+      console.log(response.data);
 
       recipe = await Recipe.findOneAndUpdate(
         { id: recipeId },
         {
           category: getCategory(response.data.category),
           cuisine: getCuisine(response.data.cuisine),
+          dish: getDish(response.data.dish),
+          predictions: response.data,
         },
         { new: true }
       ).lean();
@@ -371,11 +469,15 @@ export const recipeMutation = {
           $push: {
             "suggestions.category": {
               id: response.data.category,
-              date: new Date(),
+              date: new Date().toISOString(),
             },
             "suggestions.cuisine": {
               id: response.data.cuisine,
-              date: new Date(),
+              date: new Date().toISOString(),
+            },
+            "suggestions.dish": {
+              id: response.data.dish,
+              date: new Date().toISOString(),
             },
           },
         },

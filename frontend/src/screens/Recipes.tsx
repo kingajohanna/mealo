@@ -12,7 +12,7 @@ import { SearchModal } from '../components/SearchModal';
 import { Colors } from '../theme/colors';
 import { Header } from '../components/Header';
 import { RecipeList } from '../components/RecipeList';
-import { GET_RECIPES } from '../api/queries';
+import { GET_RECIPES, GET_SUGGESTIONS } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import i18next from 'i18next';
@@ -28,6 +28,7 @@ export const all = i18next.t(`recipes:all`);
 
 export const Recipes = () => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
+  const [suggestions, refetchS] = useAuthQuery(GET_SUGGESTIONS);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
   const isFocused = useIsFocused();
@@ -39,6 +40,10 @@ export const Recipes = () => {
   const [time, setTime] = useState<Time | undefined>(undefined);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  useEffect(() => {
+    console.log(suggestions?.getSuggestions?.recipes);
+  }, [suggestions]);
 
   useEffect(() => {
     if (isFocused) {

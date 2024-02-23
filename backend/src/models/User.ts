@@ -6,7 +6,7 @@ interface Share {
   id: string;
 }
 
-interface Suggestion {
+export interface Suggestion {
   id: number;
   date: string;
 }
@@ -14,7 +14,11 @@ export interface IUser {
   id: any;
   email: string;
   share: Share[];
-  suggestions: { cuisine: Suggestion[]; category: Suggestion[] };
+  suggestions: {
+    cuisine: Suggestion[];
+    category: Suggestion[];
+    dish: Suggestion[];
+  };
 }
 
 const userSchema = new mongoose.Schema({
