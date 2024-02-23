@@ -1,47 +1,8 @@
-import { Recipe } from "../models/Recipe";
-import { User } from "../models/User";
-import { hashCode } from "../utils/hash";
-import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
-
-export const userType = `
-  type Share {
-    recipe: Int
-    from: String
-    id: String
-  }
-
-  type User {
-    id: String
-    email: String
-    share: [Share]
-  }
-
-  type Query {
-    getUser: User
-  }
-
-  type Mutation {
-    addUser: User
-    deleteUser: User
-    shareRecipe(recipeId: Int!, email: String!): Share
-    manageShare(shareId: String!, id: Int!, accept: Boolean!): User
-  }
-`;
-
-// A map of functions which return data for the schema.
-export const userQuery = {
-  getUser: async (parent: any, args: any, context: ContextType) => {
-    try {
-      const { uid } = context;
-
-      return await User.findOne({ id: uid }).lean();
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      throw new Error("Failed to fetch user");
-    }
-  },
-};
+import { Recipe } from "../../models/Recipe";
+import { User } from "../../models/User";
+import { hashCode } from "../../utils/hash";
+import { ContextType } from "../types";
 
 export const userMutation = {
   addUser: async (parent: any, args: any, context: ContextType) => {

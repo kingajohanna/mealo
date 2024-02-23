@@ -1,3 +1,5 @@
+import { RecipeList } from "../models/RecipeList";
+
 export const getCategory = (code: number) => {
   switch (code) {
     case 0:
@@ -169,4 +171,45 @@ export const getDish = (code: number) => {
     default:
       return "Unknown";
   }
+};
+
+type PredictType = {
+  key: number;
+  recipes: any[];
+};
+
+export const sortByDateDesc = (arr: any[]) =>
+  arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+export const fetchAndMergeRecipeSuggestions = async (
+  ids: number[],
+  type: string,
+  category: number[],
+  limit: number = 10
+): Promise<PredictType[]> => {
+  const result: PredictType[] = [];
+
+  await Promise.all(
+    ids.map(async (id) => {
+      const r = await RecipeList.aggregate([
+        {
+          $match: {
+            [`predict.${type}`]: id,
+            "predict.category": { $in: category },
+          },
+        },
+        { $sample: { size: 10 } },
+      ]).exec();
+
+      const existingEntryIndex = result.findIndex((entry) => entry.key === id);
+
+      if (existingEntryIndex !== -1) {
+        result[existingEntryIndex].recipes.push(...r);
+      } else {
+        result.push({ key: id, recipes: r });
+      }
+    })
+  );
+
+  return result;
 };
