@@ -56,6 +56,7 @@ export const recipeMutation = {
           siteName: "Youtube",
           calories: null,
           difficulty: null,
+          added: new Date().toISOString(),
         },
       };
     } else {
@@ -68,12 +69,33 @@ export const recipeMutation = {
       const newRecipe = new Recipe({
         id: recipeId,
         uid: uid,
+        added: new Date().toISOString(),
         ...response.data,
       });
       await newRecipe.save();
 
       return newRecipe;
     }
+  },
+  saveRecipe: async (
+    parent: any,
+    args: { recipe: any },
+    context: ContextType
+  ) => {
+    const { recipe } = args;
+    const { uid } = context;
+
+    const recipeId = hashCode(recipe.canonical_url + uid);
+
+    const newRecipe = new Recipe({
+      id: recipeId,
+      uid: uid,
+      added: new Date().toISOString(),
+      ...recipe,
+    });
+    await newRecipe.save();
+
+    return newRecipe;
   },
   addOcrRecipe: async (
     parent: any,

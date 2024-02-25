@@ -211,5 +211,9 @@ export const fetchAndMergeRecipeSuggestions = async (
     })
   );
 
+  result.map((entry) => {
+    entry.recipes = [...new Set(entry.recipes)];
+  });
+
   return result;
 };

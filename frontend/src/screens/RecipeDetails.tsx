@@ -1,6 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { ScreenBackground } from '../components/Background';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -9,7 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
 import { Tabs } from '../navigation/tabs';
-import { EDIT_RECIPE, FOLDER_RECIPE, SHARE_RECIPE } from '../api/mutations';
+import { EDIT_RECIPE, FOLDER_RECIPE, SAVE_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPES } from '../api/queries';
@@ -23,12 +24,15 @@ import { DescriptionComponent } from '../components/RecipeDetails/DescriptionCom
 import { IngredientsComponent } from '../components/RecipeDetails/IngredientsComponent';
 import { InstructionsComponent } from '../components/RecipeDetails/InstructionsComponent';
 import { OtherActionContainer } from '../components/RecipeDetails/OtherActionContainer';
+import { Recipe } from '../types/recipe';
+import { removeFields } from '../utils/removeFields';
 
 type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const [editRecipe, edit_data] = useAuthMutation(EDIT_RECIPE);
+  const [saveRecipe, save_data] = useAuthMutation(SAVE_RECIPE);
   const [editFolders, folder_data] = useAuthMutation(FOLDER_RECIPE);
   const [share] = useAuthMutation(SHARE_RECIPE);
 
@@ -62,6 +66,12 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   useEffect(() => {
     setFolderValues(initialFolderValues);
   }, [data.getRecipes.folders]);
+
+  useEffect(() => {
+    const r = data?.getRecipes?.recipes?.find((r: Recipe) => r?.canonical_url === recipe?.canonical_url);
+
+    if (r) setRecipe(r);
+  }, [data?.getRecipes]);
 
   const getEditContent = () => {
     switch (editModalType) {
@@ -110,20 +120,38 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
     }));
   };
 
+  const onSaveRecipe = async () => {
+    const unnecessaryFields = ['__typename', '_id', 'id'];
+
+    removeFields(recipe, unnecessaryFields);
+
+    const addedRecipe = await saveRecipe({
+      variables: {
+        recipe: recipe,
+      },
+    });
+    refetch();
+    setRecipe(addedRecipe?.data?.saveRecipe);
+  };
+
   return (
     <ScreenBackground fullscreen>
       <Header
         title={recipe.title}
         rightAction={
-          <RecipeDetailsHeaderMenu
-            setOpenMenu={setOpenMenu}
-            openMenu={openMenu}
-            setOpenFolderModal={setOpenFolderModal}
-            recipe={recipe}
-            setOpenEditModal={setOpenEditModal}
-            setEditModalType={setEditModalType}
-            setEditValue={setEditValue}
-          />
+          recipe.id ? (
+            <RecipeDetailsHeaderMenu
+              setOpenMenu={setOpenMenu}
+              openMenu={openMenu}
+              setOpenFolderModal={setOpenFolderModal}
+              recipe={recipe}
+              setOpenEditModal={setOpenEditModal}
+              setEditModalType={setEditModalType}
+              setEditValue={setEditValue}
+            />
+          ) : (
+            <IonIcon name="add-outline" size={48} color={Colors.salmon} onPress={onSaveRecipe} />
+          )
         }
         leftAction={
           <SimpleLineIcons name="arrow-left" size={25} color={Colors.beige} onPress={() => navigation.goBack()} />

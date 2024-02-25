@@ -12,7 +12,7 @@ import { EDIT_RECIPE } from '../../api/mutations';
 import { TextInput } from '../TextInput';
 
 type Props = {
-  recipeId: number;
+  recipeId: string;
   description: string;
 };
 

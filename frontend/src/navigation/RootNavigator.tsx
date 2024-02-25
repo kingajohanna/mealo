@@ -37,8 +37,6 @@ export const RootNavigation = observer(() => {
       variables: { url },
     });
 
-    console.log(recipe_data.data.addRecipe.id);
-
     analizeRecipe({
       variables: { recipeId: recipe_data?.data.addRecipe.id },
     });

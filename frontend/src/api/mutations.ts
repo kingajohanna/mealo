@@ -35,6 +35,14 @@ export const ADD_RECIPE = gql`
   }
 `;
 
+export const SAVE_RECIPE = gql`
+mutation SaveRecipe($recipe: RecipeInput!) {
+  saveRecipe(recipe: $recipe) {
+    ${requiredData}
+  }
+}
+`;
+
 export const DELETE_RECIPE = gql`
   mutation DeleteRecipe($recipeId: Int!) {
     deleteRecipe(recipeId: $recipeId) {

@@ -1,4 +1,5 @@
 export enum Tabs {
+  SUGGESTIONS = 'Suggestions',
   RECIPES = 'Recipes',
   SHOPPINGLIST = 'List',
   SETTINGS = 'Settings',

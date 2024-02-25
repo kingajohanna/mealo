@@ -42,6 +42,7 @@ export const recipeType = `
     }
 
     type Recipe {
+        _id: String
         id: Int
         uid: String
         host: String
@@ -97,6 +98,7 @@ export const recipeType = `
 
     type Mutation {
         addRecipe( url: String!): Recipe
+        saveRecipe( recipe: RecipeInput! ): Recipe
         addOcrRecipe( recipe: RecipeInput, image: Upload ): Recipe
         editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
         deleteRecipe( recipeId: Int! ): Recipe

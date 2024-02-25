@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Tabs } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
-import { RecipeList } from '../components/RecipeList';
+import { RecipeList } from '../components/Recipes/RecipeList';
 import { Colors } from '../theme/colors';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { SearchModal } from '../components/SearchModal';

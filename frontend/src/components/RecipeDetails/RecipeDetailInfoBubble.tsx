@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, Image, Platform, Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native';
-import { Colors } from '../theme/colors';
+import { Colors } from '../../theme/colors';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 
@@ -29,7 +29,7 @@ export const RecipeDetailInfoBubble: React.FC<RecipeDetailInfoBubbleProps> = (pr
         return (
           <Image
             style={{ width: 28, height: 28, tintColor: Colors.salmon }}
-            source={require('../assets/images/yields.png')}
+            source={require('../../assets/images/yields.png')}
           />
         );
       case RecipeDetailInfoBubbleType.DIFFICULTY:

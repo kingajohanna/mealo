@@ -10,7 +10,6 @@ export const listQuery = {
       list?.list?.sort((x, y) =>
         x.completed === y.completed ? 0 : x.completed ? 1 : -1
       ) ?? [];
-    console.log("temp", temp);
     list!.list = temp;
     return list;
   },
