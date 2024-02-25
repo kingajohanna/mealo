@@ -205,15 +205,14 @@ export const fetchAndMergeRecipeSuggestions = async (
 
       if (existingEntryIndex !== -1) {
         result[existingEntryIndex].recipes.push(...r);
+        result[existingEntryIndex].recipes = [
+          ...new Set(result[existingEntryIndex].recipes),
+        ];
       } else {
         result.push({ key: id, recipes: r });
       }
     })
   );
-
-  result.map((entry) => {
-    entry.recipes = [...new Set(entry.recipes)];
-  });
 
   return result;
 };

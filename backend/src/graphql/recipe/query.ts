@@ -80,7 +80,14 @@ export const recipeQuery = {
         categoryIds
       );
 
-      return { cuisine: cuisineArray, dish: dishArray };
+      return {
+        cuisine: cuisineArray.sort(
+          (a: any, b: any) => b.recipes.length - a.recipes.length
+        ),
+        dish: dishArray.sort(
+          (a: any, b: any) => b.recipes.length - a.recipes.length
+        ),
+      };
     }
   },
 };
