@@ -10,6 +10,7 @@ import LottieView from 'lottie-react-native';
 import { Modal, Portal } from 'react-native-paper';
 import { AddRecipeProps } from '../AddRecipe';
 import { BottomButtons } from '../../components/BottomButtons';
+import { BING } from '@env';
 
 export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
 
       console.log(result.text);
 
-      const response = await fetch('http://localhost:3002/send-message', {
+      const response = await fetch(`${BING}send-message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

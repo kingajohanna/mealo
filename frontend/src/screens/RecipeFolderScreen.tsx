@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Tabs } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
-import { RecipeList } from '../components/RecipeList';
+import { RecipeList } from '../components/Recipes/RecipeList';
 import { Colors } from '../theme/colors';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { SearchModal } from '../components/SearchModal';
@@ -39,50 +39,52 @@ export const RecipeFolderScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if (route.params.recipes.length) {
-      if (
-        category === i18next.t(`recipes:all`) &&
-        cuisine === i18next.t(`recipes:all`) &&
-        text === '' &&
-        time === undefined
-      ) {
-        return setFilteredRecipes(route.params.recipes);
-      }
-
-      const keys: string[] = [];
-      const values: string[] = [];
-
-      if (category !== all) {
-        keys.push('category');
-        values.push(category);
-      }
-
-      if (cuisine !== all) {
-        keys.push('cuisine');
-        values.push(cuisine);
-      }
-
-      if (text) {
-        keys.push('title');
-        values.push(text);
-      }
-
-      if (time) {
-        keys.push('speed');
-        values.push(time);
-      }
-
-      const filter = (recipe: Recipe) => {
-        return keys.every((key, i) => {
-          const value = recipe[key];
-          return typeof value === 'string' && value.toLowerCase().includes(values[i].toLowerCase());
-        });
-      };
-
-      const filteredRecipes = route.params.recipes.filter(filter);
-
-      return setFilteredRecipes(filteredRecipes);
+    if (route.params.recipes.length === 0) {
+      return;
     }
+
+    if (
+      category === i18next.t(`recipes:all`) &&
+      cuisine === i18next.t(`recipes:all`) &&
+      text === '' &&
+      time === undefined
+    ) {
+      return setFilteredRecipes(route.params.recipes);
+    }
+
+    const keys: string[] = [];
+    const values: string[] = [];
+
+    if (category !== all) {
+      keys.push('category');
+      values.push(category);
+    }
+
+    if (cuisine !== all) {
+      keys.push('cuisine');
+      values.push(cuisine);
+    }
+
+    if (text) {
+      keys.push('title');
+      values.push(text);
+    }
+
+    if (time) {
+      keys.push('speed');
+      values.push(time);
+    }
+
+    const filter = (recipe: Recipe) => {
+      return keys.every((key, i) => {
+        const value = recipe[key];
+        return typeof value === 'string' && value.toLowerCase().includes(values[i].toLowerCase());
+      });
+    };
+
+    const filteredRecipes = route.params.recipes.filter(filter);
+
+    return setFilteredRecipes(filteredRecipes);
   }, [text, category, cuisine, time, route.params.recipes]);
 
   const renderBack = (

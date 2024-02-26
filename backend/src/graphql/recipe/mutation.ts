@@ -1,148 +1,17 @@
 import axios from "axios";
-import { Recipe } from "../models/Recipe";
-import { User } from "../models/User";
-import { hashCode } from "../utils/hash";
-import { ContextType } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { deleteFile, storeFile } from "../utils/filesave";
-
-export const recipeType = `
-    scalar Upload
-
-    input MealInput {
-      meal: String
-      day: String
-    }
-
-    input RecipeInput {
-        host: String
-        canonical_url: String
-        title: String
-        category: String
-        speed: String
-        totalTime: String
-        cookTime: String
-        prepTime: String
-        yields: String
-        image: String
-        nutrients: [String]
-        language: String
-        ingredients: [String]
-        instructions: [String]
-        ratings: String
-        author: String
-        cuisine: String
-        description: String
-        reviews: [String]
-        siteName: String
-        is_favorite: Boolean
-        calories: String
-        difficulty: String
-        folders: [String]
-        meals: [MealInput]
-        video: String
-    }
-
-    type Meal {
-      meal: String
-      day: String
-      id: String
-    }
-
-    type Recipe {
-        id: Int
-        uid: String
-        host: String
-        canonical_url: String
-        title: String
-        category: String
-        speed: String
-        totalTime: String
-        cookTime: String
-        prepTime: String
-        yields: String
-        image: String
-        nutrients: String
-        language: String
-        ingredients: [String]
-        instructions: [String]
-        ratings: String
-        author: String
-        cuisine: String
-        description: String
-        reviews: [String]
-        siteName: String
-        is_favorite: Boolean
-        calories: String
-        difficulty: String
-        folders: [String]
-        meals: [Meal]
-        video: String
-    }
-
-    type Recipes {
-      recipes: [Recipe]
-      categories: [String]
-      cuisines: [String]
-      folders: [String]
-    }
-
-    type Query {
-        getRecipes: Recipes
-        getRecipe(recipeId: Int!): Recipe
-    }
-
-    type Mutation {
-        addRecipe( url: String!): Recipe
-        addOcrRecipe( recipe: RecipeInput, image: Upload ): Recipe
-        editRecipe( recipeId: Int!, body: RecipeInput! ): Recipe
-        deleteRecipe( recipeId: Int! ): Recipe
-        favoriteRecipe( recipeId: Int! ): Recipe
-        folderRecipe( recipeId: Int!, folders: [String] ): Recipe
-        addMeal( recipeId: Int!, meal: MealInput ): Recipe
-        removeMeal( recipeId: Int!, mealId: String ): Recipe
-    }
-`;
-
-export const recipeQuery = {
-  getRecipes: async (parent: any, args: any, context: ContextType) => {
-    const { uid } = context;
-
-    const recipes = await Recipe.find({ uid }).lean();
-
-    const categories: string[] = [];
-    const cuisines: string[] = [];
-    const folders: string[] = [];
-
-    recipes?.forEach((recipe: any) => {
-      if (recipe.category && !categories.includes(recipe.category)) {
-        categories.push(recipe.category);
-      }
-      if (recipe.cuisine && !cuisines.includes(recipe.cuisine)) {
-        cuisines.push(recipe.cuisine);
-      }
-      if (recipe.folders) {
-        recipe.folders.forEach((folder: string) => {
-          if (!folders.includes(folder)) {
-            folders.push(folder);
-          }
-        });
-      }
-    });
-    folders.sort();
-
-    return { recipes, categories, cuisines, folders };
-  },
-  getRecipe: async (
-    parent: any,
-    args: { recipeId: number },
-    context: ContextType
-  ) => {
-    const { recipeId } = args;
-
-    return await Recipe.findOne({ id: recipeId }).lean();
-  },
-};
+import { Recipe } from "../../models/Recipe";
+import { User } from "../../models/User";
+import { hashCode } from "../../utils/hash";
+import { ContextType } from "../types";
+import { deleteFile, storeFile } from "../../utils/filesave";
+import {
+  getCategory,
+  getCuisine,
+  getDish,
+  getSearchResults,
+} from "../../utils/predictions";
+import { RecipeList } from "../../models/RecipeList";
 
 export const recipeMutation = {
   addRecipe: async (
@@ -167,7 +36,6 @@ export const recipeMutation = {
       const videoId = url?.match(/[?&]v=([^?&]+)/)![1];
       const requestUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
       const data = (await axios.get(requestUrl)).data.items[0].snippet;
-      console.log(data);
 
       response = {
         data: {
@@ -194,6 +62,7 @@ export const recipeMutation = {
           siteName: "Youtube",
           calories: null,
           difficulty: null,
+          added: new Date().toISOString(),
         },
       };
     } else {
@@ -202,18 +71,41 @@ export const recipeMutation = {
       });
     }
 
-    console.log(response);
-
     if (response && user) {
       const newRecipe = new Recipe({
         id: recipeId,
         uid: uid,
+        added: new Date().toISOString(),
         ...response.data,
       });
       await newRecipe.save();
 
+      new RecipeList({
+        ...response.data,
+      }).save();
+
       return newRecipe;
     }
+  },
+  saveRecipe: async (
+    parent: any,
+    args: { recipe: any },
+    context: ContextType
+  ) => {
+    const { recipe } = args;
+    const { uid } = context;
+
+    const recipeId = hashCode(recipe.canonical_url + uid);
+
+    const newRecipe = new Recipe({
+      id: recipeId,
+      uid: uid,
+      added: new Date().toISOString(),
+      ...recipe,
+    });
+    await newRecipe.save();
+
+    return newRecipe;
   },
   addOcrRecipe: async (
     parent: any,
@@ -337,5 +229,73 @@ export const recipeMutation = {
       { meals: recipe?.meals },
       { new: true }
     ).lean();
+  },
+
+  analyzeRecipe: async (
+    parent: any,
+    args: { recipeId: number },
+    context: ContextType
+  ) => {
+    const { recipeId } = args;
+
+    let recipe = await Recipe.findOne({ id: recipeId });
+
+    const response = await axios.post(process.env.ML_URL as string, {
+      title: recipe?.title,
+      ingredients: recipe?.ingredients,
+      lang: recipe?.language || "en",
+    });
+
+    if (response.data) {
+      console.log(response.data);
+
+      recipe = await Recipe.findOneAndUpdate(
+        { id: recipeId },
+        {
+          category: getCategory(response.data.category),
+          cuisine: getCuisine(response.data.cuisine),
+          dish: getDish(response.data.dish),
+          predictions: response.data,
+        },
+        { new: true }
+      ).lean();
+
+      await User.findOneAndUpdate(
+        { id: context.uid },
+        {
+          $push: {
+            "suggestions.category": {
+              id: response.data.category,
+              date: new Date().toISOString(),
+            },
+            "suggestions.cuisine": {
+              id: response.data.cuisine,
+              date: new Date().toISOString(),
+            },
+            "suggestions.dish": {
+              id: response.data.dish,
+              date: new Date().toISOString(),
+            },
+          },
+        },
+        { new: true }
+      ).lean();
+    }
+
+    return recipe;
+  },
+  getSearchResults: async (
+    parent: any,
+    args: {
+      cuisine: number[];
+      category: number[];
+      dish: number[];
+      title: string;
+    },
+    context: ContextType
+  ) => {
+    const { category, dish, cuisine, title } = args;
+
+    return await getSearchResults(category, dish, cuisine, title);
   },
 };

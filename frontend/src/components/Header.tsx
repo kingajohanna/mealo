@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
       <Text adjustsFontSizeToFit={true} numberOfLines={2} style={styles.text}>
         {props.title}
       </Text>
-      <View style={{ width: 30, alignItems: 'center', justifyContent: 'center' }}>{props.rightAction}</View>
+      <View style={{ minWidth: 30, alignItems: 'center', justifyContent: 'center' }}>{props.rightAction}</View>
     </View>
   );
 };

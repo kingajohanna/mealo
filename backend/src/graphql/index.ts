@@ -1,8 +1,7 @@
-import { userType, userQuery, userMutation } from "./users";
-import { recipeType, recipeQuery, recipeMutation } from "./recipe";
-import { listType, listQuery, listMutation } from "./list";
-
 import { GraphQLUpload } from "graphql-upload-minimal";
+import { listMutation, listQuery, listType } from "./list";
+import { userMutation, userQuery, userType } from "./user";
+import { recipeMutation, recipeQuery, recipeType } from "./recipe";
 
 export const typeDefs = `#graphql
   ${userType}

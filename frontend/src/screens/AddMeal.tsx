@@ -90,7 +90,7 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
           style={styles.image}
           source={{
             uri: recipe.image,
-            priority: FastImage.priority.normal,
+            priority: FastImage.priority.high,
           }}
         >
           <View style={styles.overlay} />
@@ -122,12 +122,13 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   background: {
     width: '100%',
-    height: 180,
+    height: 160,
     alignSelf: 'center',
-    padding: 8,
+    margin: 8,
   },
   image: {
     flex: 1,
+    height: 160,
     justifyContent: 'center',
     borderRadius: 15,
   },

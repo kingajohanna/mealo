@@ -1,16 +1,16 @@
 import React, { memo, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable, Animated, Alert } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Colors } from '../theme/colors';
-import { Recipe } from '../types/recipe';
-import { GET_RECIPES } from '../api/queries';
-import { useAuthMutation } from '../hooks/useAuthMutation';
-import { useAuthQuery } from '../hooks/useAuthQuery';
-import { DELETE_RECIPE, FAVORITE_RECIPE } from '../api/mutations';
+import { Colors } from '../../theme/colors';
+import { Recipe } from '../../types/recipe';
+import { GET_RECIPES } from '../../api/queries';
+import { useAuthMutation } from '../../hooks/useAuthMutation';
+import { useAuthQuery } from '../../hooks/useAuthQuery';
+import { DELETE_RECIPE, FAVORITE_RECIPE } from '../../api/mutations';
 import i18next from 'i18next';
+import { RecipeListComponentMemorized } from './RecipeListComponent';
 
 type ScreenBackgroundProps = {
   recipe: Recipe;
@@ -90,29 +90,12 @@ const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ recipe, onP
 
   return (
     <Swipeable renderRightActions={renderRightActions} ref={swipeableRef}>
-      <Pressable style={styles.background} onPress={onPress}>
-        <FastImage
-          style={styles.image}
-          source={{
-            uri: recipe.image,
-            priority: FastImage.priority.normal,
-          }}
-        >
-          <View style={styles.overlay} />
-          <View style={styles.infoContainer}>
-            <Text style={styles.title}>{recipe.title}</Text>
-            {recipe.yields && <Text style={styles.text}>{recipe.yields}</Text>}
-            {recipe.totalTime && <Text style={styles.text}>{recipe.totalTime} min</Text>}
-            {recipe.category && <Text style={styles.text}>{recipe.category}</Text>}
-            {recipe.cuisine && <Text style={styles.text}>{recipe.cuisine}</Text>}
-          </View>
-        </FastImage>
-      </Pressable>
+      <RecipeListComponentMemorized recipe={recipe} onPress={onPress} />
     </Swipeable>
   );
 });
 
-export const RecipeListComponentMemoized = React.memo(RecipeListComponent);
+export const RecipeListSwipeableComponentMemorized = React.memo(RecipeListComponent);
 
 const styles = StyleSheet.create({
   background: {

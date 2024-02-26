@@ -459,6 +459,8 @@ SCRAPERS = {
 async def scrape_me(url_path: str, **options: dict[str, Any]) -> AbstractScraper:
     host_name = get_host_name(url_path)
 
+    print(host_name)
+
     try:
         scraper = SCRAPERS[host_name]
     except KeyError:

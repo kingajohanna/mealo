@@ -28,9 +28,11 @@ import { Meals } from '../components/CalendarDay';
 import { AddMeal } from '../screens/AddMeal';
 import i18next from 'i18next';
 import { RecipeVideo } from '../screens/RecipeVideo';
+import { Suggestions } from '../screens/Suggestions';
 
 export type RecipeStackParamList = {
-  [Tabs.RECIPES]: undefined;
+  [Tabs.SUGGESTIONS]: undefined;
+  [Tabs.RECIPES]: { recipes: Recipe[] };
   [Tabs.SHOPPINGLIST]: undefined;
   [Tabs.RECIPE]: { recipe: Recipe };
   [Tabs.READ_OCR]: undefined;
@@ -71,7 +73,7 @@ function RecipeNavigator() {
       />
       <Tab.Screen
         name={Tabs.RECIPENAVIGATOR}
-        component={Recipes}
+        component={Suggestions}
         options={{
           tabBarLabel: i18next.t('tabs:recipes'),
           tabBarIcon: ({ color }) => <MaterialIcon name="book" color={color} size={26} />,
@@ -112,7 +114,8 @@ export const AppNavigator = observer(() => {
     <SafeAreaProvider style={styles.container}>
       <BottomSheetModalProvider>
         <Stack.Navigator>
-          <Stack.Screen name={Tabs.RECIPES} component={RecipeNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name={Tabs.SUGGESTIONS} component={RecipeNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name={Tabs.RECIPES} component={Recipes} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
           <Stack.Screen name={Tabs.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />

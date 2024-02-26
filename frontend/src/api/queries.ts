@@ -1,27 +1,5 @@
 import { gql } from '@apollo/client';
-
-export const requiredData = `
-      id
-      title
-      category
-      speed
-      totalTime
-      yields
-      image
-      ingredients
-      instructions
-      cuisine
-      is_favorite
-      description
-      folders
-      video
-      siteName
-      meals {
-        meal
-        day
-        id
-      }
-      `;
+import { recipeData, requiredData } from './types';
 
 export const GET_RECIPES = gql`
   query GetRecipes {
@@ -69,6 +47,25 @@ export const GET_RECIPE = gql`
   query GetRecipe($recipeId: Int!) {
     getRecipe(recipeId: $recipeId) {
       ${requiredData}
+    }
+  }
+`;
+
+export const GET_SUGGESTIONS = gql`
+ query GetSuggestions {
+    getSuggestions {
+      cuisine {
+        key
+        recipes {
+          ${recipeData}
+        }
+      }
+      dish {
+        key
+        recipes {
+          ${recipeData}
+        }
+      }
     }
   }
 `;

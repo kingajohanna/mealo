@@ -74,7 +74,7 @@ export const FolderScreen = () => {
         style={[styles.backgroundImage, getRadius()]}
         source={{
           uri: image,
-          priority: FastImage.priority.normal,
+          priority: FastImage.priority.high,
         }}
       />
     );

@@ -20,7 +20,8 @@ export type Recipe = {
   reviews?: string;
   siteName?: string;
   yields?: string;
-  id: number;
+  id: string;
+  _id: string;
   is_favorite?: boolean;
   speed?: string;
   calories?: string;

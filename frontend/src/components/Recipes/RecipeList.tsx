@@ -1,12 +1,14 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Recipe } from '../types/recipe';
+import { Recipe } from '../../types/recipe';
 import { FlatList, RefreshControl, View } from 'react-native';
-import { RecipeListComponentMemoized } from './RecipeListComponent';
+import { RecipeListComponentMemorized } from './RecipeListComponent';
+import { RecipeListSwipeableComponentMemorized } from './RecipeListSwipeableComponent';
 import LottieView from 'lottie-react-native';
-import { GET_RECIPES } from '../api/queries';
-import { useAuthQuery } from '../hooks/useAuthQuery';
-import { TextInput } from './TextInput';
+import { GET_RECIPES } from '../../api/queries';
+import { useAuthQuery } from '../../hooks/useAuthQuery';
+import { TextInput } from '../TextInput';
 import i18next from 'i18next';
+import { LoadingAnimation } from '../LoadingAnimation';
 
 interface Props {
   data: Recipe[];
@@ -17,7 +19,7 @@ interface Props {
 export const RecipeList: FC<Props> = (props) => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const refreshingHeight = 130;
+
   const lottieViewRef = useRef<LottieView>(null);
   const [searchText, onChangeText] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>(props.data);
@@ -34,7 +36,11 @@ export const RecipeList: FC<Props> = (props) => {
 
     return (
       <View style={{ paddingTop, paddingBottom }}>
-        <RecipeListComponentMemoized recipe={item} onPress={() => props.onPress(item)} />
+        {item.id ? (
+          <RecipeListSwipeableComponentMemorized recipe={item} onPress={() => props.onPress(item)} />
+        ) : (
+          <RecipeListComponentMemorized recipe={item} onPress={() => props.onPress(item)} />
+        )}
       </View>
     );
   };
@@ -42,42 +48,21 @@ export const RecipeList: FC<Props> = (props) => {
   const onRefresh = async () => {
     setIsRefreshing(true);
 
-    await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 700);
-    });
     await refetch();
 
     setIsRefreshing(false);
   };
 
-  const loadingAnimation = isRefreshing ? (
-    <LottieView
-      style={{
-        height: refreshingHeight,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-      }}
-      ref={lottieViewRef}
-      source={require('../assets/anim/loading.json')}
-      loop
-      autoPlay
-    />
-  ) : null;
-
   return (
     <>
-      {loadingAnimation}
+      {isRefreshing && <LoadingAnimation lottieViewRef={lottieViewRef} />}
       {props.searchEnabled && (
         <TextInput onChangeText={onChangeText} text={searchText} placeholder={i18next.t(`recipes:searchModalTitle`)} />
       )}
       <FlatList
         data={recipes || props.data}
         renderItem={({ item, index }) => renderItem(item, index)}
-        keyExtractor={(item) => 'recipe' + item.id}
+        keyExtractor={(item) => item._id + Math.random().toString()}
         refreshControl={
           <RefreshControl
             onLayout={(e) => console.log(e.nativeEvent)}

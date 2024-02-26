@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from '../RecipeDetailInfoBubble';
+import { RecipeDetailInfoBubble, RecipeDetailInfoBubbleType } from './RecipeDetailInfoBubble';
 import { Recipe } from '../../types/recipe';
 import { EditModalTypes } from './EditModal';
 
