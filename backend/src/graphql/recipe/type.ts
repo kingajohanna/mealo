@@ -90,6 +90,11 @@ export const recipeType = `
       dish: [Predict]
     }
 
+    type SearchResultsResponse {
+      text: [Recipe]
+      tags: [Recipe]
+    }
+
     type Query {
         getRecipes: Recipes
         getRecipe(recipeId: Int!): Recipe
@@ -107,5 +112,6 @@ export const recipeType = `
         addMeal( recipeId: Int!, meal: MealInput ): Recipe
         removeMeal( recipeId: Int!, mealId: String ): Recipe
         analyzeRecipe( recipeId: Int! ): Recipe
+        getSearchResults(title: String, dish: [Int], cuisine: [Int], category: [Int]): SearchResultsResponse
     }
 `;

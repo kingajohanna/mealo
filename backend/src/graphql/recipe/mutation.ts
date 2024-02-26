@@ -5,7 +5,12 @@ import { User } from "../../models/User";
 import { hashCode } from "../../utils/hash";
 import { ContextType } from "../types";
 import { deleteFile, storeFile } from "../../utils/filesave";
-import { getCategory, getCuisine, getDish } from "../../utils/predictions";
+import {
+  getCategory,
+  getCuisine,
+  getDish,
+  getSearchResults,
+} from "../../utils/predictions";
 
 export const recipeMutation = {
   addRecipe: async (
@@ -273,5 +278,19 @@ export const recipeMutation = {
     }
 
     return recipe;
+  },
+  getSearchResults: async (
+    parent: any,
+    args: {
+      cuisine: number[];
+      category: number[];
+      dish: number[];
+      title: string;
+    },
+    context: ContextType
+  ) => {
+    const { category, dish, cuisine, title } = args;
+
+    return await getSearchResults(category, dish, cuisine, title);
   },
 };

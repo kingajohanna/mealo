@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { requiredData } from './queries';
+import { recipeData, requiredData } from './types';
 
 export const EDIT_RECIPE = gql`
   mutation EditRecipe($recipeId: Int!, $body: RecipeInput!) {
@@ -178,6 +178,19 @@ export const ANALYZE_RECIPE = gql`
   mutation analyzeRecipe($recipeId: Int!) {
     analyzeRecipe(recipeId: $recipeId) {
       ${requiredData}
+    }
+  }
+`;
+
+export const GET_SEARCH_RESULTS = gql`
+mutation GetSearchResults($title: String, $dish: [Int], $cuisine: [Int], $category: [Int]) {
+    getSearchResults(title: $title, dish: $dish, cuisine: $cuisine, category: $category) {
+      tags {
+        ${recipeData}
+      }
+      text {
+        ${recipeData}
+      }
     }
   }
 `;

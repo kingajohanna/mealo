@@ -46,7 +46,7 @@ export const Recipes: React.FC<Props> = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if (route.params.recipes.length) {
+    if (route.params.recipes.length > 0) {
       if (
         category === i18next.t(`recipes:all`) &&
         cuisine === i18next.t(`recipes:all`) &&

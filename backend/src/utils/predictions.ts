@@ -173,7 +173,7 @@ export const getDish = (code: number) => {
   }
 };
 
-type PredictType = {
+export type PredictType = {
   key: number;
   recipes: any[];
 };
@@ -215,4 +215,54 @@ export const fetchAndMergeRecipeSuggestions = async (
   );
 
   return result;
+};
+
+const getSearchFilter = (
+  category: number[],
+  dish: number[],
+  cuisine: number[]
+) => {
+  let filter = {};
+  if (category.length > 0) {
+    filter = { ...filter, "predict.category": { $in: category } };
+  }
+  if (dish.length > 0) {
+    filter = { ...filter, "predict.dish": { $in: dish } };
+  }
+  if (cuisine.length > 0) {
+    filter = { ...filter, "predict.cuisine": { $in: cuisine } };
+  }
+
+  return filter;
+};
+export const getSearchResults = async (
+  category: number[],
+  dish: number[],
+  cuisine: number[],
+  title?: string
+): Promise<{ text: any[]; tags: any[] }> => {
+  const tags = await RecipeList.aggregate([
+    {
+      $match: {
+        ...getSearchFilter(category, dish, cuisine),
+      },
+    },
+    { $sample: { size: 100 } },
+  ]).exec();
+
+  if (title === undefined || title === "") return { text: [], tags: tags };
+
+  const text = await RecipeList.aggregate([
+    {
+      $match: {
+        title: {
+          $regex: title,
+          $options: "i",
+        },
+      },
+    },
+    { $sample: { size: 100 } },
+  ]).exec();
+
+  return { text, tags };
 };

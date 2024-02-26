@@ -34,6 +34,9 @@ export default {
   },
   suggestions: {
     recentlyAdded: 'Recently added',
+    more: 'More',
+    searchResults: 'Search results',
+    searchFilterResults: 'Filter results',
     appetizers: 'Appetizers',
     beverages: 'Beverages',
     breakfastAndBrunch: 'Breakfast and Brunch',
@@ -108,7 +111,6 @@ export default {
     tart: 'Tart',
     turkey: 'Turkey',
     wings: 'Wings',
-    more: 'More',
   },
   recipes: {
     title: 'Recipes',

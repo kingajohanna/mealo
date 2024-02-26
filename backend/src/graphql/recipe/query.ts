@@ -1,5 +1,4 @@
 import { Recipe } from "../../models/Recipe";
-import { RecipeList } from "../../models/RecipeList";
 import { User } from "../../models/User";
 import {
   fetchAndMergeRecipeSuggestions,

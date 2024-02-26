@@ -34,6 +34,9 @@ export default {
   },
   suggestions: {
     recentlyAdded: 'Legutóbb hozzáadott',
+    more: 'Több',
+    searchResults: 'Keresési eredmények',
+    searchFilterResults: 'Szűrési eredmények',
     appetizers: 'Előétel',
     beverages: 'Ital',
     breakfastAndBrunch: 'Reggeli és Brunch',
@@ -108,7 +111,6 @@ export default {
     tart: 'Torta',
     turkey: 'Pulyka',
     wings: 'Szárnyas',
-    more: 'Több',
   },
   recipes: {
     title: 'Receptek',
