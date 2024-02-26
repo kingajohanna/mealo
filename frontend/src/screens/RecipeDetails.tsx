@@ -160,10 +160,10 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View>
           <FastImage
-            style={{ height: 300 }}
+            style={{ height: 300, width: '100%' }}
             source={{
               uri: recipe.image,
-              priority: FastImage.priority.normal,
+              priority: FastImage.priority.high,
             }}
           />
           <View style={styles.imageOverlay} />

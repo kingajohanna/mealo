@@ -1,6 +1,5 @@
 import React, { memo, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable, Animated, Alert } from 'react-native';
-import FastImage from 'react-native-fast-image';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

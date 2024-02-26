@@ -11,6 +11,7 @@ import {
   getDish,
   getSearchResults,
 } from "../../utils/predictions";
+import { RecipeList } from "../../models/RecipeList";
 
 export const recipeMutation = {
   addRecipe: async (
@@ -78,6 +79,10 @@ export const recipeMutation = {
         ...response.data,
       });
       await newRecipe.save();
+
+      new RecipeList({
+        ...response.data,
+      }).save();
 
       return newRecipe;
     }

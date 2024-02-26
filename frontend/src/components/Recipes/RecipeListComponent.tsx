@@ -24,7 +24,7 @@ const RecipeListComponent: React.FC<ScreenBackgroundProps> = memo(({ recipe, onP
         style={styles.image}
         source={{
           uri: recipe.image,
-          priority: FastImage.priority.normal,
+          priority: FastImage.priority.high,
         }}
       >
         <View style={styles.overlay} />

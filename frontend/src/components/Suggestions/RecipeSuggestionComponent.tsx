@@ -20,7 +20,7 @@ export const RecipeSuggestionComponent: React.FC<Props> = memo(({ recipe, onPres
             ? require('../../assets/images/moreBg.png')
             : {
                 uri: recipe.image,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.high,
               }
         }
       >
@@ -34,15 +34,17 @@ export const RecipeSuggestionComponent: React.FC<Props> = memo(({ recipe, onPres
 
 const styles = StyleSheet.create({
   background: {
-    width: 200,
-    height: 160,
+    width: 180,
+    height: 140,
     alignSelf: 'center',
-    padding: 8,
+    margin: 8,
   },
   image: {
     flex: 1,
     justifyContent: 'center',
     borderRadius: 15,
+    width: 180,
+    height: 140,
   },
   overlay: {
     borderRadius: 15,
