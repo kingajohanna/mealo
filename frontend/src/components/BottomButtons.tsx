@@ -1,3 +1,4 @@
+import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { Button } from './Button';
 import { Colors } from '../theme/colors';
@@ -26,6 +27,7 @@ export const BottomButtons: React.FC<Props> = (props) => {
       ]}
     >
       <Button
+        testID="backButton"
         onPress={props.back}
         title={props.backTitle ? props.backTitle : i18next.t(`general:back`)}
         style={[
@@ -35,6 +37,7 @@ export const BottomButtons: React.FC<Props> = (props) => {
         titleStyle={{ textAlign: 'center', color: Colors.salmon }}
       />
       <Button
+        testID="nextButton"
         onPress={props.next}
         title={props.nextTitle ? props.nextTitle : i18next.t(`general:next`)}
         disabled={props.disabled}

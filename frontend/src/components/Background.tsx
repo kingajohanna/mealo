@@ -11,6 +11,7 @@ export const ScreenBackground: React.FC<Props> = (props) => {
   return (
     <>
       <SafeAreaView
+        testID="background"
         style={[
           styles.background,
           { backgroundColor: props.notificationBarColor ? props.notificationBarColor : Colors.pine },
@@ -19,6 +20,7 @@ export const ScreenBackground: React.FC<Props> = (props) => {
       <StatusBar barStyle="dark-content" />
 
       <SafeAreaView
+        testID="fullscreen-background"
         style={{
           backgroundColor: props.fullscreen ? Colors.beige : Colors.pine,
           flex: 1,

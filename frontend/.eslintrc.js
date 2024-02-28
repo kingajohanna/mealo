@@ -7,4 +7,12 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 0,
   },
   ignorePatterns: ['*.js'],
+  overrides: [
+    {
+      files: ['__tests__/**/*'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };

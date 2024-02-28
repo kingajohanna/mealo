@@ -88,9 +88,12 @@ export const CalendarDay: React.FC<Props> = ({ date, recipes }) => {
           onDismiss={() => {
             setOpenMenu(false);
           }}
-          anchor={<Icon name="add" size={40} color={Colors.salmon} onPress={() => setOpenMenu(true)} />}
+          anchor={
+            <Icon testID="menu-icon" name="add" size={40} color={Colors.salmon} onPress={() => setOpenMenu(true)} />
+          }
         >
           <Menu.Item
+            testID="breakfast-menu-item"
             style={styles.menu}
             onPress={() => {
               navigateToAddMeal(Meals.breakfast);

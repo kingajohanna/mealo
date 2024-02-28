@@ -10,6 +10,7 @@ type Props = {
 export const LoadingAnimation: React.FC<Props> = ({ lottieViewRef, refreshingHeight = 130, top }) => {
   return (
     <LottieView
+      testID="loading-animation"
       style={{
         height: refreshingHeight,
         position: 'absolute',

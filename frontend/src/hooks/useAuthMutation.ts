@@ -11,7 +11,6 @@ export const useAuthMutation = (mutation: DocumentNode, refetchQueries?: Documen
 
   useEffect(() => {
     if (error && tryCount < MAXTRY) {
-      console.log(error);
       setTryCount(tryCount + 1);
     }
   }, [data, loading, error]);
