@@ -5,25 +5,28 @@ import { ContextType } from "../types";
 export const listMutation = {
   addToList: async (
     parent: any,
-    args: { name: string; amount: string; id: string; completed: boolean },
+    args: { name: string; amount: string; id?: string; completed: boolean },
     context: ContextType
   ) => {
     const { uid } = context;
+    let list = await List.findOne({ uid: uid });
 
-    const list = await List.findOneAndUpdate(
-      { uid: uid },
-      {
-        $push: {
-          list: {
-            id: args.id ? args.id : uuidv4(),
-            name: args.name,
-            amount: args.amount,
-            completed: args.completed ? args.completed : false,
-          },
-        },
-      },
-      { new: true, upsert: true }
+    if (!list) {
+      list = await List.create({ uid: uid, list: [] });
+    }
+
+    list.list.push({
+      id: args.id ? args.id : uuidv4(),
+      name: args.name,
+      amount: args.amount,
+      completed: args.completed ? args.completed : false,
+    });
+
+    list.list = list.list.sort((a, b) =>
+      a.completed === b.completed ? 0 : a.completed ? 1 : -1
     );
+
+    await list.save();
 
     return list;
   },

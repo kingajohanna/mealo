@@ -6,11 +6,12 @@ export const listQuery = {
     const { uid } = context;
     const list = await List.findOne({ uid: uid }).exec();
 
-    const temp =
-      list?.list?.sort((x, y) =>
-        x.completed === y.completed ? 0 : x.completed ? 1 : -1
-      ) ?? [];
-    list!.list = temp;
-    return list;
+    if (!list) return { list: [] };
+
+    return {
+      list: list.list.sort((a, b) =>
+        a.completed === b.completed ? 0 : a.completed ? 1 : -1
+      ),
+    };
   },
 };
