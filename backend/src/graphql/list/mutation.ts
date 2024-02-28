@@ -10,27 +10,22 @@ export const listMutation = {
   ) => {
     const { uid } = context;
 
-    try {
-      const list = await List.findOneAndUpdate(
-        { uid: uid },
-        {
-          $push: {
-            list: {
-              id: args.id ? args.id : uuidv4(),
-              name: args.name,
-              amount: args.amount,
-              completed: args.completed ? args.completed : false,
-            },
+    const list = await List.findOneAndUpdate(
+      { uid: uid },
+      {
+        $push: {
+          list: {
+            id: args.id ? args.id : uuidv4(),
+            name: args.name,
+            amount: args.amount,
+            completed: args.completed ? args.completed : false,
           },
         },
-        { new: true, upsert: true }
-      );
+      },
+      { new: true, upsert: true }
+    );
 
-      return list;
-    } catch (error) {
-      console.error("Error adding item to the list:", error);
-      throw error;
-    }
+    return list;
   },
   completeTask: async (
     parent: any,

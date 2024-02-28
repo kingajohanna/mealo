@@ -73,10 +73,10 @@ export const recipeMutation = {
 
     if (response && user) {
       const newRecipe = new Recipe({
+        ...response.data,
         id: recipeId,
         uid: uid,
         added: new Date().toISOString(),
-        ...response.data,
       });
       await newRecipe.save();
 

@@ -1,13 +1,19 @@
 const { MongoMemoryServer } = require("mongodb-memory-server");
+const mongoose = require("mongoose");
 
-module.exports = async () => {
-  // Set up the MongoDB memory server
-  const mongoServer = new MongoMemoryServer();
-  const mongoUri = await mongoServer.getUri();
+let mongoServer;
 
-  // Set the MongoDB URI in the environment variable
-  process.env.MONGO_URI = mongoUri;
+beforeAll(async () => {
+  mongoServer = await MongoMemoryServer.create();
+  const mongoUri = mongoServer.getUri();
 
-  // Close the server after all tests are done
+  await mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
   await mongoServer.stop();
-};
+});

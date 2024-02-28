@@ -51,22 +51,22 @@ export const recipeQuery = {
     const user = await User.findOne({ id: uid }).lean();
 
     if (user) {
-      const sortedCuisine = sortByDateDesc(user.suggestions.cuisine).slice(
+      const sortedCuisine = sortByDateDesc(user.suggestions.cuisine)?.slice(
         0,
         PREDICT
       );
-      const sortedCategory = sortByDateDesc(user.suggestions.category).slice(
+      const sortedCategory = sortByDateDesc(user.suggestions.category)?.slice(
         0,
         PREDICT
       );
-      const sortedDish = sortByDateDesc(user.suggestions.dish).slice(
+      const sortedDish = sortByDateDesc(user.suggestions.dish)?.slice(
         0,
         PREDICT
       );
 
-      const cuisineIds = sortedCuisine.map((s) => s.id);
-      const categoryIds = sortedCategory.map((s) => s.id);
-      const dishIds = sortedDish.map((s) => s.id);
+      const cuisineIds = sortedCuisine?.map((s) => s.id);
+      const categoryIds = sortedCategory?.map((s) => s.id);
+      const dishIds = sortedDish?.map((s) => s.id);
 
       const cuisineArray = await fetchAndMergeRecipeSuggestions(
         cuisineIds,

@@ -179,7 +179,7 @@ export type PredictType = {
 };
 
 export const sortByDateDesc = (arr: any[]) =>
-  arr.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  arr?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 export const fetchAndMergeRecipeSuggestions = async (
   ids: number[],
@@ -188,6 +188,7 @@ export const fetchAndMergeRecipeSuggestions = async (
   limit: number = 10
 ): Promise<PredictType[]> => {
   const result: PredictType[] = [];
+  if (ids === undefined) return result;
 
   await Promise.all(
     ids.map(async (id) => {

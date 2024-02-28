@@ -22,7 +22,7 @@ export const userMutation = {
   deleteUser: async (parent: any, args: any, context: ContextType) => {
     const { uid } = context;
 
-    const user = await User.find({ id: uid });
+    const user = await User.findOne({ id: uid });
     await Recipe.deleteMany({ uid: uid });
     await User.deleteOne({ id: uid });
 
@@ -71,7 +71,7 @@ export const userMutation = {
           is_favorite: false,
         };
 
-        await Recipe.create(copiedRecipe);
+        await new Recipe(copiedRecipe).save();
       }
     }
 
