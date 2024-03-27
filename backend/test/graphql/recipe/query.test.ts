@@ -66,4 +66,18 @@ describe("Recipe Queries", () => {
     expect(result).toHaveProperty("cuisine");
     expect(result).toHaveProperty("dish");
   });
+
+  test("getSearchResults", async () => {
+    const args = {
+      category: [0],
+      dish: [0],
+      cuisine: [0],
+      title: "",
+    };
+
+    const expectedResult = { tags: [], text: [] };
+    const result = await recipeQuery.getSearchResults(null, args, context);
+
+    expect(result).toEqual(expectedResult);
+  });
 });

@@ -174,20 +174,6 @@ describe("Recipe Mutations", () => {
     expect(result?.category).toBe("Beverages");
   });
 
-  test("getSearchResults", async () => {
-    const args = {
-      category: [0],
-      dish: [0],
-      cuisine: [0],
-      title: "",
-    };
-
-    const expectedResult = { tags: [], text: [] };
-    const result = await recipeMutation.getSearchResults(null, args, context);
-
-    expect(result).toEqual(expectedResult);
-  });
-
   test("deleteRecipe mutation", async () => {
     const args = { uid: "user-id", recipeId: 1 };
 
