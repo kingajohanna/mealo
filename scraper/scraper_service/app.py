@@ -4,7 +4,7 @@ import configparser
 import logging
 from fastapi.encoders import jsonable_encoder
 import sys, os
-sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'receptek_scraper')))
+sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'recipe-scrapers')))
 from recipe_scrapers import scrape_me
 from models.models import URL
 import utils.utils as utils

@@ -1,0 +1,3 @@
+[submodule "scraper/recipe-scrapers"]
+	path = scraper/recipe-scrapers
+	url = https://github.com/kingajohanna/recipe-scrapers
