@@ -12,7 +12,7 @@ import mongoose from "mongoose";
 import { authenticateToken } from "./src/middlewares/auth";
 import { graphqlUploadExpress } from "graphql-upload-minimal";
 
-dotenv.config();
+dotenv.config({ path: "./.local.env" });
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY as string,
@@ -32,7 +32,6 @@ const HOST = process.env.HOST as string;
 const app = express();
 const httpServer = http.createServer(app);
 
-// Set up Apollo Server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -47,7 +46,7 @@ server.start().then(async () => {
     "/",
     bodyParser.json(),
     expressMiddleware(server, {
-      context: async ({ req, res }) => ({
+      context: async ({ res }) => ({
         uid: res?.locals.uid,
         email: res?.locals.email,
       }),

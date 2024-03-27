@@ -2,6 +2,7 @@ import { Recipe } from "../../models/Recipe";
 import { User } from "../../models/User";
 import {
   fetchAndMergeRecipeSuggestions,
+  getSearchResults,
   sortByDateDesc,
 } from "../../utils/predictions";
 import { ContextType } from "../types";
@@ -10,7 +11,7 @@ export const recipeQuery = {
   getRecipes: async (parent: any, args: any, context: ContextType) => {
     const { uid } = context;
 
-    const recipes = await Recipe.find({ uid }).lean();
+    const recipes = (await Recipe.find({ uid }).lean()).reverse();
 
     const categories: string[] = [];
     const cuisines: string[] = [];
@@ -88,5 +89,20 @@ export const recipeQuery = {
         ),
       };
     }
+  },
+
+  getSearchResults: async (
+    parent: any,
+    args: {
+      cuisine: number[];
+      category: number[];
+      dish: number[];
+      title: string;
+    },
+    context: ContextType
+  ) => {
+    const { category, dish, cuisine, title } = args;
+
+    return await getSearchResults(category, dish, cuisine, title);
   },
 };

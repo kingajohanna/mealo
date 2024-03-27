@@ -17,6 +17,8 @@ export function authenticateToken(
       res.locals.email = decodedToken.email;
       res.locals.uid = decodedToken.uid;
 
+      console.log("Authenticated", decodedToken.uid, decodedToken.email);
+
       next();
     })
     .catch((error: any) => {

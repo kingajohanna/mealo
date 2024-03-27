@@ -3,6 +3,7 @@ import { Recipe } from "../../models/Recipe";
 import { User } from "../../models/User";
 import { hashCode } from "../../utils/hash";
 import { ContextType } from "../types";
+import axios from "axios";
 
 export const userMutation = {
   addUser: async (parent: any, args: any, context: ContextType) => {
@@ -84,5 +85,19 @@ export const userMutation = {
       },
       { new: true }
     ).lean();
+  },
+
+  bingAnalyzer: async (
+    parent: any,
+    args: { text: string },
+    context: ContextType
+  ) => {
+    const response = await axios.post(process.env.BING_URL as string, {
+      message: args.text,
+    });
+
+    console.log(response.data.message);
+
+    return await response.data.message;
   },
 };

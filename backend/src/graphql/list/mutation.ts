@@ -9,22 +9,22 @@ export const listMutation = {
     context: ContextType
   ) => {
     const { uid } = context;
-    let list = await List.findOne({ uid: uid });
+    let list = await List.findOne({ uid });
 
     if (!list) {
-      list = await List.create({ uid: uid, list: [] });
+      list = await List.create({ uid, list: [] });
     }
 
-    list.list.push({
-      id: args.id ? args.id : uuidv4(),
+    const newItem = {
+      id: args.id || uuidv4(),
       name: args.name,
       amount: args.amount,
-      completed: args.completed ? args.completed : false,
-    });
+      completed: args.completed || false,
+    };
 
-    list.list = list.list.sort((a, b) =>
-      a.completed === b.completed ? 0 : a.completed ? 1 : -1
-    );
+    if (list.list.find((l) => l.id === newItem.id)) return list;
+
+    list.list.push(newItem);
 
     await list.save();
 
@@ -38,13 +38,16 @@ export const listMutation = {
     const { uid } = context;
     const { id, completed } = args;
 
-    const updatedItem = await List.findOneAndUpdate(
-      { uid: uid, "list.id": id },
-      { $set: { "list.$.completed": completed } },
-      { new: true }
-    );
+    let list = await List.findOne({ uid });
 
-    return updatedItem;
+    await list
+      ?.updateOne(
+        { uid: uid, "list.id": id },
+        { $set: { "list.$.completed": completed } }
+      )
+      .lean();
+
+    return list;
   },
   changeTasks: async (
     parent: any,

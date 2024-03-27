@@ -66,6 +66,8 @@ export const recipeMutation = {
         },
       };
     } else {
+      console.log(process.env.SCRAPER_URL);
+
       response = await axios.post(process.env.SCRAPER_URL as string, {
         url,
       });
@@ -87,26 +89,7 @@ export const recipeMutation = {
       return newRecipe;
     }
   },
-  saveRecipe: async (
-    parent: any,
-    args: { recipe: any },
-    context: ContextType
-  ) => {
-    const { recipe } = args;
-    const { uid } = context;
 
-    const recipeId = hashCode(recipe.canonical_url + uid);
-
-    const newRecipe = new Recipe({
-      id: recipeId,
-      uid: uid,
-      added: new Date().toISOString(),
-      ...recipe,
-    });
-    await newRecipe.save();
-
-    return newRecipe;
-  },
   addOcrRecipe: async (
     parent: any,
     args: { recipe: any; image: any },
@@ -129,6 +112,27 @@ export const recipeMutation = {
       uid,
       id: hashCode(recipe.title.replace(" ", "") + uid),
     });
+  },
+
+  saveRecipe: async (
+    parent: any,
+    args: { recipe: any },
+    context: ContextType
+  ) => {
+    const { recipe } = args;
+    const { uid } = context;
+
+    const recipeId = hashCode(recipe.canonical_url + uid);
+
+    const newRecipe = new Recipe({
+      id: recipeId,
+      uid: uid,
+      added: new Date().toISOString(),
+      ...recipe,
+    });
+    await newRecipe.save();
+
+    return newRecipe;
   },
 
   editRecipe: async (parent: any, args: { recipeId: number; body: any }) => {
@@ -181,7 +185,6 @@ export const recipeMutation = {
     context: ContextType
   ) => {
     const { recipeId, folders } = args;
-    const { uid } = context;
 
     let recipe = await Recipe.findOne({ id: recipeId });
 
@@ -283,19 +286,5 @@ export const recipeMutation = {
     }
 
     return recipe;
-  },
-  getSearchResults: async (
-    parent: any,
-    args: {
-      cuisine: number[];
-      category: number[];
-      dish: number[];
-      title: string;
-    },
-    context: ContextType
-  ) => {
-    const { category, dish, cuisine, title } = args;
-
-    return await getSearchResults(category, dish, cuisine, title);
   },
 };

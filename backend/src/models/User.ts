@@ -5,12 +5,6 @@ interface Share {
   from: string;
   id: string;
 }
-interface ListItem {
-  id: string;
-  name: string;
-  amount: string;
-  completed: boolean;
-}
 
 export interface Suggestion {
   id: number;
