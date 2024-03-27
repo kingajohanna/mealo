@@ -69,3 +69,16 @@ export const GET_SUGGESTIONS = gql`
     }
   }
 `;
+
+export const GET_SEARCH_RESULTS = gql`
+query GetSearchResults($title: String, $dish: [Int], $cuisine: [Int], $category: [Int]) {
+    getSearchResults(title: $title, dish: $dish, cuisine: $cuisine, category: $category) {
+      tags {
+        ${recipeData}
+      }
+      text {
+        ${recipeData}
+      }
+    }
+  }
+`;

@@ -1,27 +1,25 @@
-import * as React from 'react';
 import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { Header } from '../components/Header';
 import { GET_LIST } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
-import i18next from 'i18next';
+import i18next, { use } from 'i18next';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ListItem } from '../types/list';
 import { ADD_LIST, COMPLETE_TASK, DELETE_TASK } from '../api/mutations';
-import { Checkbox, FAB, List } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import { useEffect, useRef, useState } from 'react';
 import { Colors } from '../theme/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useStore } from '../stores';
 import { observer } from 'mobx-react-lite';
-import { addReminder, fetchReminders, setReminderCompleted } from '../nativeModules/ReminderModule';
-import { useIsFocused } from '@react-navigation/native';
+import { addReminder, fetchReminders, removeReminder, setReminderCompleted } from '../nativeModules/ReminderModule';
 import { ListItemComponent } from '../components/ListItemComponent';
+import { useOnForegroundFocus } from '../hooks/useOnForeGroundFocus';
 
 export const ShoppingList = observer(() => {
   const { userStore } = useStore();
   const { showCompletedTasks } = userStore;
-  const isFocused = useIsFocused();
 
   const [data, refetch] = useAuthQuery(GET_LIST);
   const [addToList] = useAuthMutation(ADD_LIST);
@@ -31,18 +29,25 @@ export const ShoppingList = observer(() => {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const amountInputRef = useRef<TextInput | null>(null);
 
+  const [list, setList] = useState<ListItem[]>(data?.getList?.list);
   const [orderedList, setOrderedList] = useState<ListItem[]>(data?.getList?.list);
   const [showAddToList, setShowAddToList] = useState(true);
   const [titleInput, setTitleInput] = useState('');
   const [amountInput, setAmountInput] = useState('');
 
   useEffect(() => {
-    if (isFocused && Platform.OS === 'ios') {
+    if (data?.getList?.list) {
+      setList(data.getList.list);
+    }
+  }, [data?.getList]);
+
+  useOnForegroundFocus(() => {
+    if (Platform.OS === 'ios') {
       (async () => {
-        await checkList();
+        setList(await checkList());
       })();
     }
-  }, [isFocused]);
+  });
 
   const add = async () => {
     const reminder = await addReminder(titleInput, amountInput);
@@ -61,22 +66,27 @@ export const ShoppingList = observer(() => {
   };
 
   const checkList = async () => {
+    await refetch();
     const reminders = await fetchReminders();
-    const list = await data?.getList?.list;
+    const list = data?.getList?.list;
+    let updatedList = data?.getList?.list;
 
     if (reminders && list) {
       for (const reminder of reminders) {
         const item = list.find((listItem: ListItem) => listItem.id === reminder.id);
 
         if (item && item.completed !== reminder.completed) {
-          return await setCompleted({
+          const completed = await setCompleted({
             variables: {
               id: item.id,
               completed: reminder.completed,
             },
           });
+          if (completed.data.completeTask.list) {
+            updatedList = completed.data.completeTask.list;
+          }
         } else if (!item) {
-          return await addToList({
+          const newList = await addToList({
             variables: {
               name: reminder.title,
               amount: reminder.notes,
@@ -84,25 +94,32 @@ export const ShoppingList = observer(() => {
               completed: reminder.completed,
             },
           });
+          if (newList.data.addToList.list) {
+            updatedList = newList.data.addToList.list;
+          }
         }
       }
       for (const item of list) {
         const reminder = reminders.find((reminder) => reminder.id === item.id);
         if (!reminder) await deleteTask({ variables: { id: item.id } });
       }
-      await refetch();
     }
+
+    return updatedList;
   };
 
   useEffect(() => {
-    if (data?.getList?.list) {
+    if (list) {
       if (showCompletedTasks) {
-        setOrderedList(data?.getList?.list);
+        const updatedList = [...list].sort((a: ListItem, b: ListItem) =>
+          a.completed === b.completed ? 0 : a.completed ? 1 : -1,
+        );
+        setOrderedList(updatedList);
       } else {
-        setOrderedList(data?.getList?.list.filter((item: ListItem) => !item.completed));
+        setOrderedList(list?.filter((item: ListItem) => !item.completed));
       }
     }
-  }, [data?.getList?.list, showCompletedTasks]);
+  }, [showCompletedTasks, list]);
 
   return (
     <>
@@ -118,7 +135,15 @@ export const ShoppingList = observer(() => {
         >
           <Pressable style={styles.container} onPress={() => setShowAddToList(!showAddToList)}>
             {orderedList?.map((item: ListItem) => (
-              <ListItemComponent item={item} key={item.id} />
+              <ListItemComponent
+                item={item}
+                key={item.id}
+                refetch={refetch}
+                setCompleted={setCompleted}
+                deleteTask={deleteTask}
+                setReminderCompleted={setReminderCompleted}
+                removeReminder={removeReminder}
+              />
             ))}
 
             {showAddToList && (

@@ -2,24 +2,27 @@ import { Animated, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Checkbox, List } from 'react-native-paper';
 import { ListItem } from '../types/list';
 import { Colors } from '../theme/colors';
-import { useAuthMutation } from '../hooks/useAuthMutation';
-import { COMPLETE_TASK, DELETE_TASK } from '../api/mutations';
-import { removeReminder, setReminderCompleted } from '../nativeModules/ReminderModule';
-import { useAuthQuery } from '../hooks/useAuthQuery';
-import { GET_LIST } from '../api/queries';
 import { useRef } from 'react';
 import { Swipeable } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   item: ListItem;
+  refetch: () => void;
+  setCompleted: Function;
+  deleteTask: Function;
+  setReminderCompleted: Function;
+  removeReminder: Function;
 };
 
-export const ListItemComponent: React.FC<Props> = ({ item }) => {
-  const [data, refetch] = useAuthQuery(GET_LIST);
-  const [setCompleted] = useAuthMutation(COMPLETE_TASK);
-  const [deleteTask] = useAuthMutation(DELETE_TASK);
-
+export const ListItemComponent: React.FC<Props> = ({
+  item,
+  refetch,
+  setCompleted,
+  deleteTask,
+  setReminderCompleted,
+  removeReminder,
+}) => {
   const swipeableRef = useRef<Swipeable | null>(null);
 
   const close = () => {

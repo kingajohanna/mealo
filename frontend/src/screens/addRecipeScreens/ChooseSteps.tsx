@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Tabs } from '../../navigation/tabs';
 import { Header } from '../../components/Header';
 import { Colors } from '../../theme/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import { CheckableText } from '../../components/CheckableText';
 import { AddRecipeProps } from '../AddRecipe';
 import { BottomButtons } from '../../components/BottomButtons';
+import i18next from 'i18next';
 
 export const ChooseSteps: React.FC<AddRecipeProps> = (props) => {
   const [selected, setSelected] = useState<string[]>(props.recipe.instructions || []);
@@ -21,7 +21,7 @@ export const ChooseSteps: React.FC<AddRecipeProps> = (props) => {
 
   return (
     <>
-      <Header title={Tabs.ADD_INSTRUCTIONS} />
+      <Header title={i18next.t('addRecipe:chooseSteps')} />
       <View style={styles.container}>
         <ScrollView style={{ marginTop: 16 }}>
           {splitted.map((text, index) => (

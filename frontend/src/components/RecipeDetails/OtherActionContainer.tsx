@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { TextInput, ToggleButton } from 'react-native-paper';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -135,10 +135,15 @@ export const OtherActionContainer: React.FC<Props> = ({ recipe, setOpenShareModa
           <IonIcon name={Platform.OS === 'android' ? 'share-social' : 'share-outline'} color={Colors.pine} size={28} />
           <Text style={styles.siteText}>{i18next.t('recipeDetails:share')}</Text>
         </Pressable>
-        <View style={styles.rowContainer}>
+        <Pressable
+          style={styles.rowContainer}
+          onPress={() => {
+            if (recipe.canonical_url) Linking.openURL(recipe.canonical_url);
+          }}
+        >
           <MaterialCommunityIcons name="web" color={Colors.pine} size={28} />
           <Text style={styles.siteText}>{recipe.siteName}</Text>
-        </View>
+        </Pressable>
       </View>
       <View style={styles.servingContainer}>
         <ToggleButton.Row onValueChange={() => {}} value={''}>

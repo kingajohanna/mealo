@@ -113,7 +113,7 @@ export default {
     wings: 'Wings',
   },
   recipes: {
-    title: 'Recipes',
+    title: 'Suggestions',
     reset: 'Reset',
     search: 'Search',
     all: 'All',
@@ -127,7 +127,7 @@ export default {
     addText: 'Amount of ingredient',
   },
   folders: {
-    title: 'Folders',
+    title: 'Your recipes',
     searchPlaceholder: 'Search folders',
     favorites: 'Favorites',
     all: 'All',
@@ -200,5 +200,12 @@ export default {
       'November',
       'December',
     ],
+  },
+  addRecipe: {
+    title: 'Add recipe',
+    chooseTitle: 'Choose title',
+    chooseIngredients: 'Choose ingredients',
+    chooseSteps: 'Choose steps',
+    chooseAdditionalInfo: 'Choose additional info',
   },
 };

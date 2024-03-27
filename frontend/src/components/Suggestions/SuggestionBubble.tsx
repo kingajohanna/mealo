@@ -1,6 +1,5 @@
 import { Pressable, PressableProps, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../theme/colors';
-import { getCategory, getCuisine, getDish } from '../../utils/suggestions';
 
 export enum SuggestionBubbleType {
   CUISINE = 'cuisine',

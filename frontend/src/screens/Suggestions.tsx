@@ -8,18 +8,16 @@ import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { FAB } from 'react-native-paper';
 import { Colors } from '../theme/colors';
 import { Header } from '../components/Header';
-import { GET_RECIPES, GET_SUGGESTIONS } from '../api/queries';
+import { GET_RECIPES, GET_SUGGESTIONS, GET_SEARCH_RESULTS } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import LottieView from 'lottie-react-native';
 import i18next from 'i18next';
-import { useIsFocused } from '@react-navigation/native';
 import { SuggestionCategoryComponent } from '../components/Suggestions/SuggestionCategoryComponent';
 import { getCuisine, getDish } from '../utils/suggestions';
 import { LoadingAnimation } from '../components/LoadingAnimation';
 import { SearchComponent } from '../components/Suggestions/SearchComponent';
-import { useAuthMutation } from '../hooks/useAuthMutation';
-import { GET_SEARCH_RESULTS } from '../api/mutations';
 import { SuggestionBubbleType } from '../components/Suggestions/SuggestionBubble';
+import { useOnForegroundFocus } from '../hooks/useOnForeGroundFocus';
 
 export enum Time {
   fast = 'fast',
@@ -43,26 +41,26 @@ export const Suggestions = () => {
   const [cuisineTags, setCuisineTags] = useState<Tag[]>([]);
   const [dishTags, setDishTags] = useState<Tag[]>([]);
   const [data, refetch] = useAuthQuery(GET_RECIPES);
-  const [getSearchResults, searchData] = useAuthMutation(GET_SEARCH_RESULTS);
+  const [searchData, getSearchResults] = useAuthQuery(GET_SEARCH_RESULTS, {
+    variables: {
+      title: '',
+      cuisine: [],
+      dish: [],
+      category: [],
+    },
+  });
   const [suggestions, getSuggestions] = useAuthQuery(GET_SUGGESTIONS);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const lottieViewRef = useRef<LottieView>(null);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
-  const isFocused = useIsFocused();
 
-  useEffect(() => {
-    if (isFocused) {
-      (async () => {
-        await refetch();
-      })();
-    }
-  }, [isFocused]);
-
-  useEffect(() => {
-    console.log(searchData?.getSearchResults);
-  }, [searchData]);
+  useOnForegroundFocus(() => {
+    (async () => {
+      await refetch();
+    })();
+  });
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -82,7 +80,7 @@ export const Suggestions = () => {
     const dish = dishTags.filter((tag) => tag.selected).map((tag) => tag.id);
     const category = categoryTags.filter((tag) => tag.selected).map((tag) => tag.id);
 
-    await getSearchResults({ variables: { title: text.toString(), cuisine, dish, category } });
+    await getSearchResults({ title: text.toString(), cuisine, dish, category });
   };
 
   const renderSuggestions = () => {
@@ -91,7 +89,7 @@ export const Suggestions = () => {
         {data?.getRecipes?.recipes?.length > 0 && (
           <SuggestionCategoryComponent
             title={i18next.t('suggestions:recentlyAdded')}
-            suggestions={[...data?.getRecipes?.recipes].reverse()}
+            suggestions={[...data?.getRecipes?.recipes]}
           />
         )}
 

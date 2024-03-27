@@ -220,9 +220,11 @@ export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
         editModalType={editModalType}
         onCancel={() => {
           setOpenEditModal(false);
+          setEditValue('');
         }}
         onEdit={async () => {
           setOpenEditModal(false);
+          setEditValue('');
           editRecipe({
             variables: { recipeId: recipe.id, body: getEditContent() },
           });

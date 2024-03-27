@@ -3,8 +3,6 @@ import { List, ToggleButton } from 'react-native-paper';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import { GET_RECIPE, GET_USER } from '../api/queries';
 import { Share } from '../types/user';
-import { useEffect } from 'react';
-import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
@@ -15,24 +13,22 @@ import { MANAGE_SHARE } from '../api/mutations';
 
 type Props = {
   share: Share;
+  refetchUser: () => Promise<void>;
 };
 
 export const ShareComponent: React.FC<Props> = (props) => {
-
   const [data] = useAuthQuery(GET_RECIPE, {
     variables: { recipeId: props.share.recipe },
   });
   const [manageShare] = useAuthMutation(MANAGE_SHARE);
-  const [shares, refetchUser] = useAuthQuery(GET_USER);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
 
   const manageShareHandler = async (accepted: boolean) => {
-
     await manageShare({
       variables: { shareId: props.share.id, id: data?.getRecipe?.id, accept: accepted },
     });
-    await refetchUser();
+    await props.refetchUser();
   };
 
   return (

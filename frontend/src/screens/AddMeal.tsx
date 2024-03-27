@@ -121,7 +121,7 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   background: {
-    width: '100%',
+    width: '95%',
     height: 160,
     alignSelf: 'center',
     margin: 8,

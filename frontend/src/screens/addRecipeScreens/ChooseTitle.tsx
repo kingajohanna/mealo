@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Tabs } from '../../navigation/tabs';
 import { Header } from '../../components/Header';
 import { Colors } from '../../theme/colors';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -8,6 +7,7 @@ import { CheckableText } from '../../components/CheckableText';
 import { AddRecipeProps } from '../AddRecipe';
 import { TextInput } from '../../components/TextInput';
 import { BottomButtons } from '../../components/BottomButtons';
+import i18next from 'i18next';
 
 export const ChooseTitle: React.FC<AddRecipeProps> = (props) => {
   const [selected, setSelected] = useState<[number, string][]>([]);
@@ -30,7 +30,7 @@ export const ChooseTitle: React.FC<AddRecipeProps> = (props) => {
 
   return (
     <>
-      <Header title={Tabs.ADD_TITLE} />
+      <Header title={i18next.t('addRecipe:chooseTitle')} />
       <View style={styles.container}>
         <TextInput onChangeText={setTitle} text={title} placeholder="Title" style={{ width: '80%' }} />
         <ScrollView style={{ marginTop: 16 }}>

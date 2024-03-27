@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { Tabs } from '../../navigation/tabs';
 import { Header } from '../../components/Header';
 import { Colors } from '../../theme/colors';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -9,13 +8,13 @@ import { TextInput } from '../../components/TextInput';
 import { BottomButtons } from '../../components/BottomButtons';
 import { useAuthMutation } from '../../hooks/useAuthMutation';
 import { ADD_OCR_RECIPE } from '../../api/mutations';
-import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Button } from '../../components/Button';
 import * as ImagePicker from 'react-native-image-picker';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { GET_RECIPES } from '../../api/queries';
 import { useAuthQuery } from '../../hooks/useAuthQuery';
+import i18next from 'i18next';
 
 const SPEED = ['fast', 'moderate', 'slow'];
 
@@ -58,8 +57,8 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
 
   return (
     <>
-      <Header title={Tabs.ADD_TITLE} />
-      <ScrollView>
+      <Header title={i18next.t('addRecipe:chooseAdditionalInfo')} />
+      <ScrollView style={{ width: '100%', flex: 1 }}>
         <View style={styles.container}>
           {generateTextInput(setPreptime, prepTime, 'Prep time')}
           {generateTextInput(setTotalTime, totalTime, 'Total time')}
@@ -113,8 +112,6 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    flex: 1,
     alignItems: 'center',
     padding: 16,
   },

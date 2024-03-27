@@ -31,13 +31,25 @@ export const RecipeDetailsHeaderMenu: React.FC<Props> = ({
   const [addToList] = useAuthMutation(ADD_LIST);
 
   const addToShoppingList = async () => {
-    recipe.ingredients.map(async (ingredient) => {
-      const reminder = await addReminder(ingredient);
+    let reminders: any = [];
+    try {
+      await Promise.all(
+        recipe.ingredients.map(async (ingredient) => {
+          reminders.push({ id: (await addReminder(ingredient))?.id, ingredient });
+        }),
+      );
+    } catch (error) {
+      console.log('error', error);
+    }
+
+    console.log('reminders', reminders);
+
+    reminders.map(async (reminder: any) => {
       await addToList({
         variables: {
-          name: ingredient,
+          name: reminder?.ingredient,
           amount: '',
-          id: reminder?.id,
+          id: reminder?.id || undefined,
         },
       });
     });

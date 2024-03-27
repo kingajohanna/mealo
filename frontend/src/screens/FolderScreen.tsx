@@ -15,20 +15,93 @@ import FastImage from 'react-native-fast-image';
 import i18next from 'i18next';
 import { TextInput } from '../components/TextInput';
 import { useEffect, useRef, useState } from 'react';
+import { SearchModal } from '../components/SearchModal';
+import { FAB } from 'react-native-paper';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Time } from './Recipes';
+import { RecipeList } from '../components/Recipes/RecipeList';
 
 const { width } = Dimensions.get('window');
 const gap = 5;
 const refreshingHeight = 130;
 
+export const all = i18next.t(`recipes:all`);
+
 export const FolderScreen = () => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const lottieViewRef = useRef<LottieView>(null);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [folders, setFolders] = useState<string[]>(data?.getRecipes.folders);
+  const [filteredRecipes, setFilteredRecipes] = useState(data?.getRecipes.recipes);
+  const [text, setText] = useState('');
+  const [category, setCategory] = useState(all);
+  const [cuisine, setCuisine] = useState(all);
+  const [time, setTime] = useState<Time | undefined>(undefined);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
+  const accessPage = (recipe: Recipe) => navigation.navigate(Tabs.RECIPE, { recipe });
+
+  const filterActive = category !== all || cuisine !== all || text !== '' || time !== undefined;
+
+  const reset = () => {
+    setText('');
+    setCategory(all);
+    setCuisine(all);
+    setTime(undefined);
+    setFilteredRecipes(data?.getRecipes.recipes);
+  };
+
+  useEffect(() => {
+    if (data?.getRecipes.recipes.length === 0) {
+      return;
+    }
+
+    if (
+      category === i18next.t(`recipes:all`) &&
+      cuisine === i18next.t(`recipes:all`) &&
+      text === '' &&
+      time === undefined
+    ) {
+      return setFilteredRecipes(data?.getRecipes.recipes);
+    }
+
+    const keys: string[] = [];
+    const values: string[] = [];
+
+    if (category !== all) {
+      keys.push('category');
+      values.push(category);
+    }
+
+    if (cuisine !== all) {
+      keys.push('cuisine');
+      values.push(cuisine);
+    }
+
+    if (text) {
+      keys.push('title');
+      values.push(text);
+    }
+
+    if (time) {
+      keys.push('speed');
+      values.push(time);
+    }
+
+    const filter = (recipe: Recipe) => {
+      return keys.every((key, i) => {
+        const value = recipe[key];
+        return typeof value === 'string' && value.toLowerCase().includes(values[i].toLowerCase());
+      });
+    };
+
+    const filteredRecipes = data?.getRecipes.recipes.filter(filter);
+
+    return setFilteredRecipes(filteredRecipes);
+  }, [text, category, cuisine, time]);
 
   useEffect(() => {
     if (data?.getRecipes.folders) {
@@ -158,30 +231,55 @@ export const FolderScreen = () => {
       <ScreenBackground>
         <Header title={i18next.t('folders:title')} />
         <View style={styles.container}>
-          <TextInput
-            onChangeText={setSearchText}
-            text={searchText}
-            placeholder={i18next.t(`folders:searchPlaceholder`)}
-          />
-          {loadingAnimation}
-          <FlatList
-            data={folders}
-            numColumns={2}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => renderFolder(item)}
-            refreshControl={
-              <RefreshControl
-                onLayout={(e) => console.log(e.nativeEvent)}
-                tintColor="transparent"
-                colors={['transparent']}
-                style={{ backgroundColor: 'transparent' }}
-                refreshing={isRefreshing}
-                onRefresh={() => onRefresh()}
+          {filterActive ? (
+            <RecipeList data={filteredRecipes} onPress={accessPage} />
+          ) : (
+            <>
+              <TextInput
+                onChangeText={setSearchText}
+                text={searchText}
+                placeholder={i18next.t(`folders:searchPlaceholder`)}
               />
-            }
-          />
+              {loadingAnimation}
+              <FlatList
+                data={folders}
+                numColumns={2}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => renderFolder(item)}
+                refreshControl={
+                  <RefreshControl
+                    onLayout={(e) => console.log(e.nativeEvent)}
+                    tintColor="transparent"
+                    colors={['transparent']}
+                    style={{ backgroundColor: 'transparent' }}
+                    refreshing={isRefreshing}
+                    onRefresh={() => onRefresh()}
+                  />
+                }
+              />
+            </>
+          )}
         </View>
+        <SearchModal
+          refRBSheet={bottomSheetModalRef}
+          onChangeText={setText}
+          text={text}
+          time={time}
+          setTime={setTime}
+          category={category}
+          setCategory={setCategory}
+          cuisine={cuisine}
+          setCuisine={setCuisine}
+          reset={reset}
+          search={() => bottomSheetModalRef.current?.dismiss()}
+        />
       </ScreenBackground>
+      <FAB
+        icon="magnify"
+        color={Colors.textLight}
+        style={styles.fab}
+        onPress={() => bottomSheetModalRef.current?.present()}
+      />
     </>
   );
 };

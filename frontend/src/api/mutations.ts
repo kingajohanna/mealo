@@ -27,6 +27,12 @@ export const DELETE_USER = gql`
   }
 `;
 
+export const BING_ANALYZER = gql`
+  mutation BingAnalyzer($text: String!) {
+    bingAnalyzer(text: $text)
+  }
+`;
+
 export const ADD_RECIPE = gql`
   mutation AddRecipe($url: String!) {
     addRecipe(url: $url) {
@@ -121,21 +127,6 @@ export const COMPLETE_TASK = gql`
   }
 `;
 
-export const CHANGE_TASKS = gql`
-  mutation ChangeTasks($tasks: [ListItemInput]!) {
-    changeTasks(tasks: $tasks) {
-      id
-      uid
-      list {
-        id
-        name
-        amount
-        completed
-      }
-    }
-  }
-`;
-
 export const DELETE_TASK = gql`
   mutation deleteTask($id: String!) {
     deleteTask(id: $id) {
@@ -182,14 +173,14 @@ export const ANALYZE_RECIPE = gql`
   }
 `;
 
-export const GET_SEARCH_RESULTS = gql`
-mutation GetSearchResults($title: String, $dish: [Int], $cuisine: [Int], $category: [Int]) {
-    getSearchResults(title: $title, dish: $dish, cuisine: $cuisine, category: $category) {
-      tags {
-        ${recipeData}
-      }
-      text {
-        ${recipeData}
+export const CHANGE_TASKS = gql`
+  mutation changeTasks($tasks: [TaskInput]) {
+    changeTasks(tasks: $tasks) {
+      list {
+        id
+        name
+        amount
+        completed
       }
     }
   }

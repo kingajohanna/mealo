@@ -15,29 +15,25 @@ import i18next from 'i18next';
 import { Divider, List, Switch, Text } from 'react-native-paper';
 import { observer } from 'mobx-react-lite';
 import { useAuthQuery } from '../hooks/useAuthQuery';
-import { GET_RECIPE, GET_USER } from '../api/queries';
+import { GET_USER } from '../api/queries';
 import { Share } from '../types/user';
 import { ShareComponent } from '../components/ShareComponent';
-import { useEffect } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import { useOnForegroundFocus } from '../hooks/useOnForeGroundFocus';
 
 export const Settings = observer(() => {
   const [data, refetch] = useAuthQuery(GET_USER);
   const [deleteUser] = useAuthMutation(DELETE_USER);
 
   const { userStore } = useStore();
-  const isFocused = useIsFocused();
   const { showCompletedTasks, addIngredientsAutomatically } = userStore;
 
   const client = useApolloClient();
 
-  useEffect(() => {
-    if (isFocused) {
-      (async () => {
-        await refetch();
-      })();
-    }
-  }, [isFocused]);
+  useOnForegroundFocus(() => {
+    (async () => {
+      await refetch();
+    })();
+  });
 
   const clearStore = async () => {
     await client.clearStore();
@@ -95,7 +91,7 @@ export const Settings = observer(() => {
         <List.Section>
           <List.Subheader>{i18next.t('settings:shares')}</List.Subheader>
           {data?.getUser?.share?.map((share: Share) => (
-            <ShareComponent key={share.id} share={share} />
+            <ShareComponent key={share.id} share={share} refetchUser={refetch} />
           ))}
 
           <List.Subheader>{i18next.t('settings:appSettings')}</List.Subheader>

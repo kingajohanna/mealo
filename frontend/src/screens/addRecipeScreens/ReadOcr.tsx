@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { Tabs } from '../../navigation/tabs';
 import { Header } from '../../components/Header';
 import { Colors } from '../../theme/colors';
 import * as ImagePicker from 'react-native-image-picker';
@@ -10,10 +9,18 @@ import LottieView from 'lottie-react-native';
 import { Modal, Portal } from 'react-native-paper';
 import { AddRecipeProps } from '../AddRecipe';
 import { BottomButtons } from '../../components/BottomButtons';
-import { BING } from '@env';
+import { useAuthMutation } from '../../hooks/useAuthMutation';
+import { BING_ANALYZER } from '../../api/mutations';
+import i18next from 'i18next';
 
 export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
   const [loading, setLoading] = useState(false);
+  const [bingAnalyze, data] = useAuthMutation(BING_ANALYZER);
+
+  useEffect(() => {
+    props.setText(data?.bingAnalyzer);
+    setLoading(false);
+  }, [data]);
 
   const chooseFromGallery = async () => {
     const image = await ImagePicker.launchImageLibrary({
@@ -25,20 +32,7 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
 
       console.log(result.text);
 
-      const response = await fetch(`${BING}send-message`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: result.text,
-        }),
-      });
-
-      const data = await response.json();
-
-      setLoading(false);
-      props.setText(data.message);
+      await bingAnalyze({ variables: { text: result.text } });
     }
   };
 
@@ -58,7 +52,7 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
         </Modal>
       </Portal>
 
-      <Header title={Tabs.READ_OCR} />
+      <Header title={i18next.t('addRecipe:title')} />
       <View style={styles.container}>
         <Button
           onPress={chooseFromGallery}
@@ -67,12 +61,18 @@ export const ReadOCR: React.FC<AddRecipeProps> = (props) => {
           titleStyle={{ textAlign: 'center' }}
         />
 
-        <TextInput multiline style={styles.textInput} onChangeText={(text: string) => props.setText(text)}>
+        <TextInput
+          multiline
+          style={styles.textInput}
+          onChangeText={(text: string) => props.setText(text)}
+          placeholder="Or paste the recipe here"
+        >
           {props.text}
         </TextInput>
       </View>
       <BottomButtons
         back={props.back}
+        disabled={props.text === undefined}
         next={() => {
           props.setRecipe({ ...props.recipe }), props.next();
         }}
