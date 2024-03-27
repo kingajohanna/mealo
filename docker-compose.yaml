@@ -5,9 +5,27 @@ services:
       context: ./scraper
       dockerfile: ./Dockerfile
     ports:
+      - 3002:3002
+    networks:
+      - mlnet
+
+  ml-service:
+    build:
+      context: ./ml
+      dockerfile: ./Dockerfile
+    ports:
       - 3001:3001
     networks:
       - scrapernet
+
+  bing-chat-service:
+    build:
+      context: ./bing-chat
+      dockerfile: ./Dockerfile
+    ports:
+      - 3003:3003
+    networks:
+      - bingchatnet
 
   backend-service:
     build:
@@ -18,9 +36,15 @@ services:
     networks:
       - mongonet
       - scrapernet
+      - mlnet
+      - bingchatnet
+    extra_hosts:
+      - host.docker.internal:host-gateway
     depends_on:
       - mongo
       - scraper-service
+      - ml-service
+      - bing-chat-service
 
   mongo:
     image: mongo:latest
@@ -35,6 +59,8 @@ services:
 networks:
   mongonet:
   scrapernet:
+  bingchatnet:
+  mlnet:
 
 volumes:
   mongodata:

@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:18-alpine
 
 RUN mkdir -p /backend
 WORKDIR /backend
@@ -6,8 +6,10 @@ WORKDIR /backend
 COPY . .
 RUN source .env
 
+ENV LANG C.UTF-8
+
 RUN npm install
 
-CMD [ "npm", "run", "start" ]
-
 EXPOSE 3000
+
+ENTRYPOINT [ "npm", "run", "start" ]
