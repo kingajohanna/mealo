@@ -6,7 +6,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import { Colors } from '../../theme/colors';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../../navigation/AppNavigator';
-import { Tabs } from '../../navigation/tabs';
+import { AppNav } from '../../navigation/tabs';
 import i18next from 'i18next';
 import { useAuthMutation } from '../../hooks/useAuthMutation';
 import { FAVORITE_RECIPE } from '../../api/mutations';
@@ -14,7 +14,7 @@ import { FAVORITE_RECIPE } from '../../api/mutations';
 type Props = {
   recipe: Recipe;
   setRecipe: (recipe: Recipe) => void;
-} & StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
+} & StackScreenProps<RecipeStackParamList, AppNav.RECIPE>;
 
 const { width } = Dimensions.get('window');
 
@@ -45,14 +45,14 @@ export const BottomButtonContainer: react.FC<Props> = ({ recipe, navigation, set
         <Button
           icon={<IonIcon name="play" color={Colors.pine} size={32} />}
           style={[styles.smallButton, { borderColor: Colors.pine }]}
-          onPress={() => navigation.navigate(Tabs.VIDEO, { recipe })}
+          onPress={() => navigation.navigate(AppNav.VIDEO, { recipe })}
         />
       )}
       <Button
         title={i18next.t('recipeDetails:startCooking')}
         titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
         style={[styles.cookButton, { width: recipe.video ? width - 54 - 54 - 60 : width - 54 - 60 }]}
-        onPress={() => navigation.navigate(Tabs.COOKINGMODE, { recipe })}
+        onPress={() => navigation.navigate(AppNav.COOKINGMODE, { recipe })}
       />
     </View>
   );

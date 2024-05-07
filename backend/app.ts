@@ -56,7 +56,7 @@ server.start().then(async () => {
   mongoose
     .connect(process.env.DB_URL as string)
     .then(() => {
-      app.listen(PORT, HOST, () => {
+      httpServer.listen(PORT, HOST, () => {
         console.log(`🚀 Server ready at http://${HOST}:${PORT}`);
       });
     })

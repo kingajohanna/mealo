@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { ScreenBackground } from '../components/Background';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
@@ -168,7 +168,12 @@ export const Suggestions = () => {
           {searchIsActive ? renderSearchResults() : renderSuggestions()}
         </ScrollView>
       </ScreenBackground>
-      <FAB icon="plus" color={Colors.textLight} style={styles.fab} onPress={() => navigation.navigate(Tabs.READ_OCR)} />
+      <FAB
+        icon="plus"
+        color={Colors.textLight}
+        style={styles.fab}
+        onPress={() => navigation.navigate(AppNav.READ_OCR)}
+      />
     </>
   );
 };

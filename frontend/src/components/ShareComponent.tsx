@@ -6,7 +6,7 @@ import { Share } from '../types/user';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { Colors } from '../theme/colors';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { MANAGE_SHARE } from '../api/mutations';
@@ -37,7 +37,7 @@ export const ShareComponent: React.FC<Props> = (props) => {
       title={data?.getRecipe?.title}
       titleNumberOfLines={2}
       onPress={() => {
-        navigation.navigate(Tabs.RECIPE, { recipe: data?.getRecipe });
+        navigation.navigate(AppNav.RECIPE, { recipe: data?.getRecipe });
       }}
       left={() => (
         <ToggleButton.Row onValueChange={() => {}} value={''}>

@@ -46,6 +46,7 @@ export default function App() {
             success({
               headers: {
                 authorization: token,
+                'Apollo-Require-Preflight': true,
               },
             });
           });

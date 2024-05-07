@@ -86,18 +86,4 @@ export const userMutation = {
       { new: true }
     ).lean();
   },
-
-  bingAnalyzer: async (
-    parent: any,
-    args: { text: string },
-    context: ContextType
-  ) => {
-    const response = await axios.post(process.env.BING_URL as string, {
-      message: args.text,
-    });
-
-    console.log(response.data.message);
-
-    return await response.data.message;
-  },
 };

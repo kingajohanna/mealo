@@ -13,13 +13,13 @@ import { useAuthMutation } from '../hooks/useAuthMutation';
 import { ADD_LIST, ADD_MEAL } from '../api/mutations';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { useStore } from '../stores';
 import { Meals } from '../components/CalendarDay';
 import { TextInput } from '../components/TextInput';
 import { addReminder } from '../nativeModules/ReminderModule';
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.ADDMEAL>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.ADDMEAL>;
 
 export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
   const { date, mealType } = route.params;

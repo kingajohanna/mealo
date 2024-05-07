@@ -11,6 +11,7 @@ import { useAuthQuery } from '../hooks/useAuthQuery';
 import { TextInput } from './TextInput';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import i18next from 'i18next';
+import { isAndroid } from '../utils/androidHelper';
 
 interface SearchModalProps {
   refRBSheet: React.MutableRefObject<any>;
@@ -100,7 +101,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     <BottomSheetModal
       ref={refRBSheet}
       index={0}
-      snapPoints={['55%']}
+      snapPoints={[isAndroid ? '30%' : '55%']}
       backdropComponent={renderBackdrop}
       backgroundStyle={styles.bottomSheetBackground}
     >

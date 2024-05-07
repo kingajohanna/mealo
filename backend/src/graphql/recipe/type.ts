@@ -113,5 +113,6 @@ export const recipeType = `
         addMeal( recipeId: Int!, meal: MealInput ): Recipe
         removeMeal( recipeId: Int!, mealId: String ): Recipe
         analyzeRecipe( recipeId: Int! ): Recipe
+        bingAnalyzer(text: String!): String
     }
 `;

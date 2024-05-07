@@ -65,8 +65,12 @@ export const Login = () => {
 
   const onLogin = async (email: string, password: string) => {
     try {
-      if (!password || !email || !password.match(firebasePassword) || !email.match(firebaseEmail)) {
-        Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
+      if (!password || !email) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:missing'));
+      } else if (!password.match(firebasePassword)) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:passwordComplexity'));
+      } else if (!email.match(firebaseEmail)) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:emailError'));
       } else {
         await auth().signInWithEmailAndPassword(email, password);
         userStore.setIsLoggedIn(true);
@@ -78,15 +82,14 @@ export const Login = () => {
 
   const onRegister = async (email: string, password: string, repassword: string) => {
     try {
-      if (
-        !password ||
-        !repassword ||
-        !email ||
-        password !== repassword ||
-        !password.match(firebasePassword) ||
-        !email.match(firebaseEmail)
-      ) {
-        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:text'));
+      if (!password || !repassword || !email) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:missing'));
+      } else if (password !== repassword) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:passwordNotMatch'));
+      } else if (!password.match(firebasePassword)) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:passwordComplexity'));
+      } else if (!email.match(firebaseEmail)) {
+        return Alert.alert(i18next.t('auth:error:title'), i18next.t('auth:error:emailError'));
       }
 
       await auth().createUserWithEmailAndPassword(email, password);
@@ -102,6 +105,7 @@ export const Login = () => {
   const passwordReset = async (email: string) => {
     try {
       await auth().sendPasswordResetEmail(email);
+      Alert.alert(i18next.t('auth:login:resetTitle'), i18next.t('auth:login:resetText'));
     } catch {
       Alert.alert(i18next.t('auth:login:forgotPasswordErrorTitle'), i18next.t('auth:login:forgotPasswordErrorText'));
     }

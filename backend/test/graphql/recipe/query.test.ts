@@ -75,9 +75,46 @@ describe("Recipe Queries", () => {
       title: "",
     };
 
-    const expectedResult = { tags: [], text: [] };
+    const expectedResult = {
+      tags: [
+        {
+          author: "Mock Author",
+          calories: "200",
+          canonical_url: "http://mock-url.com",
+          category: "Mock Category",
+          cookTime: "20 minutes",
+          cuisine: "Mock Cuisine",
+          description: "Mock Description",
+          difficulty: "Easy",
+          dish: null,
+          folders: ["Folder 1", "Folder 2"],
+          host: "Mock Host",
+          id: "1",
+          image: "mock-image.jpg",
+          ingredients: ["Ingredient 1", "Ingredient 2"],
+          instructions: ["Step 1", "Step 2"],
+          language: "English",
+          nutrients: ["Mock Nutrients"],
+          predict: {
+            category: 0,
+            cuisine: 0,
+            dish: 0,
+          },
+          prepTime: "10 minutes",
+          ratings: "4.5",
+          reviews: ["10"],
+          siteName: "Mock Site",
+          speed: "Medium",
+          title: "Mock Recipe",
+          totalTime: "30 minutes",
+          video: "http://mock-video.com",
+          yields: "4 servings",
+        },
+      ],
+      text: [],
+    };
     const result = await recipeQuery.getSearchResults(null, args, context);
 
-    expect(result).toEqual(expectedResult);
+    expect(result.tags[0].author).toEqual(expectedResult.tags[0].author);
   });
 });

@@ -1,5 +1,6 @@
-import { firebase, FirebaseAuthTypes } from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { makeAutoObservable } from 'mobx';
+import { makePersistable } from 'mobx-persist-store';
 import moment from 'moment';
 
 /*
@@ -15,11 +16,16 @@ export type RecipeTimer = {
 };
 
 export default class TimerStore {
+  timers: RecipeTimer[] = [];
+
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
+    makePersistable(this, {
+      name: 'TimerStore',
+      properties: ['timers'],
+      storage: AsyncStorage,
+    });
   }
-
-  timers: RecipeTimer[] = [];
 
   cleanTimers() {
     this.timers = this.timers.filter((timer) => timer.endDate.isAfter(moment()));

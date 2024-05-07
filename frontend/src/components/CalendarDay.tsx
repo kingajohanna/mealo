@@ -12,7 +12,7 @@ import { Recipe } from '../types/recipe';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { CalendarMealComponent } from './CalendarMealComponent';
 
 type Props = {
@@ -55,7 +55,7 @@ export const CalendarDay: React.FC<Props> = ({ date, recipes }) => {
 
   const navigateToAddMeal = (mealType: Meals) => {
     setOpenMenu(false);
-    navigation.navigate(Tabs.ADDMEAL, { date: date.format('YYYY-MM-DD').toString(), mealType });
+    navigation.navigate(AppNav.ADDMEAL, { date: date.format('YYYY-MM-DD').toString(), mealType });
   };
 
   return (

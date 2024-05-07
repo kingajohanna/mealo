@@ -9,7 +9,7 @@ import { REMOVE_MEAL } from '../api/mutations';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Meals, RecipesForDay } from './CalendarDay';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -111,7 +111,7 @@ export const CalendarMealComponent: React.FC<Props> = ({ recipe }) => {
       <Pressable
         style={styles.dateContainer}
         key={recipe.recipe.id}
-        onPress={() => navigation.navigate(Tabs.RECIPE, { recipe: recipe.recipe })}
+        onPress={() => navigation.navigate(AppNav.RECIPE, { recipe: recipe.recipe })}
       >
         {renderLogo(recipe.meal.meal)}
         <View style={{ marginLeft: 10, flexShrink: 1, marginVertical: 5 }}>

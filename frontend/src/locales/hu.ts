@@ -30,6 +30,11 @@ export default {
     error: {
       title: 'Hoppá...',
       text: 'Valami hiba történt',
+      missing: 'Az emailcím vagy a jelszó hiányzik',
+      passwordNotMatch: 'A jelszavak nem egyezenek',
+      passwordComplexity:
+        'Hibás jelszó. Adj meg legalább 6 karakter hosszú jelszót, bámrilyen latin betűvel vagy számmal.',
+      emailError: 'Wrong email format.',
     },
   },
   suggestions: {
@@ -183,7 +188,7 @@ export default {
       dinner: 'Vacsora',
       whatsfor: 'Mi legyen a ',
     },
-    days: ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'],
+    days: ['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat'],
     months: [
       'Január',
       'Február',

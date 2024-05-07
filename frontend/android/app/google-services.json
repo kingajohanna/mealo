@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "454226409378-oa2g77gm27ukt7pq0u35341f80554t17.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo",
+            "certificate_hash": "49cacdd3db3269b83c0bfedad33290beebea7557"
+          }
+        },
+        {
           "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -73,6 +81,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "454226409378-63ujrucjm5uf8e0qsaebg7475gjl62un.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo.mao",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "454226409378-8asba62cjscepunt5a7qjqtueu805ds7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mealo.mao",
+            "certificate_hash": "49cacdd3db3269b83c0bfedad33290beebea7557"
+          }
+        },
         {
           "client_id": "454226409378-4cu0r9hs4oikqlrkc7ii6b373cqe5pqq.apps.googleusercontent.com",
           "client_type": 3

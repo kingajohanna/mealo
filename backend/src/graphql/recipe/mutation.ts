@@ -5,12 +5,7 @@ import { User } from "../../models/User";
 import { hashCode } from "../../utils/hash";
 import { ContextType } from "../types";
 import { deleteFile, storeFile } from "../../utils/filesave";
-import {
-  getCategory,
-  getCuisine,
-  getDish,
-  getSearchResults,
-} from "../../utils/predictions";
+import { getCategory, getCuisine, getDish } from "../../utils/predictions";
 import { RecipeList } from "../../models/RecipeList";
 
 export const recipeMutation = {
@@ -98,9 +93,13 @@ export const recipeMutation = {
     const { recipe, image } = args;
     const { uid } = context;
 
+    console.log("recipe", recipe);
+
     const getImage = async () => {
       if (!image) return {};
       const img = await image;
+
+      console.log("img", img);
 
       const saved: any = await storeFile(img);
       return { image: saved.dbPath };
@@ -286,5 +285,16 @@ export const recipeMutation = {
     }
 
     return recipe;
+  },
+  bingAnalyzer: async (
+    parent: any,
+    args: { text: string },
+    context: ContextType
+  ) => {
+    const response = await axios.post(process.env.BING_URL as string, {
+      message: args.text,
+    });
+
+    return await response.data.message;
   },
 };

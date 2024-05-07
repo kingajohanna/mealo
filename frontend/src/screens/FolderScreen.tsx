@@ -5,7 +5,7 @@ import { Dimensions, FlatList, Pressable, RefreshControl, StyleSheet, Text, View
 import { ScreenBackground } from '../components/Background';
 import { Header } from '../components/Header';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
 import LottieView from 'lottie-react-native';
 import { GET_RECIPES } from '../api/queries';
@@ -42,7 +42,7 @@ export const FolderScreen = () => {
   const [time, setTime] = useState<Time | undefined>(undefined);
 
   const navigation = useNavigation<StackNavigationProp<RecipeStackParamList>>();
-  const accessPage = (recipe: Recipe) => navigation.navigate(Tabs.RECIPE, { recipe });
+  const accessPage = (recipe: Recipe) => navigation.navigate(AppNav.RECIPE, { recipe });
 
   const filterActive = category !== all || cuisine !== all || text !== '' || time !== undefined;
 
@@ -171,7 +171,7 @@ export const FolderScreen = () => {
     }
 
     return (
-      <Pressable style={styles.gridItem} onPress={() => navigation.navigate(Tabs.RECIPEFOLDER, { filter, recipes })}>
+      <Pressable style={styles.gridItem} onPress={() => navigation.navigate(AppNav.RECIPEFOLDER, { filter, recipes })}>
         <View style={{ flexDirection: 'row' }}>
           {renderImage(1, recipes[0]?.image || '')}
           {renderImage(2, recipes[1]?.image || '')}

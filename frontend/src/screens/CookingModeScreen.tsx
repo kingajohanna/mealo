@@ -6,7 +6,7 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import { Button } from '../components/Button';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { useCallback, useRef, useState } from 'react';
 import { CheckableText } from '../components/CheckableText';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
@@ -14,7 +14,7 @@ import KeepAwake from '@sayem314/react-native-keep-awake';
 import { Timers } from './Timers';
 import i18next from 'i18next';
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.COOKINGMODE>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.COOKINGMODE>;
 
 export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
   const { recipe } = route.params;

@@ -15,23 +15,28 @@ export const recipeQuery = {
 
     const categories: string[] = [];
     const cuisines: string[] = [];
-    const folders: string[] = [];
+
+    const uniqueFolders = new Set<string>();
 
     recipes?.forEach((recipe: any) => {
       if (recipe.category && !categories.includes(recipe.category)) {
         categories.push(recipe.category);
       }
-      if (recipe.cuisine && !cuisines.includes(recipe.cuisine)) {
+      if (
+        recipe.cuisine &&
+        !cuisines.includes(recipe.cuisine) &&
+        !categories.includes(recipe.cuisine)
+      ) {
         cuisines.push(recipe.cuisine);
       }
       if (recipe.folders) {
         recipe.folders.forEach((folder: string) => {
-          if (!folders.includes(folder)) {
-            folders.push(folder);
-          }
+          uniqueFolders.add(folder);
         });
       }
     });
+
+    const folders = Array.from(uniqueFolders);
     folders.sort();
 
     return { recipes, categories, cuisines, folders };

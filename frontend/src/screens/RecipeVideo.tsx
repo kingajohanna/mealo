@@ -3,7 +3,7 @@ import { ScreenBackground } from '../components/Background';
 import { Colors } from '../theme/colors';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { useRef } from 'react';
 import { CheckableText } from '../components/CheckableText';
 import KeepAwake from '@sayem314/react-native-keep-awake';
@@ -11,7 +11,7 @@ import Video from 'react-native-video';
 import VideoRef from 'react-native-video';
 import YoutubePlayer from 'react-native-youtube-iframe';
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.VIDEO>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.VIDEO>;
 
 const height = (Dimensions.get('window').width / 16) * 9;
 

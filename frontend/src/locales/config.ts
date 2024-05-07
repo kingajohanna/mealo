@@ -8,6 +8,7 @@ const resources = {
   en,
   hu,
 };
+
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   resources,
@@ -17,4 +18,5 @@ i18n.use(initReactI18next).init({
     escapeValue: false,
   },
 });
+
 export default i18n;

@@ -1,9 +1,8 @@
 import { Recipes } from '../screens/Recipes';
 import { Colors } from '../theme/colors';
-import { Tabs } from './tabs';
+import { AppNav } from './tabs';
 import { StyleSheet } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import * as React from 'react';
 import { androidBottomPadding } from '../utils/androidHelper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,15 +14,13 @@ import { ShoppingList } from '../screens/ShoppingList';
 import { Settings } from '../screens/Settings';
 import { AddRecipe } from '../screens/AddRecipe';
 import { CookingMode } from '../screens/CookingModeScreen';
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { Timers } from '../screens/Timers';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { FolderScreen } from '../screens/FolderScreen';
 import { RecipeFolderScreen } from '../screens/RecipeFolderScreen';
 import { CalendarScreen } from '../screens/Calendar';
 import { LoadingOverlay } from '../components/LoadingOverlay';
 import { useStore } from '../stores';
 import { observer } from 'mobx-react-lite';
-import moment from 'moment';
 import { Meals } from '../components/CalendarDay';
 import { AddMeal } from '../screens/AddMeal';
 import i18next from 'i18next';
@@ -31,17 +28,17 @@ import { RecipeVideo } from '../screens/RecipeVideo';
 import { Suggestions } from '../screens/Suggestions';
 
 export type RecipeStackParamList = {
-  [Tabs.SUGGESTIONS]: undefined;
-  [Tabs.RECIPES]: { recipes: Recipe[] };
-  [Tabs.SHOPPINGLIST]: undefined;
-  [Tabs.RECIPE]: { recipe: Recipe };
-  [Tabs.READ_OCR]: undefined;
-  [Tabs.COOKINGMODE]: { recipe: Recipe };
-  [Tabs.TIMERS]: { recipe: Recipe };
-  [Tabs.FOLDERS]: undefined;
-  [Tabs.RECIPEFOLDER]: { filter: string; recipes: Recipe[] };
-  [Tabs.ADDMEAL]: { date: string; mealType: Meals };
-  [Tabs.VIDEO]: { recipe: Recipe };
+  [AppNav.SUGGESTIONS]: undefined;
+  [AppNav.RECIPES]: { recipes: Recipe[] };
+  [AppNav.SHOPPINGLIST]: undefined;
+  [AppNav.RECIPE]: { recipe: Recipe };
+  [AppNav.READ_OCR]: undefined;
+  [AppNav.COOKINGMODE]: { recipe: Recipe };
+  [AppNav.TIMERS]: { recipe: Recipe };
+  [AppNav.FOLDERS]: undefined;
+  [AppNav.RECIPEFOLDER]: { filter: string; recipes: Recipe[] };
+  [AppNav.ADDMEAL]: { date: string; mealType: Meals };
+  [AppNav.VIDEO]: { recipe: Recipe };
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -52,11 +49,11 @@ function RecipeNavigator() {
     <Tab.Navigator
       activeColor={Colors.beige}
       inactiveColor={Colors.beigeOp}
-      initialRouteName={Tabs.RECIPENAVIGATOR}
+      initialRouteName={AppNav.RECIPENAVIGATOR}
       barStyle={styles.tabBar}
     >
       <Tab.Screen
-        name={Tabs.CALENDAR}
+        name={AppNav.CALENDAR}
         component={CalendarScreen}
         options={{
           tabBarLabel: i18next.t('tabs:planner'),
@@ -64,7 +61,7 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
-        name={Tabs.SHOPPINGLIST}
+        name={AppNav.SHOPPINGLIST}
         component={ShoppingList}
         options={{
           tabBarLabel: i18next.t('tabs:list'),
@@ -72,7 +69,7 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
-        name={Tabs.RECIPENAVIGATOR}
+        name={AppNav.RECIPENAVIGATOR}
         component={Suggestions}
         options={{
           tabBarLabel: i18next.t('tabs:recipes'),
@@ -80,7 +77,7 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
-        name={Tabs.FOLDERSTACK}
+        name={AppNav.FOLDERSTACK}
         component={FolderNavigator}
         options={{
           tabBarLabel: i18next.t('tabs:folders'),
@@ -88,7 +85,7 @@ function RecipeNavigator() {
         }}
       />
       <Tab.Screen
-        name={Tabs.SETTINGS}
+        name={AppNav.SETTINGS}
         component={Settings}
         options={{
           tabBarLabel: i18next.t('tabs:settings'),
@@ -102,8 +99,8 @@ function RecipeNavigator() {
 const FolderNavigator = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name={Tabs.FOLDERS} component={FolderScreen} options={{ headerShown: false }} />
-      <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
+      <Stack.Screen name={AppNav.FOLDERS} component={FolderScreen} options={{ headerShown: false }} />
+      <Stack.Screen name={AppNav.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
@@ -114,23 +111,23 @@ export const AppNavigator = observer(() => {
     <SafeAreaProvider style={styles.container}>
       <BottomSheetModalProvider>
         <Stack.Navigator>
-          <Stack.Screen name={Tabs.SUGGESTIONS} component={RecipeNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name={Tabs.RECIPES} component={Recipes} options={{ headerShown: false }} />
-          <Stack.Screen name={Tabs.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
-          <Stack.Screen name={Tabs.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
-          <Stack.Screen name={Tabs.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />
+          <Stack.Screen name={AppNav.SUGGESTIONS} component={RecipeNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name={AppNav.RECIPES} component={Recipes} options={{ headerShown: false }} />
+          <Stack.Screen name={AppNav.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />
+          <Stack.Screen name={AppNav.RECIPE} component={RecipeDetails} options={{ headerShown: false }} />
+          <Stack.Screen name={AppNav.COOKINGMODE} component={CookingMode} options={{ headerShown: false }} />
           <Stack.Screen
-            name={Tabs.VIDEO}
+            name={AppNav.VIDEO}
             component={RecipeVideo}
             options={{ headerShown: false, presentation: 'modal' }}
           />
           <Stack.Screen
-            name={Tabs.READ_OCR}
+            name={AppNav.READ_OCR}
             component={AddRecipe}
             options={{ headerShown: false, presentation: 'modal' }}
           />
           <Stack.Screen
-            name={Tabs.ADDMEAL}
+            name={AppNav.ADDMEAL}
             component={AddMeal}
             options={{ headerShown: false, presentation: 'modal' }}
           />

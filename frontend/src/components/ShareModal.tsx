@@ -3,7 +3,6 @@ import { View } from 'react-native';
 
 import { ShareMenuReactView } from 'react-native-share-menu';
 import Dialog from 'react-native-dialog';
-import { useStore } from '../stores';
 
 const Share = () => {
   const [sharedData, setSharedData] = useState('');

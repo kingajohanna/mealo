@@ -97,6 +97,10 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
             };
           };
 
+          console.log({
+            variables: { recipe: { ...props.recipe, prepTime, totalTime, yields, cuisine, speed }, ...getImage() },
+          });
+
           await addOcrRecipe({
             variables: { recipe: { ...props.recipe, prepTime, totalTime, yields, cuisine, speed }, ...getImage() },
           });

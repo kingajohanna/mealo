@@ -5,7 +5,7 @@ import { Header } from '../components/Header';
 import { GET_RECIPES } from '../api/queries';
 import { useAuthQuery } from '../hooks/useAuthQuery';
 import i18next from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
 import { CalendarDay } from '../components/CalendarDay';
@@ -19,7 +19,7 @@ export const CalendarScreen = () => {
 
   const [dates, setDates] = useState<moment.Moment[]>([]);
 
-  useOnForegroundFocus(() => {
+  const createDates = () => {
     setDates([]);
     var currDate = moment(moment().subtract(minusDays, 'days')).startOf('day');
     var lastDate = moment(moment().add(plusDays, 'days')).startOf('day');
@@ -29,6 +29,14 @@ export const CalendarScreen = () => {
       temp.push(currDate.clone());
     }
     setDates(temp);
+  };
+
+  useEffect(() => {
+    createDates();
+  }, []);
+
+  useOnForegroundFocus(() => {
+    createDates();
   });
 
   return (

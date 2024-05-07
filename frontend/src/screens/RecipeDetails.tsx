@@ -9,7 +9,7 @@ import { Colors } from '../theme/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
 import { Header } from '../components/Header';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { EDIT_RECIPE, FOLDER_RECIPE, SAVE_RECIPE, SHARE_RECIPE } from '../api/mutations';
 import { useAuthMutation } from '../hooks/useAuthMutation';
 import { useAuthQuery } from '../hooks/useAuthQuery';
@@ -27,7 +27,7 @@ import { OtherActionContainer } from '../components/RecipeDetails/OtherActionCon
 import { Recipe } from '../types/recipe';
 import { removeFields } from '../utils/removeFields';
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPE>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.RECIPE>;
 
 export const RecipeDetails: React.FC<Props> = ({ route, navigation }) => {
   const [data, refetch] = useAuthQuery(GET_RECIPES);

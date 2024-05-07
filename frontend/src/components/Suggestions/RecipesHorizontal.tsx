@@ -3,7 +3,7 @@ import { Recipe } from '../../types/recipe';
 import { FlatList, View } from 'react-native';
 import { RecipeSuggestionComponent } from './RecipeSuggestionComponent';
 import { useNavigation } from '@react-navigation/native';
-import { Tabs } from '../../navigation/tabs';
+import { AppNav } from '../../navigation/tabs';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../../navigation/AppNavigator';
 
@@ -29,8 +29,8 @@ export const RecipesHorizontal: React.FC<Props> = memo(({ suggestions }) => {
 
   const onOpenRecipe = (recipe: Recipe) => {
     if (recipe.id === 'more') {
-      navigation.navigate(Tabs.RECIPES, { recipes: suggestions });
-    } else navigation.navigate(Tabs.RECIPE, { recipe });
+      navigation.navigate(AppNav.RECIPES, { recipes: suggestions });
+    } else navigation.navigate(AppNav.RECIPE, { recipe });
   };
 
   return (

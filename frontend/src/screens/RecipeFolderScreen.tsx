@@ -4,19 +4,19 @@ import { StyleSheet, View } from 'react-native';
 import { ScreenBackground } from '../components/Background';
 import { Header } from '../components/Header';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { Recipe } from '../types/recipe';
 import { RecipeList } from '../components/Recipes/RecipeList';
 import { Colors } from '../theme/colors';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import i18next from 'i18next';
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPEFOLDER>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.RECIPEFOLDER>;
 
 export const all = i18next.t(`recipes:all`);
 
 export const RecipeFolderScreen: React.FC<Props> = ({ route, navigation }) => {
-  const accessPage = (recipe: Recipe) => navigation.navigate(Tabs.RECIPE, { recipe });
+  const accessPage = (recipe: Recipe) => navigation.navigate(AppNav.RECIPE, { recipe });
   const renderBack = (
     <SimpleLineIcons name="arrow-left" size={25} color={Colors.beige} onPress={() => navigation.goBack()} />
   );

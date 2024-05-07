@@ -28,5 +28,5 @@ def fill_recipe_speed(recipe: dict) -> dict:
         else:
             recipe['speed'] = models.SpeedEnum.SLOW
     else:
-        recipe['spped'] = models.SpeedEnum.UNDEFINED
+        recipe['speed'] = models.SpeedEnum.UNDEFINED
     return recipe

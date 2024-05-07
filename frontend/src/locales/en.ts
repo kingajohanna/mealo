@@ -23,6 +23,8 @@ export default {
       forgotPassword: 'Forgot password?',
       forgotPasswordErrorTitle: 'Oops...',
       forgotPasswordErrorText: 'Have you filled email address field?',
+      resetTitle: 'Password reset',
+      resetText: 'The reset email sent to your address.',
     },
     signup: {
       title: 'Sign up',
@@ -30,6 +32,10 @@ export default {
     error: {
       title: 'Oops...',
       text: 'Something went wrong',
+      missing: 'Email or password is missing',
+      passwordNotMatch: 'Passwords do not match',
+      passwordComplexity: 'Invalid password. Minimum 6 characters with any latin alphabet or numbers.',
+      emailError: 'Wrong email format.',
     },
   },
   suggestions: {
@@ -185,7 +191,7 @@ export default {
       dinner: 'Dinner',
       whatsfor: "What's for ",
     },
-    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     months: [
       'January',
       'February',

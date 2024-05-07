@@ -1,4 +1,4 @@
-export enum Tabs {
+export enum AppNav {
   SUGGESTIONS = 'Suggestions',
   RECIPES = 'Recipes',
   SHOPPINGLIST = 'List',

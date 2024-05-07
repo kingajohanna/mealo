@@ -20,6 +20,5 @@ export const userType = `
     deleteUser: User
     shareRecipe(recipeId: Int!, email: String!): Share
     manageShare(shareId: String!, id: Int!, accept: Boolean!): User
-    bingAnalyzer(text: String!): String
   }
 `;

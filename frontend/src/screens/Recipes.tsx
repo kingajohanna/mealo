@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { ScreenBackground } from '../components/Background';
-import { Tabs } from '../navigation/tabs';
+import { AppNav } from '../navigation/tabs';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RecipeStackParamList } from '../navigation/AppNavigator';
 import { Recipe } from '../types/recipe';
@@ -22,7 +22,7 @@ export enum Time {
 
 export const all = i18next.t(`recipes:all`);
 
-type Props = StackScreenProps<RecipeStackParamList, Tabs.RECIPES>;
+type Props = StackScreenProps<RecipeStackParamList, AppNav.RECIPES>;
 
 export const Recipes: React.FC<Props> = ({ route, navigation }) => {
   const [filteredRecipes, setFilteredRecipes] = useState(route.params.recipes);
@@ -89,7 +89,7 @@ export const Recipes: React.FC<Props> = ({ route, navigation }) => {
   }, [text, category, cuisine, time, route.params.recipes]);
 
   const accessPage = (recipe: Recipe) => {
-    navigation.navigate(Tabs.RECIPE, { recipe });
+    navigation.navigate(AppNav.RECIPE, { recipe });
   };
 
   const renderBack = (
