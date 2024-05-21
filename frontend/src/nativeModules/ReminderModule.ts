@@ -1,7 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import { Double } from 'react-native/Libraries/Types/CodegenTypes';
-
-const { ReminderModule } = NativeModules;
+import { ListItem } from '../types/list';
 
 export type Reminder = {
   id?: string;
@@ -9,6 +8,8 @@ export type Reminder = {
   notes: string;
   completed: boolean;
 };
+
+const { ReminderModule } = NativeModules;
 
 export const fetchReminders = async (): Promise<Reminder[] | undefined> => {
   if (Platform.OS === 'ios')
@@ -37,10 +38,10 @@ export const addReminder = async (title: string, note: string = ''): Promise<Rem
     }
 };
 
-export const setReminderCompleted = async (id: string, completed: number): Promise<Reminder | undefined> => {
+export const setReminderCompleted = async (item: ListItem): Promise<Reminder | undefined> => {
   if (Platform.OS === 'ios')
     try {
-      return await ReminderModule.completeReminder(id, completed);
+      return await ReminderModule.completeReminder(item.id, !item.completed);
     } catch (error: any) {
       throw new Error('Error adding reminder: ' + error.message);
     }

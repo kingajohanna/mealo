@@ -9,7 +9,7 @@ import moment from 'moment';
 */
 
 export type RecipeTimer = {
-  id: number;
+  id: string;
   endDate: moment.Moment;
   duration: number;
   title: string;
@@ -19,7 +19,7 @@ export default class TimerStore {
   timers: RecipeTimer[] = [];
 
   constructor() {
-    makeAutoObservable(this, {}, { autoBind: true });
+    makeAutoObservable(this);
     makePersistable(this, {
       name: 'TimerStore',
       properties: ['timers'],
@@ -36,7 +36,7 @@ export default class TimerStore {
     this.timers.push(timer);
   }
 
-  removeTimer(id: number) {
+  removeTimer(id: string) {
     this.timers = this.timers.filter((timer) => timer.id !== id);
   }
 }

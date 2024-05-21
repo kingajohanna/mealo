@@ -149,6 +149,8 @@ export default {
     checkedListItemsText: 'Toggle to show/hide checked items',
     addIngredientsAutomaticallyTitle: 'Add ingredients to list',
     addIngredientsAutomaticallyText: 'Toggle to enable',
+    showCategoryFolders: 'Show category folder',
+    showCuisineFolders: 'Show cuisine folder',
     appSettings: 'App settings',
     shares: 'Shared recipes',
     shareHelp: 'Accept or reject this recipe on the left',

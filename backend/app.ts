@@ -3,6 +3,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
 import * as dotenv from "dotenv";
+import cors from "cors";
 import http from "http";
 import bodyParser from "body-parser";
 import { initializeApp } from "firebase-admin/app";
@@ -12,7 +13,7 @@ import mongoose from "mongoose";
 import { authenticateToken } from "./src/middlewares/auth";
 import { graphqlUploadExpress } from "graphql-upload-minimal";
 
-dotenv.config({ path: "./.local.env" });
+dotenv.config({ path: "./.env" });
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY as string,
@@ -22,6 +23,10 @@ const firebaseConfig = {
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID as string,
   databaseURL: process.env.FIREBASE_DATABASE_URL as string,
   appId: process.env.FIREBASE_APP_ID as string,
+};
+
+var corsOptions = {
+  origin: "http://localhost:3000",
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);

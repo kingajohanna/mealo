@@ -69,8 +69,7 @@ export const Timers: React.FC<Props> = observer(({ recipe, onClose }) => {
 
     await notifee.createTriggerNotification(
       {
-        title: recipe.title,
-        body: title,
+        title,
         android: {
           channelId: 'recipe timer',
         },

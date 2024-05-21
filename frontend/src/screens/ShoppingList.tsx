@@ -50,19 +50,28 @@ export const ShoppingList = observer(() => {
   });
 
   const add = async () => {
-    const reminder = await addReminder(titleInput, amountInput);
-    await addToList({
-      variables: {
-        name: titleInput,
-        amount: amountInput,
-        id: reminder?.id,
-      },
-    });
+    try {
+      const reminder = await addReminder(titleInput, amountInput);
+      await addToList({
+        variables: {
+          name: titleInput,
+          amount: amountInput,
+          id: reminder?.id,
+        },
+      });
 
-    setShowAddToList(false);
-    setTitleInput('');
-    setAmountInput('');
-    refetch();
+      setShowAddToList(false);
+      setTitleInput('');
+      setAmountInput('');
+      refetch();
+    } catch (error) {
+      console.error('Error adding item:', error);
+    } finally {
+      setShowAddToList(false);
+      setTitleInput('');
+      setAmountInput('');
+      refetch();
+    }
   };
 
   const checkList = async () => {
@@ -76,17 +85,14 @@ export const ShoppingList = observer(() => {
         const item = list.find((listItem: ListItem) => listItem.id === reminder.id);
 
         if (item && item.completed !== reminder.completed) {
-          const completed = await setCompleted({
+          await setCompleted({
             variables: {
               id: item.id,
               completed: reminder.completed,
             },
           });
-          if (completed.data.completeTask.list) {
-            updatedList = completed.data.completeTask.list;
-          }
         } else if (!item) {
-          const newList = await addToList({
+          await addToList({
             variables: {
               name: reminder.title,
               amount: reminder.notes,
@@ -94,10 +100,8 @@ export const ShoppingList = observer(() => {
               completed: reminder.completed,
             },
           });
-          if (newList.data.addToList.list) {
-            updatedList = newList.data.addToList.list;
-          }
         }
+        await refetch();
       }
       for (const item of list) {
         const reminder = reminders.find((reminder) => reminder.id === item.id);

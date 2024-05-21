@@ -16,7 +16,7 @@ export const FolderModal: React.FC<Props> = (props) => {
   return (
     <Dialog.Container visible={props.isOpen}>
       <Dialog.Title>{i18next.t('recipeDetails:addToFolder')}</Dialog.Title>
-      <ScrollView style={{ height: 500 }}>
+      <ScrollView style={{ maxHeight: 500 }}>
         {Object.keys(props.folderValues).map((folder: string) => (
           <Dialog.Switch
             label={folder}

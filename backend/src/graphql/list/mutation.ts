@@ -40,12 +40,10 @@ export const listMutation = {
 
     let list = await List.findOne({ uid });
 
-    await list
-      ?.updateOne(
-        { uid: uid, "list.id": id },
-        { $set: { "list.$.completed": completed } }
-      )
-      .lean();
+    const listItem = list?.list.find((task) => task.id === id);
+    if (listItem) listItem.completed = completed;
+
+    await list?.save();
 
     return list;
   },

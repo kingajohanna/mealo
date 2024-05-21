@@ -4,29 +4,35 @@ import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 
 export default class UserStore {
+  private user: FirebaseAuthTypes.User | undefined = undefined;
+  isLoggedIn = false;
+  loading = false;
+  addIngredientsAutomatically = false;
+  showCompletedTasks = true;
+  showCategoryFolders = true;
+  showCuisineFolders = true;
+
   constructor() {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: 'UserStore',
-      properties: ['showCompletedTasks', 'addIngredientsAutomatically'],
+      properties: ['showCompletedTasks', 'addIngredientsAutomatically', 'showCategoryFolders', 'showCuisineFolders'],
       storage: AsyncStorage,
     });
   }
 
-  isLoggedIn = false;
-  user: FirebaseAuthTypes.User | undefined = undefined;
-  loading = false;
-  showCompletedTasks = true;
-  addIngredientsAutomatically = false;
+  private setUser(user: FirebaseAuthTypes.User | undefined) {
+    this.user = user;
+  }
+
+  setAddIngredientsAutomatically(value: boolean) {
+    this.addIngredientsAutomatically = value;
+  }
 
   setIsLoggedIn(login: boolean) {
     this.isLoggedIn = login;
     this.setUser(firebase.auth().currentUser || undefined);
-  }
-
-  setUser(user: FirebaseAuthTypes.User | undefined) {
-    this.user = user;
   }
 
   setLoading(loading: boolean) {
@@ -37,7 +43,11 @@ export default class UserStore {
     this.showCompletedTasks = value;
   }
 
-  setAddIngredientsAutomatically(value: boolean) {
-    this.addIngredientsAutomatically = value;
+  setShowCategoryFolders(value: boolean) {
+    this.showCategoryFolders = value;
+  }
+
+  setShowCuisineFolders(value: boolean) {
+    this.showCuisineFolders = value;
   }
 }

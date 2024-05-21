@@ -10,6 +10,7 @@ export const useAuthQuery = (query: DocumentNode, variables?: OperationVariables
   useEffect(() => {
     if (error && tryCount < MAXTRY) {
       console.log(error);
+      refetch();
       setTryCount(tryCount + 1);
     }
   }, [data, loading, error, refetch]);

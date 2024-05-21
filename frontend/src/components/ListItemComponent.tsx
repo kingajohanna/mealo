@@ -72,14 +72,14 @@ export const ListItemComponent: React.FC<Props> = ({
     interpolate: (arg0: { inputRange: number[]; outputRange: number[] }) => any;
   }) => <View style={styles.rightActionsContainer}>{renderRightAction(progress)}</View>;
 
-  const complete = async (id: string, completed: boolean) => {
+  const complete = async (item: ListItem) => {
     await setCompleted({
       variables: {
-        id,
-        completed: completed ? false : true,
+        id: item.id,
+        completed: !item.completed,
       },
     });
-    await setReminderCompleted(id, completed ? 0 : 1);
+    await setReminderCompleted(item);
   };
 
   return (
@@ -92,16 +92,10 @@ export const ListItemComponent: React.FC<Props> = ({
           <>
             {Platform.OS === 'ios' ? (
               <View style={styles.checkboxIos}>
-                <Checkbox
-                  status={item.completed ? 'checked' : 'unchecked'}
-                  onPress={() => complete(item.id, item.completed)}
-                />
+                <Checkbox status={item.completed ? 'checked' : 'unchecked'} onPress={() => complete(item)} />
               </View>
             ) : (
-              <Checkbox
-                status={item.completed ? 'checked' : 'unchecked'}
-                onPress={() => complete(item.id, item.completed)}
-              />
+              <Checkbox status={item.completed ? 'checked' : 'unchecked'} onPress={() => complete(item)} />
             )}
           </>
         )}

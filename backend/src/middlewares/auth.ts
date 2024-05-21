@@ -6,9 +6,9 @@ export function authenticateToken(
   res: Response,
   next: NextFunction
 ) {
-  const token = req.headers["authorization"];
+  const token = req.headers.authorization;
 
-  if (token == null) return res.sendStatus(401);
+  if (!token) return res.sendStatus(401);
 
   firebase
     .auth()

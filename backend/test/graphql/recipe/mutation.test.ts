@@ -182,6 +182,23 @@ describe("Recipe Mutations", () => {
     expect(result).toHaveProperty("id", "1");
   });
 
+  test("bingAnalyzer mutation", async () => {
+    const inputText = "Hello, this is a test message.";
+    const expectedMessage = "Analysis complete.";
+
+    (axios.post as jest.Mock).mockResolvedValue({
+      data: { message: expectedMessage },
+    });
+
+    const result = await recipeMutation.bingAnalyzer(
+      null,
+      { text: inputText },
+      context
+    );
+
+    expect(result).toBe(expectedMessage);
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

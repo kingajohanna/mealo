@@ -13,6 +13,7 @@ import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import KeepAwake from '@sayem314/react-native-keep-awake';
 import { Timers } from './Timers';
 import i18next from 'i18next';
+import { isAndroid } from '../utils/androidHelper';
 
 type Props = StackScreenProps<RecipeStackParamList, AppNav.COOKINGMODE>;
 
@@ -37,7 +38,13 @@ export const CookingMode: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <>
-      <ScreenBackground fullscreen notificationBarColor={Colors.beige} style={styles.screenBackground}>
+      <ScreenBackground
+        fullscreen
+        darkStatusBarContent
+        notificationBarColor={Colors.beige}
+        style={styles.screenBackground}
+        beigeStatusBar={isAndroid}
+      >
         <KeepAwake />
         <View style={styles.container}>
           <View style={styles.header}>

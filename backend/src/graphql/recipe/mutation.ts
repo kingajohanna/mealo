@@ -93,13 +93,9 @@ export const recipeMutation = {
     const { recipe, image } = args;
     const { uid } = context;
 
-    console.log("recipe", recipe);
-
     const getImage = async () => {
       if (!image) return {};
       const img = await image;
-
-      console.log("img", img);
 
       const saved: any = await storeFile(img);
       return { image: saved.dbPath };

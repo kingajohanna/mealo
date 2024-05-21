@@ -6,6 +6,8 @@ import { isAndroid } from '../utils/androidHelper';
 type Props = {
   fullscreen?: boolean;
   notificationBarColor?: string;
+  darkStatusBarContent?: boolean;
+  beigeStatusBar?: boolean;
 } & ViewProps;
 
 export const ScreenBackground: React.FC<Props> = (props) => {
@@ -18,7 +20,10 @@ export const ScreenBackground: React.FC<Props> = (props) => {
           { backgroundColor: props.notificationBarColor ? props.notificationBarColor : Colors.pine },
         ]}
       />
-      <StatusBar barStyle={isAndroid ? 'light-content' : 'dark-content'} backgroundColor={Colors.pine} />
+      <StatusBar
+        barStyle={props.darkStatusBarContent ? 'dark-content' : 'light-content'}
+        backgroundColor={props.beigeStatusBar ? Colors.beige : Colors.pine}
+      />
 
       <SafeAreaView
         testID="fullscreen-background"

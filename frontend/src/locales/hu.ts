@@ -146,6 +146,8 @@ export default {
     checkedListItemsText: 'Rejtsd el/ jelenítsd meg a listelemeket',
     addIngredientsAutomaticallyTitle: 'Összetevők listához adása',
     addIngredientsAutomaticallyText: 'Csúsztasd el az engedélyezéshez',
+    showCategoryFolders: 'Kategória mappák megjelenítése',
+    showCuisineFolders: 'Konyhatípus mappák megjelenítése',
     appSettings: 'Alkalmazás beállításai',
     shares: 'Megosztások',
     shareHelp: 'Fogadd el vagy töröld a megosztást',

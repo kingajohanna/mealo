@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { REMOVE_MEAL } from '../../src/api/mutations';
 import { useAuthMutation } from '../../src/hooks/useAuthMutation';
+import { useMutation } from '@apollo/client';
 
 describe('useAuthMutation', () => {
   it('should handle successful mutation', async () => {

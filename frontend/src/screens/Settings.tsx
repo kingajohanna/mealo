@@ -25,7 +25,7 @@ export const Settings = observer(() => {
   const [deleteUser] = useAuthMutation(DELETE_USER);
 
   const { userStore } = useStore();
-  const { showCompletedTasks, addIngredientsAutomatically } = userStore;
+  const { showCompletedTasks, addIngredientsAutomatically, showCuisineFolders, showCategoryFolders } = userStore;
 
   const client = useApolloClient();
 
@@ -111,6 +111,28 @@ export const Settings = observer(() => {
               <Switch
                 value={addIngredientsAutomatically}
                 onValueChange={(value) => userStore.setAddIngredientsAutomatically(value)}
+              />
+            )}
+          />
+          <Divider />
+           <List.Item
+            title={i18next.t('settings:showCategoryFolders')}
+            description={i18next.t('settings:addIngredientsAutomaticallyText')}
+            left={() => (
+              <Switch
+                value={showCategoryFolders}
+                onValueChange={(value) => userStore.setShowCategoryFolders(value)}
+              />
+            )}
+          />
+          <Divider />
+           <List.Item
+            title={i18next.t('settings:showCuisineFolders')}
+            description={i18next.t('settings:addIngredientsAutomaticallyText')}
+            left={() => (
+              <Switch
+                value={showCuisineFolders}
+                onValueChange={(value) => userStore.setShowCuisineFolders(value)}
               />
             )}
           />

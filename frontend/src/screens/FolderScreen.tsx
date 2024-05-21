@@ -20,6 +20,8 @@ import { FAB } from 'react-native-paper';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Time } from './Recipes';
 import { RecipeList } from '../components/Recipes/RecipeList';
+import { useStore } from '../stores';
+import { observer } from 'mobx-react-lite';
 
 const { width } = Dimensions.get('window');
 const gap = 5;
@@ -27,7 +29,9 @@ const refreshingHeight = 130;
 
 export const all = i18next.t(`recipes:all`);
 
-export const FolderScreen = () => {
+export const FolderScreen =observer(() => {
+   const { userStore } = useStore();
+   
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const lottieViewRef = useRef<LottieView>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -105,19 +109,26 @@ export const FolderScreen = () => {
 
   useEffect(() => {
     if (data?.getRecipes.folders) {
-      setFolders([
+      let folders = [
         i18next.t('folders:all'),
         i18next.t('folders:favorites'),
         ...data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
-        ...data?.getRecipes.cuisines.filter((cuisine: string) =>
+      ];
+
+      if(userStore.showCuisineFolders) {
+        folders = [...folders, ...data?.getRecipes.cuisines.filter((cuisine: string) =>
           cuisine.toLowerCase().includes(searchText.toLowerCase()),
-        ),
-        ...data?.getRecipes.categories.filter((categories: string) =>
+        )];
+      }
+      if(userStore.showCategoryFolders) {
+         folders =[...folders, ...data?.getRecipes.categories.filter((categories: string) =>
           categories.toLowerCase().includes(searchText.toLowerCase()),
-        ),
-      ]);
+        )];
+      }
+
+      setFolders(folders);
     }
-  }, [searchText, data]);
+  }, [searchText, data, userStore.showCuisineFolders, userStore.showCategoryFolders]);
 
   const renderImage = (position: number, image: string, lenght?: number) => {
     const getRadius = () => {
@@ -282,7 +293,7 @@ export const FolderScreen = () => {
       />
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

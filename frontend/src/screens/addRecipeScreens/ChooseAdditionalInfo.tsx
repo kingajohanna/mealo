@@ -25,7 +25,7 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
   const [prepTime, setPreptime] = useState('');
   const [totalTime, setTotalTime] = useState('');
   const [yields, setYields] = useState('');
-  const [cuisine, setCuisine] = useState('');
+  const [calories, setCalories] = useState('');
   const [speed, setSpeed] = useState(SPEED[0]);
   const [image, setImage] = useState('');
 
@@ -63,7 +63,7 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
           {generateTextInput(setPreptime, prepTime, 'Prep time')}
           {generateTextInput(setTotalTime, totalTime, 'Total time')}
           {generateTextInput(setYields, yields, 'Yields')}
-          {generateTextInput(setCuisine, cuisine, 'Cuisine', false)}
+          {generateTextInput(setCalories, calories, 'Calories')}
           <Button
             onPress={chooseFromGallery}
             title={image ? 'recipe.jpg' : 'Choose image from gallery'}
@@ -79,8 +79,6 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
               ))}
             </Picker>
           </View>
-
-          <Text>{props.text}</Text>
         </View>
       </ScrollView>
       <BottomButtons
@@ -97,12 +95,8 @@ export const ChooseAdditionalInfo: React.FC<AddRecipeProps> = (props) => {
             };
           };
 
-          console.log({
-            variables: { recipe: { ...props.recipe, prepTime, totalTime, yields, cuisine, speed }, ...getImage() },
-          });
-
           await addOcrRecipe({
-            variables: { recipe: { ...props.recipe, prepTime, totalTime, yields, cuisine, speed }, ...getImage() },
+            variables: { recipe: { ...props.recipe, prepTime, totalTime, yields, calories, speed }, ...getImage() },
           });
 
           await refetch();

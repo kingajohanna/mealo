@@ -2,6 +2,7 @@ import { StyleProp, StyleSheet, TextInputProps, TextStyle } from 'react-native';
 import { Colors } from '../theme/colors';
 import { TextInput as TextInputBase } from 'react-native';
 
+
 type Props = {
   onChangeText: (text: string) => void;
   text: string;

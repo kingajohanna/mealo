@@ -55,14 +55,18 @@ export const AddMeal: React.FC<Props> = ({ route, navigation }) => {
 
     if (userStore.addIngredientsAutomatically)
       recipe.ingredients.map(async (ingredient) => {
-        const reminder = await addReminder(ingredient);
-        await addToList({
-          variables: {
-            name: ingredient,
-            amount: '',
-            id: reminder?.id,
-          },
-        });
+        try {
+          const reminder = await addReminder(ingredient);
+          await addToList({
+            variables: {
+              name: ingredient,
+              amount: '',
+              id: reminder?.id,
+            },
+          });
+        } catch (error) {
+          console.log('Error adding ingredient:', error);
+        }
       });
 
     await refetch();

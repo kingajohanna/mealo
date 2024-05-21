@@ -121,6 +121,7 @@ export const RecipeDetailsHeaderMenu: React.FC<Props> = ({
       <Menu.Item
         style={styles.menu}
         onPress={() => {
+          setOpenMenu(false);
           setOpenFolderModal(true);
         }}
         title={i18next.t('recipeDetails:addToFolder')}

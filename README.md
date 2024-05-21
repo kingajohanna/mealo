@@ -27,6 +27,9 @@
 
 ### ML predicter
 
+Models:
+unzip files from https://drive.google.com/file/d/13YgzKSxSHEWLd6eIkEiuvZJdu-AvmGgm/view?usp=sharing to ml/models
+
 - `python3 -m venv ./venv` - create venv
 - `source ./venv/bin/activate` - activate venv
 - `pip3 install -r requirements.txt` - install dependecies
