@@ -115,25 +115,19 @@ export const Settings = observer(() => {
             )}
           />
           <Divider />
-           <List.Item
+          <List.Item
             title={i18next.t('settings:showCategoryFolders')}
             description={i18next.t('settings:addIngredientsAutomaticallyText')}
             left={() => (
-              <Switch
-                value={showCategoryFolders}
-                onValueChange={(value) => userStore.setShowCategoryFolders(value)}
-              />
+              <Switch value={showCategoryFolders} onValueChange={(value) => userStore.setShowCategoryFolders(value)} />
             )}
           />
           <Divider />
-           <List.Item
+          <List.Item
             title={i18next.t('settings:showCuisineFolders')}
             description={i18next.t('settings:addIngredientsAutomaticallyText')}
             left={() => (
-              <Switch
-                value={showCuisineFolders}
-                onValueChange={(value) => userStore.setShowCuisineFolders(value)}
-              />
+              <Switch value={showCuisineFolders} onValueChange={(value) => userStore.setShowCuisineFolders(value)} />
             )}
           />
           <Divider />

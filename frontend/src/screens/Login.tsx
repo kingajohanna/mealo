@@ -94,7 +94,7 @@ export const Login = () => {
 
       await auth().createUserWithEmailAndPassword(email, password);
       userStore.setIsLoggedIn(true);
-      addUser();
+      await addUser();
 
       return;
     } catch {

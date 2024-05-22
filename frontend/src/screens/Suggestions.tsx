@@ -18,6 +18,10 @@ import { LoadingAnimation } from '../components/LoadingAnimation';
 import { SearchComponent } from '../components/Suggestions/SearchComponent';
 import { SuggestionBubbleType } from '../components/Suggestions/SuggestionBubble';
 import { useOnForegroundFocus } from '../hooks/useOnForeGroundFocus';
+import UserStore from '../stores/UserStore';
+import { useStore } from '../stores';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react-lite';
 
 export enum Time {
   fast = 'fast',
@@ -34,7 +38,8 @@ export type Tag = {
 
 export const all = i18next.t(`recipes:all`);
 
-export const Suggestions = () => {
+export const Suggestions = observer(() => {
+  const { userStore } = useStore();
   const [text, setText] = useState('');
   const [searchIsActive, setSearchIsActive] = useState(false);
   const [categoryTags, setCategoryTags] = useState<Tag[]>([]);
@@ -59,8 +64,23 @@ export const Suggestions = () => {
   useOnForegroundFocus(() => {
     (async () => {
       await refetch();
+      await getSuggestions();
     })();
   });
+
+  useEffect(() => {
+    if (
+      userStore.isLoggedIn &&
+      !data?.getRecipes?.recipe?.length &&
+      !suggestions?.getSuggestions?.dish?.length &&
+      !suggestions?.getSuggestions?.cuisine?.length
+    ) {
+      (async () => {
+        await refetch();
+        await getSuggestions();
+      })();
+    }
+  }, [userStore.isLoggedIn, suggestions, data]);
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -176,7 +196,7 @@ export const Suggestions = () => {
       />
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   fab: {

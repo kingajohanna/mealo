@@ -48,19 +48,23 @@ export const BottomButtonContainer: react.FC<Props> = ({ recipe, navigation, set
           onPress={() => navigation.navigate(AppNav.VIDEO, { recipe })}
         />
       )}
-      {!recipe.description && <Button
-        title={i18next.t('recipeDetails:startCooking')}
-        titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
-        style={[styles.cookButton, { width: recipe.video ? width - 54 - 54 - 60 : width - 54 - 60 }]}
-        onPress={() => navigation.navigate(AppNav.COOKINGMODE, { recipe })}
-      />}
-      {recipe.description && <Button
-        icon={<IonIcon name="play" color={Colors.beige} size={32} />}
-        title={i18next.t('recipeDetails:startCooking')}
-        titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center', paddingRight: 24 }]}
-        style={[styles.cookButton, { width: width - 54 - 54 - 60  }]}
-        onPress={() => navigation.navigate(AppNav.VIDEO, { recipe })}
-      />}
+      {!recipe.description && (
+        <Button
+          title={i18next.t('recipeDetails:startCooking')}
+          titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center' }]}
+          style={[styles.cookButton, { width: recipe.video ? width - 54 - 54 - 60 : width - 54 - 60 }]}
+          onPress={() => navigation.navigate(AppNav.COOKINGMODE, { recipe })}
+        />
+      )}
+      {recipe.description && (
+        <Button
+          icon={<IonIcon name="play" color={Colors.beige} size={32} />}
+          title={i18next.t('recipeDetails:startCooking')}
+          titleStyle={[styles.textMedium, { color: Colors.beige, textAlign: 'center', paddingRight: 24 }]}
+          style={[styles.cookButton, { width: width - 54 - 54 - 60 }]}
+          onPress={() => navigation.navigate(AppNav.VIDEO, { recipe })}
+        />
+      )}
     </View>
   );
 };

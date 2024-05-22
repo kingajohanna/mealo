@@ -110,7 +110,7 @@ export const AppNavigator = observer(() => {
   return (
     <SafeAreaProvider style={styles.container}>
       <BottomSheetModalProvider>
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName={AppNav.SUGGESTIONS}>
           <Stack.Screen name={AppNav.SUGGESTIONS} component={RecipeNavigator} options={{ headerShown: false }} />
           <Stack.Screen name={AppNav.RECIPES} component={Recipes} options={{ headerShown: false }} />
           <Stack.Screen name={AppNav.RECIPEFOLDER} component={RecipeFolderScreen} options={{ headerShown: false }} />

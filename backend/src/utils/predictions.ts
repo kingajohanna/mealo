@@ -188,7 +188,12 @@ export const fetchAndMergeRecipeSuggestions = async (
   limit: number = 10
 ): Promise<PredictType[]> => {
   const result: PredictType[] = [];
-  if (ids === undefined) return result;
+
+  if (ids === undefined || !ids.length) ids = [1, 2, 3, 4, 6];
+  if (category === undefined || !category.length)
+    category = [1, 2, 3, 4, 5, 6, 7, 8];
+
+  console.log(ids, type, category, limit);
 
   await Promise.all(
     ids.map(async (id) => {

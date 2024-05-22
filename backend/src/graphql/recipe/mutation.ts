@@ -238,11 +238,15 @@ export const recipeMutation = {
 
     let recipe = await Recipe.findOne({ id: recipeId });
 
+    console.log(recipe?.title, process.env.ML_URL);
+
     const response = await axios.post(process.env.ML_URL as string, {
       title: recipe?.title,
       ingredients: recipe?.ingredients,
       lang: recipe?.language || "en",
     });
+
+    console.log(response);
 
     if (response.data) {
       console.log(response.data);

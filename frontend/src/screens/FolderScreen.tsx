@@ -29,9 +29,9 @@ const refreshingHeight = 130;
 
 export const all = i18next.t(`recipes:all`);
 
-export const FolderScreen =observer(() => {
-   const { userStore } = useStore();
-   
+export const FolderScreen = observer(() => {
+  const { userStore } = useStore();
+
   const [data, refetch] = useAuthQuery(GET_RECIPES);
   const lottieViewRef = useRef<LottieView>(null);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -115,15 +115,21 @@ export const FolderScreen =observer(() => {
         ...data?.getRecipes.folders.filter((folder: string) => folder.toLowerCase().includes(searchText.toLowerCase())),
       ];
 
-      if(userStore.showCuisineFolders) {
-        folders = [...folders, ...data?.getRecipes.cuisines.filter((cuisine: string) =>
-          cuisine.toLowerCase().includes(searchText.toLowerCase()),
-        )];
+      if (userStore.showCuisineFolders) {
+        folders = [
+          ...folders,
+          ...data?.getRecipes.cuisines.filter((cuisine: string) =>
+            cuisine.toLowerCase().includes(searchText.toLowerCase()),
+          ),
+        ];
       }
-      if(userStore.showCategoryFolders) {
-         folders =[...folders, ...data?.getRecipes.categories.filter((categories: string) =>
-          categories.toLowerCase().includes(searchText.toLowerCase()),
-        )];
+      if (userStore.showCategoryFolders) {
+        folders = [
+          ...folders,
+          ...data?.getRecipes.categories.filter((categories: string) =>
+            categories.toLowerCase().includes(searchText.toLowerCase()),
+          ),
+        ];
       }
 
       setFolders(folders);

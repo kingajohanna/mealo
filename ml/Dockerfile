@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.10
 WORKDIR /app
 ENV PORT=3002
 EXPOSE ${PORT}
